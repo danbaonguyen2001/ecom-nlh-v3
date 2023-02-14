@@ -1,7 +1,7 @@
 import React from "react";
 
 const Banner = () => {
-  return <div>Banner</div>;
+  return <div className="h-[400px]">Banner</div>;
 };
 
 export default Banner;

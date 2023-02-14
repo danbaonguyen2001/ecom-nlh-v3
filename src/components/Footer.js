@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.svg";
 const Footer = () => {
   return (
     <div>
-      <section class="py-10 bg-blue-900 sm:pt-16 lg:pt-24">
+      <section class="py-10 bg-primary-800 sm:pt-16 lg:pt-24">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-12">
             <div>
@@ -15,7 +15,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Thông tin chung{" "}
@@ -26,7 +26,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tầm nhìn{" "}
@@ -37,7 +37,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Hành trình{" "}
@@ -48,7 +48,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tuyển dụng{" "}
@@ -66,7 +66,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Đơn hàng{" "}
@@ -77,7 +77,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Bảo hành{" "}
@@ -88,7 +88,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Kỹ thuật{" "}
@@ -99,7 +99,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tư vấn{" "}
@@ -117,7 +117,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Sản phẩm mới{" "}
@@ -128,7 +128,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Công nghệ{" "}
@@ -139,7 +139,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Bài viết{" "}
@@ -150,7 +150,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Đánh giá{" "}
@@ -167,7 +167,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Hỗ trợ khách hàng
                   </a>
@@ -177,7 +177,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Chi tiết vận chuyển
                   </a>
@@ -187,7 +187,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Điều khoản
                   </a>
@@ -197,7 +197,7 @@ const Footer = () => {
                   <a
                     href="#"
                     title=""
-                    class="text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                    class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Chính sách
                   </a>
@@ -290,7 +290,7 @@ const Footer = () => {
                     <a
                       href="https://www.facebook.com/19110237lhl"
                       title=""
-                      class="text-sm text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                      class="text-sm text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                     >
                       {" "}
                       HoangLoc{" "}
@@ -301,7 +301,7 @@ const Footer = () => {
                     <a
                       href="https://www.facebook.com/profile.php?id=100014233354327"
                       title=""
-                      class="text-sm text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                      class="text-sm text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                     >
                       {" "}
                       NguyenDan{" "}
@@ -312,7 +312,7 @@ const Footer = () => {
                     <a
                       href="https://www.facebook.com/profile.php?id=100044213299077"
                       title=""
-                      class="text-sm text-blue-200 transition-all duration-200 hover:text-white focus:text-white"
+                      class="text-sm text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                     >
                       {" "}
                       ThaiHung{" "}
@@ -321,7 +321,7 @@ const Footer = () => {
                 </ul>
               </div>
 
-              <p class="mt-6 text-sm text-blue-200 lg:mt-0">
+              <p class="mt-6 text-sm text-primary-300 lg:mt-0">
                 © Copyright 2023, All Rights Reserved by Ecom-NLH
               </p>
             </div>
