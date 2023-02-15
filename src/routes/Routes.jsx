@@ -18,7 +18,7 @@ const Components = () => {
       <Routes>
         {/* Public -Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="register" element={<Register />} />
         {/* Private- Routes */}
         <Route path="user-infor" element={<UserInfor />} />
