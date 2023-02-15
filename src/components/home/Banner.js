@@ -1,9 +1,9 @@
 import React from 'react'
-// import ProductList from '../product/ProductList'
+import ProductList from '../product/ProductList'
 const Banner = () => {
   return (
     <div className='h-[400px]'>
-      {/* <ProductList CategoryName='Điện thoại' /> */}
+      <ProductList CategoryName='Điện thoại' />
     </div>
   )
 }

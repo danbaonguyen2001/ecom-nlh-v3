@@ -25,6 +25,7 @@ import {
   PRODUCT_TOP_FAIL,
   PRODUCT_LIST_BY_SUB_CATEGORY_REQUEST,
   PRODUCT_LIST_BY_SUB_CATEGORY_FAIL,
+  PRODUCT_LIST_BY_SUB_CATEGORY_SUCCESS,
 } from '../constants/productsConstants'
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -69,7 +70,7 @@ export const productDetailReducer = (
   }
 }
 export const productListByCategoryReducer = (
-  state = { productByCategories: [] },
+  state = { productByCategories: [], categoryName: [] },
   action
 ) => {
   switch (action.type) {
@@ -103,7 +104,7 @@ export const productListBySubCategoryReducer = (
         loading: false,
         productBySubCategories: [],
       }
-    case PRODUCT_LIST_BY_CATEGORY_SUCCESS:
+    case PRODUCT_LIST_BY_SUB_CATEGORY_SUCCESS:
       return {
         loading: false,
         productBySubCategories: action.payload,
