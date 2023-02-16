@@ -1,15 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import "./index.css";
 import Layout from "./screens/Layout";
 import GlobalStyles from "./sass/GlobalStyles";
 import reportWebVitals from "./reportWebVitals";
+import store from "./store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <GlobalStyles>
-      <Layout />
+      {/* <Layout /> */}
+      <Provider store={store}>
+        <Layout />
+      </Provider>
     </GlobalStyles>
   </React.StrictMode>
 );

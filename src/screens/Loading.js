@@ -1,6 +1,7 @@
 import React from "react";
 
 import logo from "../assets/images/icon.png";
+import "../sass/_loading.scss";
 
 const Loading = () => {
   return (
