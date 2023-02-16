@@ -1,5 +1,8 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../actions/userActions";
+import Loading from "../../screens/Loading";
 const Login = () => {
   const a = "coong nghe thong tiin";
   const b = [...a];
@@ -17,8 +20,23 @@ const Login = () => {
     }
   }
   console.log(c);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const history = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, userInfo } = useSelector((state) => state.userLogin);
+  useEffect(() => {
+    if (userInfo) {
+      history("/");
+    }
+  }, [history, userInfo]);
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(login(email, password));
+  };
   return (
     <div className="m-4 rounded-sm border-2 border-slate-400 ">
+      {loading && <Loading />}
       <section class="bg-white">
         <div class="grid grid-cols-1 lg:grid-cols-2">
           <div class="flex items-center justify-center px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-16 lg:py-24">
@@ -37,7 +55,12 @@ const Login = () => {
                 </a>
               </p>
 
-              <form action="#" method="POST" class="mt-8">
+              <form
+                onSubmit={submitHandler}
+                action="#"
+                method="POST"
+                class="mt-8"
+              >
                 <div class="space-y-5">
                   <div>
                     <label for="" class="text-base font-medium text-gray-900">
@@ -51,6 +74,8 @@ const Login = () => {
                         id=""
                         placeholder="Enter email to get started"
                         class="block w-full p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
                   </div>
@@ -78,6 +103,8 @@ const Login = () => {
                         id=""
                         placeholder="Enter your password"
                         class="block w-full p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </div>
                   </div>

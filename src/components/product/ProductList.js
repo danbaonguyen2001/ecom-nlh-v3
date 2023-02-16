@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "./ProductCard";
-
+import LoadingSkeleton from "../LoadingSkeleton";
+import Error from "../error/Error";
+import { getProductByCategory } from "../../actions/productActions";
 const products = [
   {
     id: 1,
@@ -35,9 +38,22 @@ const products = [
   // More products...
 ];
 
-const ProductList = () => {
+const ProductList = ({ CategoryName }) => {
+  const dispatch = useDispatch();
+  const category = CategoryName;
+  console.log(category);
+  const { loading, error, productByCategories, categoryName } = useSelector(
+    (state) => state.productListByCategories
+  );
+  useEffect(() => {
+    // if (category != categoryName) {
+    //   dispatch(getProductByCategory(category));
+    // }
+  }, [dispatch, category]);
   return (
     <div className="bg-white">
+      {loading && <LoadingSkeleton />}
+      {error && <Error />}
       <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Danh sách sản phẩm : 5 sản phẩm
