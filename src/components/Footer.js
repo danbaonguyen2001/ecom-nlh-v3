@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.svg";
 const Footer = () => {
   return (
     <div>
-      <section class="py-10 bg-primary-800 sm:pt-16 lg:pt-24">
+      <section class="py-10 bg-primary-800 sm:pt-16 lg:pt-24 text-sm">
         <div class="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-12">
             <div>
@@ -59,7 +59,7 @@ const Footer = () => {
 
             {/* Trwo giúp */}
             <div>
-              <p class="text-lg font-semibold text-white">Trợ giúp</p>
+              <p class="text-base font-semibold text-white">Trợ giúp</p>
 
               <ul class="mt-8 space-y-4">
                 <li>
@@ -110,7 +110,7 @@ const Footer = () => {
 
             {/* Tài liệu */}
             <div>
-              <p class="text-lg font-semibold text-white">Tài liệu</p>
+              <p class="text-base font-semibold text-white">Tài liệu</p>
 
               <ul class="mt-8 space-y-4">
                 <li>
@@ -160,7 +160,7 @@ const Footer = () => {
             </div>
             {/* Mở rộng */}
             <div>
-              <p class="text-lg font-semibold text-white">Mở rộng</p>
+              <p class="text-base font-semibold text-white">Mở rộng</p>
 
               <ul class="mt-8 space-y-4">
                 <li>

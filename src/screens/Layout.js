@@ -7,6 +7,7 @@ import Routes from "../routes/Routes";
 import App from "./App";
 
 import Loading from "./Loading";
+import ChatBot from "../components/ChatBot";
 
 const Layout = () => {
   return (
@@ -17,6 +18,7 @@ const Layout = () => {
             <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
               <Routes />
             </div>
+            <ChatBot />
           </App>
           {/* <Header />
         <Routes />
