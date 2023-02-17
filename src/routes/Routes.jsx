@@ -13,6 +13,8 @@ import OrderDetail from "../components/order/OrderDetail";
 import UserInfor from "../screens/UserInfor";
 import ForgotPass from "../components/auth/ForgotPass";
 import ChangePass from "../components/auth/ChangePass";
+import ProductDetail from "../components/product/ProductDetail";
+import ProductList from "../components/product/ProductList";
 
 const Components = () => {
   return (
@@ -21,14 +23,16 @@ const Components = () => {
         {/* Public -Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="forgotpass" element={<ForgotPass />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgotpass" element={<ForgotPass />} />
+        <Route path="/:categoryName" element={<ProductList />} />
+        <Route path="/product/:slug" element={<ProductDetail />} />
 
         {/* Private- Routes */}
-        <Route path="changepass" element={<ChangePass />} />
-        <Route path="user-infor" element={<UserInfor />} />
-        <Route path="cart" element={<Cart />} />
-        <Route path="order-list" element={<Orders />} />
+        <Route path="/changepass" element={<ChangePass />} />
+        <Route path="/user-infor" element={<UserInfor />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/order-list" element={<Orders />} />
         <Route path="order/:slug" element={<OrderDetail />} />
       </Routes>
     </ErrorBoundary>

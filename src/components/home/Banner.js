@@ -5,6 +5,7 @@ const Banner = () => {
   return (
     <div className="h-[400px]">
       {/* <ProductList CategoryName='Điện thoại' /> */}
+      Home
     </div>
   );
 };

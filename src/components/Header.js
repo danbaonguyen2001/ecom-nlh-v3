@@ -1,4 +1,4 @@
-import { React, Fragment, useState } from "react";
+import { React, Fragment, useState, useEffect } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -6,8 +6,9 @@ import {
   XMarkIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
-import logo from "../../assets/images/logo.svg";
+import logo from "../assets/images/logo.svg";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const user = {
   name: "Tom Cook",
@@ -18,19 +19,18 @@ const user = {
 const defaultAvt =
   "data:image/png;base64,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";
 const navigation = [
-  { name: "Trang chủ", href: "#", current: true },
-  { name: "Điện thoại", href: "#", current: false },
-  { name: "Tablet", href: "#", current: false },
-  { name: "Laptop", href: "#", current: false },
-  { name: "Phụ kiện", href: "#", current: false },
+  { name: "Điện thoại", href: "/Điện thoại", current: false },
+  { name: "Tablet", href: "/Tablet", current: false },
+  { name: "Laptop", href: "/Laptop", current: false },
+  { name: "Phụ kiện", href: "/Phụ kiện", current: false },
 ];
-const userNavigation = [
-  { name: "Đăng nhập", href: "/login" },
-  { name: "Đăng ký", href: "/register" },
-  { name: "Tài khoản của tôi", href: "/user-infor" },
-  { name: "Đơn hàng của tôi", href: "/order-list" },
-  { name: "Đăng xuất", href: "#" },
-];
+// const userNavigation = [
+//   { name: "Đăng nhập", href: "/login" },
+//   { name: "Đăng ký", href: "/register" },
+//   { name: "Tài khoản của tôi", href: "/user-infor" },
+//   { name: "Đơn hàng của tôi", href: "/order-list" },
+//   { name: "Đăng xuất", href: "#" },
+// ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -39,17 +39,44 @@ function classNames(...classes) {
 const Header = () => {
   // Handle Nav
   const [nav, setNav] = useState([
-    { name: "Trang chủ", href: "#", current: true },
-    { name: "Điện thoại", href: "#", current: false },
-    { name: "Tablet", href: "#", current: false },
-    { name: "Laptop", href: "#", current: false },
-    { name: "Phụ kiện", href: "#", current: false },
+    { name: "Điện thoại", href: "/Điện thoại", current: false },
+    { name: "Tablet", href: "/Tablet", current: false },
+    { name: "Laptop", href: "/Laptop", current: false },
+    { name: "Phụ kiện", href: "/Phụ kiện", current: false },
   ]);
+
   const handleCLickNav = (index) => {
     navigation.map((item) => (item.current = false));
     navigation[index].current = true;
     setNav([...navigation]);
   };
+
+  const resetNav = () => {
+    navigation.map((item) => (item.current = false));
+    setNav([...navigation]);
+  };
+
+  //Check Authen
+
+  const [userNavigation, setUserNavigation] = useState([]);
+
+  const isAuthen = useSelector((state) => state.userLogin);
+
+  useEffect(() => {
+    if (isAuthen) {
+      setUserNavigation([
+        { name: "Tài khoản của tôi", href: "/user-infor" },
+        { name: "Đơn hàng của tôi", href: "/order-list" },
+        { name: "Đăng xuất", href: "#" },
+      ]);
+    } else {
+      setUserNavigation([
+        { name: "Đăng nhập", href: "/login" },
+        { name: "Đăng ký", href: "/register" },
+      ]);
+    }
+  }, [isAuthen]);
+  // console.log(isAuthen);
 
   return (
     <>
@@ -60,15 +87,17 @@ const Header = () => {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
-                    <Link className="flex-shrink-0" to="/">
+                    <Link className="flex-shrink-0" to="/" onClick={resetNav}>
                       <img className="h-8 w-8" src={logo} alt="Your Company" />
                     </Link>
+
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {nav.map((item, index) => (
                           <Link
                             key={item.index}
                             to={`${item.href}`}
+                            state={{ CategoryName: `${item.name}` }}
                             className={classNames(
                               item.current
                                 ? "bg-primary-900 text-white"
@@ -93,6 +122,7 @@ const Header = () => {
                       <Link
                         to={"/cart"}
                         className="rounded-full bg-primary-900 p-1 text-primary-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-800"
+                        onClick={resetNav}
                       >
                         <span className="sr-only">View notifications</span>
                         <ShoppingCartIcon
