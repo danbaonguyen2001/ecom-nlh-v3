@@ -65,7 +65,11 @@ const ProductList = () => {
   }, [productByCategories]);
   return (
     <div className="bg-white min-h-[300px]">
-      {loading ? <Loading /> : <Filter PDList={productByCategories} />}
+      {loading ? (
+        <Loading />
+      ) : (
+        <Filter PDList={productByCategories} CateName={CategoryName} />
+      )}
       {error && <Error />}
     </div>
   );

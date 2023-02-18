@@ -65,6 +65,7 @@ function classNames(...classes) {
 const Filter = (props) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [productList, setProductList] = useState(props?.PDList);
+  const categoryName = props?.CateName;
   // console.log(productList);
   return (
     <div>
@@ -193,7 +194,7 @@ const Filter = (props) => {
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-baseline justify-between border-b border-gray-200 pt-8 pb-6">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            Category Name
+            {categoryName}
           </h1>
 
           <div className="flex items-center">
