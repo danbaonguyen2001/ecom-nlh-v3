@@ -54,6 +54,7 @@ export const listProducts =
       });
     }
   };
+
 /** Get Product Detail */
 export const productDetail = (id) => async (dispatch) => {
   try {

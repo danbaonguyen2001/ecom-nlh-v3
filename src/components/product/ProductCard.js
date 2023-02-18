@@ -10,7 +10,10 @@ const ProductCard = (props) => {
   return (
     <div class="max-w-2xl mx-auto">
       <div class="bg-white shadow-lg rounded-lg max-w-sm ">
-        <Link to={"/product/" + product._id}>
+        <Link
+          to={"/product/" + product.name.replaceAll(" ", "-")}
+          state={{ slug: product._id }}
+        >
           <img
             class=" scale-90 hover:scale-105 ease-in duration-500 rounded-t-lg p-8"
             src={product?.image}
