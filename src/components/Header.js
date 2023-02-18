@@ -80,7 +80,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="min-h-full">
+      <div className="min-h-full sticky top-0 z-10">
         <Disclosure as="nav" className="bg-primary-800">
           {({ open }) => (
             <>
