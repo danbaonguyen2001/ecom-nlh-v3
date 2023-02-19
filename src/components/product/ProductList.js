@@ -62,30 +62,29 @@ const filters = [
     ],
   },
 ];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const ProductList = () => {
-  const dispatch = useDispatch();
-  const location = useLocation();
+  const dispatch = useDispatch()
+  const location = useLocation()
 
   const { CategoryName } = location.state;
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const { loading, error, productByCategories, categoryName } = useSelector(
     (state) => state.productListByCategories
-  );
+  )
   useEffect(() => {
     if (CategoryName != categoryName) {
-      dispatch(getProductByCategory(CategoryName));
+      dispatch(getProductByCategory(CategoryName))
     }
   }, [CategoryName]);
   console.log(productByCategories);
 
   return (
-    <div className="bg-white min-h-[300px]">
+    <div className='bg-white min-h-[300px]'>
       {loading ? (
         <Loading />
       ) : (
@@ -381,7 +380,7 @@ const ProductList = () => {
       )}
       {error && <Error />}
     </div>
-  );
-};
+  )
+}
 
-export default ProductList;
+export default ProductList
