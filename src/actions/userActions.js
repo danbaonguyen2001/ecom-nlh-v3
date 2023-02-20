@@ -5,7 +5,7 @@ import {
   USER_LOGIN_SUCCESS,
   USER_LOGOUT,
 } from '../constants/userConstants'
-
+import { CART_LIST_RESET } from '../constants/cartConstants'
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
@@ -39,4 +39,5 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: USER_LOGOUT })
+  dispatch({ type: CART_LIST_RESET })
 }
