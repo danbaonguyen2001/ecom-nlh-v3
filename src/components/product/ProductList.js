@@ -63,7 +63,6 @@ const filters = [
     ],
   },
 ];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -71,24 +70,8 @@ function classNames(...classes) {
 const ProductList = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const slug = useParams();
-  useEffect(() => {
-    changedSlug();
-  }, [slug]);
-  console.log(slug);
 
-  const changedSlug = () => {
-    if (slug === "phones") {
-      return slug === "Điện thoại";
-    } else if (slug === "tablets") {
-      return slug === "Tablet";
-    } else if (slug === "laptops") {
-      return slug === "Laptop";
-    } else {
-      return slug === "Phụ kiện";
-    }
-  };
-  const { CategoryName } = location.state ? location.state : slug;
+  const { CategoryName } = useParams();
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
