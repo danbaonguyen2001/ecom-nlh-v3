@@ -38,7 +38,7 @@ export const listProducts =
       dispatch({ type: PRODUCT_LIST_REQUEST })
 
       const { data } = await axios.get(
-        `/api/products?keyword=${keyword}&page=${pageNumber}`
+        `${Server}/api/products?keyword=${keyword}&page=${pageNumber}`
       )
       dispatch({
         type: PRODUCT_LIST_SUCCESS,
@@ -107,7 +107,7 @@ export const getProductsBySubCategory = (subCategoryId) => async (dispatch) => {
       type: PRODUCT_LIST_BY_SUB_CATEGORY_REQUEST,
     })
     const { data } = await axios.get(
-      `/api/products/subcategory/${subCategoryId}`
+      `${Server}/api/products/subcategory/${subCategoryId}`
     )
     dispatch({
       type: PRODUCT_LIST_BY_SUB_CATEGORY_SUCCESS,
@@ -128,7 +128,7 @@ export const listTopProducts = () => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_TOP_REQUEST })
 
-    const { data } = await axios.get(`/api/products/top`)
+    const { data } = await axios.get(`${Server}/api/products/top`)
 
     dispatch({
       type: PRODUCT_TOP_SUCCESS,
@@ -158,11 +158,15 @@ export const createProductReview =
       const config = {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.access_token}`,
+          Authorization: `Bearer ${userInfo.userInfo.data.access_token}`,
         },
       }
 
-      await axios.post(`/api/products/${productId}/reviews`, review, config)
+      await axios.post(
+        `${Server}/api/products/${productId}/reviews`,
+        review,
+        config
+      )
 
       dispatch({
         type: PRODUCT_CREATE_REVIEW_SUCCESS,
@@ -185,7 +189,7 @@ export const createProductReview =
 export const getProductReviews = (id) => async (dispatch) => {
   try {
     dispatch({ type: GET_REVIEWS_REQUEST })
-    const { data } = await axios.get(`/api/products/${id}`)
+    const { data } = await axios.get(`${Server}/api/products/${id}`)
     dispatch({
       type: GET_REVIEWS_SUCCESS,
       payload: data.reviews,
@@ -209,11 +213,11 @@ export const deleteReview =
       const config = {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.access_token}`,
+          Authorization: `Bearer ${userInfo.userInfo.data.access_token}`,
         },
       }
       const { data } = await axios.delete(
-        `/api/products/${productId}/reviews?reviewId=${reviewId}`,
+        `${Server}/api/products/${productId}/reviews?reviewId=${reviewId}`,
         config
       )
       dispatch({
