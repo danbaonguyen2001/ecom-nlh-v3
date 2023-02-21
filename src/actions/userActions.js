@@ -6,6 +6,7 @@ import {
   USER_LOGOUT,
 } from '../constants/userConstants'
 import { CART_LIST_RESET } from '../constants/cartConstants'
+import { ORDER_HISTORY_RESET } from '../constants/orderConstants'
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
@@ -40,4 +41,5 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
   dispatch({ type: USER_LOGOUT })
   dispatch({ type: CART_LIST_RESET })
+  dispatch({ type: ORDER_HISTORY_RESET })
 }
