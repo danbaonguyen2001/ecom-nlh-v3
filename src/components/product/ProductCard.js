@@ -12,7 +12,7 @@ const ProductCard = (props) => {
       <div class="bg-white shadow-lg rounded-lg max-w-sm ">
         <Link
           to={"/product/" + product.name.replaceAll(" ", "-")}
-          state={{ slug: product._id }}
+          state={{ slug: product?._id }}
         >
           <img
             class=" scale-90 hover:scale-105 ease-in duration-500 rounded-t-lg p-8"

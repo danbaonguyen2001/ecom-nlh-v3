@@ -44,7 +44,7 @@ function classNames(...classes) {
 const Header = () => {
   // Handle Nav
   const [nav, setNav] = useState([
-    { name: "Điện thoại", href: "/phone", current: false, slug: "Điện thoại" },
+    { name: "Điện thoại", href: "/phones", current: false, slug: "Điện thoại" },
     { name: "Tablet", href: "/tablet", current: false, slug: "Tablet" },
     { name: "Laptop", href: "/laptop", current: false, slug: "Laptop" },
     {

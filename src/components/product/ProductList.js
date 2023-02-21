@@ -4,7 +4,7 @@ import Error from "../error/Error";
 import { getProductByCategory } from "../../actions/productActions";
 import Filter from "./Filter";
 import Loading from "../../screens/Loading";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -17,6 +17,7 @@ import {
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
+import AddToCartModal from "./AddToCartModal";
 
 const sortOptions = [
   { name: "Ngẫu nhiên", href: "#", current: true },
@@ -70,8 +71,25 @@ function classNames(...classes) {
 const ProductList = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const slug = useParams();
+  useEffect(() => {
+    changedSlug();
+  }, [slug]);
+  console.log(slug);
 
-  const { CategoryName } = location.state;
+  const changedSlug = () => {
+    if (slug === "phones") {
+      return slug === "Điện thoại";
+    } else if (slug === "tablets") {
+      return slug === "Tablet";
+    } else if (slug === "laptops") {
+      return slug === "Laptop";
+    } else {
+      return slug === "Phụ kiện";
+    }
+  };
+  const { CategoryName } = location.state ? location.state : slug;
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const { loading, error, productByCategories, categoryName } = useSelector(
@@ -380,6 +398,7 @@ const ProductList = () => {
         </div>
       )}
       {error && <Error />}
+      {/* <AddToCartModal /> */}
     </div>
   );
 };

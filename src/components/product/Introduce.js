@@ -1,76 +1,26 @@
 import React, { useEffect, useState } from "react";
 import Slider from "../slider/Slider";
 
-import { StarIcon } from "@heroicons/react/20/solid";
-import { RadioGroup, Dialog } from "@headlessui/react";
-
-const product = {
-  name: "Basic Tee 6-Pack",
-  price: "$192",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
-      alt: "Two each of gray, white, and black shirts laying flat.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-      alt: "Model wearing plain black basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
-      alt: "Model wearing plain gray basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
-      alt: "Model wearing plain white basic tee.",
-    },
-  ],
-  colors: [
-    { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
-    { name: "Gray", class: "bg-gray-200", selectedClass: "ring-gray-400" },
-    { name: "Black", class: "bg-gray-900", selectedClass: "ring-gray-900" },
-  ],
-  sizes: [
-    { name: "XXS", inStock: false },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: true },
-    { name: "2XL", inStock: true },
-    { name: "3XL", inStock: true },
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    "Hand cut and sewn locally",
-    "Dyed with our proprietary colors",
-    "Pre-washed & pre-shrunk",
-    "Ultra-soft 100% cotton",
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-};
-const reviews = { href: "#", average: 4, totalCount: 117 };
+import { RadioGroup } from "@headlessui/react";
+import { toVND } from "../../utils/format";
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import Loading from "../../screens/Loading";
+import { toast } from "react-toastify";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const Introduce = (props) => {
-  console.log(props.product);
+  const { product, loading } = props;
 
+  // handle selec option
+  const [selectedOption, setSelectedOption] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  //handle Image
   const [imgArr, setImgArr] = useState([]);
-
-  const { product } = props;
-  // const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  // const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
-
   useEffect(() => {
     let arr = [];
     product?.productOptions?.forEach((productOption) => {
@@ -80,158 +30,246 @@ const Introduce = (props) => {
         });
       });
     });
-    // console.log(product?.productOptions);
     const sliceArr = arr.slice(0, 7);
     // console.log(sliceArr);
     setImgArr(sliceArr);
   }, [product?._id]);
 
+  //handle quantity
+  const plusQT = () => {
+    if (
+      quantity ===
+      product?.productOptions[selectedOption]?.colors[selectedColor]?.quantity
+    ) {
+      toast.error("Số lượng đạt giới hạn", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const minusQT = () => {
+    if (quantity === 1) {
+      toast.error("Số lượng đạt giới hạn", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setQuantity(quantity - 1);
+    }
+  };
+
   return (
-    <div className="py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <div className="rounded-lg shadow-lg lg:col-span-7 pt-4">
-          <Slider imgArr={imgArr} />
-        </div>
-        <div className="rounded-lg shadow-lg lg:col-span-5">
-          <form className="mt-10">
-            {/* Colors */}
-            <div>
-              <h3 className="text-sm font-medium text-gray-900">Color</h3>
-
-              <RadioGroup
-                // value={selectedColor}
-                // onChange={setSelectedColor}
-                className="mt-4"
-              >
-                <RadioGroup.Label className="sr-only">
-                  {" "}
-                  Choose a color{" "}
-                </RadioGroup.Label>
-                <div className="flex items-center space-x-3">
-                  {/* {product.colors.map((color) => (
-                    <RadioGroup.Option
-                      key={color.name}
-                      value={color}
-                      className={({ active, checked }) =>
-                        classNames(
-                          color.selectedClass,
-                          active && checked ? "ring ring-offset-1" : "",
-                          !active && checked ? "ring-2" : "",
-                          "-m-0.5 relative p-0.5 rounded-full flex items-center justify-center cursor-pointer focus:outline-none"
-                        )
-                      }
-                    >
-                      <RadioGroup.Label as="span" className="sr-only">
-                        {" "}
-                        {color.name}{" "}
-                      </RadioGroup.Label>
-                      <span
-                        aria-hidden="true"
-                        className={classNames(
-                          color.class,
-                          "h-8 w-8 border border-black border-opacity-10 rounded-full"
-                        )}
-                      />
-                    </RadioGroup.Option>
-                  ))} */}
-                </div>
-              </RadioGroup>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="py-6 ">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="rounded-lg shadow-lg lg:col-span-7 pt-4 py-7 ">
+              <Slider imgArr={imgArr} />
             </div>
-
-            {/* Sizes */}
-            <div className="mt-10">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                <a
+            <div className="rounded-lg shadow-lg lg:col-span-5 p-4">
+              {/* Option */}
+              <div className="mt-10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-medium text-gray-900">
+                    Các option
+                  </h3>
+                  {/* <a
                   href="#"
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+                  className="text-sm font-medium text-primary-600 hover:text-primary-500"
                 >
                   Size guide
-                </a>
+                </a> */}
+                </div>
+
+                <RadioGroup
+                  value={selectedOption}
+                  onChange={setSelectedOption}
+                  className="mt-4"
+                >
+                  <RadioGroup.Label className="sr-only">
+                    {" "}
+                    Choose a size{" "}
+                  </RadioGroup.Label>
+                  <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
+                    {product?.productOptions?.map((option, index) => (
+                      <RadioGroup.Option
+                        key={option?._id}
+                        value={index}
+                        className={({ active }) =>
+                          classNames(
+                            option
+                              ? "bg-white shadow-sm text-gray-900 cursor-pointer"
+                              : "bg-gray-50 text-gray-200 cursor-not-allowed",
+                            active ? "ring-2 ring-primary-500" : "",
+                            "group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
+                          )
+                        }
+                        onClick={() => setSelectedOption(index)}
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <RadioGroup.Label as="span">
+                              {option?.productOptionName}
+                            </RadioGroup.Label>
+                            {option ? (
+                              <span
+                                className={classNames(
+                                  active ? "border" : "border-2",
+                                  checked
+                                    ? "border-primary-500"
+                                    : "border-transparent",
+                                  "pointer-events-none absolute -inset-px rounded-md"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                              >
+                                <svg
+                                  className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                  viewBox="0 0 100 100"
+                                  preserveAspectRatio="none"
+                                  stroke="currentColor"
+                                >
+                                  <line
+                                    x1={0}
+                                    y1={100}
+                                    x2={100}
+                                    y2={0}
+                                    vectorEffect="non-scaling-stroke"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
               </div>
 
-              <RadioGroup
-                // value={selectedSize}
-                // onChange={setSelectedSize}
-                className="mt-4"
-              >
-                <RadioGroup.Label className="sr-only">
-                  {" "}
-                  Choose a size{" "}
-                </RadioGroup.Label>
-                <div className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4">
-                  {/* {product.sizes.map((size) => (
-                    <RadioGroup.Option
-                      key={size.name}
-                      value={size}
-                      disabled={!size.inStock}
-                      className={({ active }) =>
-                        classNames(
-                          size.inStock
-                            ? "bg-white shadow-sm text-gray-900 cursor-pointer"
-                            : "bg-gray-50 text-gray-200 cursor-not-allowed",
-                          active ? "ring-2 ring-indigo-500" : "",
-                          "group relative border rounded-md py-3 px-4 flex items-center justify-center text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1 sm:py-6"
-                        )
-                      }
-                    >
-                      {({ active, checked }) => (
-                        <>
-                          <RadioGroup.Label as="span">
-                            {size.name}
-                          </RadioGroup.Label>
-                          {size.inStock ? (
-                            <span
-                              className={classNames(
-                                active ? "border" : "border-2",
-                                checked
-                                  ? "border-indigo-500"
-                                  : "border-transparent",
-                                "pointer-events-none absolute -inset-px rounded-md"
-                              )}
-                              aria-hidden="true"
-                            />
-                          ) : (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                            >
-                              <svg
-                                className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
-                                viewBox="0 0 100 100"
-                                preserveAspectRatio="none"
-                                stroke="currentColor"
-                              >
-                                <line
-                                  x1={0}
-                                  y1={100}
-                                  x2={100}
-                                  y2={0}
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </RadioGroup.Option>
-                  ))} */}
+              {/* Colors */}
+              <div className="my-4">
+                <h3 className="text-base font-medium text-gray-900">Màu sắc</h3>
+                <div class="flex justify-start my-2 ">
+                  {product?.productOptions[selectedOption]?.colors?.map(
+                    (color, index) => (
+                      <div
+                        class="form-check form-check-inline mr-6"
+                        key={index}
+                        onClick={() => setSelectedColor(index)}
+                      >
+                        <input
+                          class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border
+                  border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                  transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 
+                  cursor-pointer"
+                          type="radio"
+                          name="inlineRadioOptions"
+                          id={color._id}
+                          value={color._id}
+                          checked={index === selectedColor}
+                          // onChange={setSelectedColor(index)}
+                        />
+                        <label
+                          class="form-check-label inline-block text-gray-800"
+                          for="inlineRadio10"
+                        >
+                          {color.color}
+                        </label>
+                      </div>
+                    )
+                  )}
                 </div>
-              </RadioGroup>
-            </div>
+              </div>
 
-            <div className="flex items-center justify-center mb-4">
-              <button
-                type="submit"
-                className=" mt-10 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to bag
-              </button>
+              <div className=" flex justify-start flex-col">
+                <p className="text-3xl tracking-tight text-gray-900 font-semibold ">
+                  {toVND(
+                    product?.productOptions[selectedOption]?.price *
+                      (1 -
+                        product?.productOptions[selectedOption]?.promotion *
+                          0.01)
+                  )}
+                </p>
+                <p className="text-3xl tracking-tight text-gray-900  my-4">
+                  <i>
+                    <s className="mr-4">
+                      {toVND(product?.productOptions[selectedOption]?.price)}
+                    </s>
+                  </i>
+                  <i>
+                    - {product?.productOptions[selectedOption]?.promotion} %
+                  </i>
+                </p>
+              </div>
+
+              <div className=" flex">
+                <h3 className="text-base font-medium text-gray-900 mr-1">
+                  Số lượng còn :
+                </h3>
+                <i>
+                  <b>
+                    {
+                      product?.productOptions[selectedOption]?.colors[
+                        selectedColor
+                      ]?.quantity
+                    }
+                  </b>
+                </i>
+                <div className="ml-10 max-w-[120px] px-4 rounded border-2 border-solid border-gray-400">
+                  <button className=" mr-4 rounded-r  " onClick={minusQT}>
+                    <AiOutlineMinus />
+                  </button>
+                  {quantity}
+                  <button className="ml-4 rounded-l " onClick={plusQT}>
+                    <AiOutlinePlus />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <button
+                  type="submit"
+                  className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  Mua ngay
+                </button>
+              </div>
+
+              <div className="flex items-center justify-center mb-4">
+                <button
+                  type=""
+                  className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  Thêm vào giỏ hàng
+                </button>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

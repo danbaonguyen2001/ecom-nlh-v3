@@ -45,7 +45,7 @@ const Slider = (props) => {
           className="w-full h-full rounded-2xl bg-center bg-cover duration-500 "
         ></div>
       </div> */}
-      <div className="w-[80%] h-[80%] flex items-center justify-center m-auto ">
+      <div className="w-full h-full flex items-center justify-center m-auto ">
         <img class="h-auto max-w-full" src={imgArr[curIndex]} alt="img"></img>
       </div>
 
