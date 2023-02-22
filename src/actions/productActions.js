@@ -26,6 +26,9 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_CREATE_COMMENT_REQUEST,
+  PRODUCT_CREATE_COMMENT_SUCCESS,
+  PRODUCT_CREATE_COMMENT_FAIL,
 } from '../constants/productsConstants'
 import { logout } from './userActions'
 import { Server } from '../apis/Api'
@@ -77,29 +80,28 @@ export const productDetail = (id) => async (dispatch) => {
   }
 }
 /** GET Product By Category */
-export const getProductByCategory =
-  (categoryName) => async (dispatch, getState) => {
-    try {
-      dispatch({
-        type: PRODUCT_LIST_BY_CATEGORY_REQUEST,
-      })
-      const { data } = await axios.get(
-        `${Server}/api/products/category/${categoryName}`
-      )
-      dispatch({
-        type: PRODUCT_LIST_BY_CATEGORY_SUCCESS,
-        payload: { data, categoryName },
-      })
-    } catch (error) {
-      dispatch({
-        type: PRODUCT_LIST_BY_CATEGORY_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      })
-    }
+export const getProductByCategory = (categoryName) => async (dispatch) => {
+  try {
+    dispatch({
+      type: PRODUCT_LIST_BY_CATEGORY_REQUEST,
+    })
+    const { data } = await axios.get(
+      `${Server}/api/products/category/${categoryName}`
+    )
+    dispatch({
+      type: PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+      payload: { data, categoryName },
+    })
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_BY_CATEGORY_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
   }
+}
 /** GET Product By SubCategory */
 export const getProductsBySubCategory = (subCategoryId) => async (dispatch) => {
   try {
@@ -148,12 +150,11 @@ export const listTopProducts = () => async (dispatch) => {
 export const createProductReview =
   (productId, review) => async (dispatch, getState) => {
     try {
+      console.log(review)
       dispatch({
         type: PRODUCT_CREATE_REVIEW_REQUEST,
       })
-      const {
-        userLogin: { userInfo },
-      } = getState()
+      const { userLogin: userInfo } = getState()
 
       const config = {
         headers: {
@@ -164,7 +165,10 @@ export const createProductReview =
 
       await axios.post(
         `${Server}/api/products/${productId}/reviews`,
-        review,
+        {
+          rating: review.rating,
+          comment: review.comment,
+        },
         config
       )
 
@@ -231,6 +235,44 @@ export const deleteReview =
       })
     }
   }
+export const createProductComment = (params) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_COMMENT_REQUEST,
+    })
+    const { userLogin: userInfo } = getState()
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.userInfo.data.access_token}`,
+      },
+    }
+    const { data } = await axios.post(
+      `${Server}/api/comments`,
+      {
+        comment: params.comment,
+        productId: params.productId,
+      },
+      config
+    )
+    dispatch({
+      type: PRODUCT_CREATE_COMMENT_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message
+    if (message === 'Login first to access this resource.') {
+      dispatch(logout())
+    }
+    dispatch({
+      type: PRODUCT_CREATE_COMMENT_FAIL,
+      payload: message,
+    })
+  }
+}
 export const clearErrors = () => async (dispatch) => {
   dispatch({
     type: CLEAR_ERRORS,
