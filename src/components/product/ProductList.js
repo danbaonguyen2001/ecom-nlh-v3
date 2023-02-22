@@ -17,7 +17,7 @@ import {
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
-import AddToCartModal from "./AddToCartModal";
+import AddToCartModal from "./sub/AddToCartModal";
 
 const sortOptions = [
   { name: "Ngẫu nhiên", href: "#", current: true },
@@ -370,7 +370,10 @@ const ProductList = () => {
                   <div className="rounded-lg border-4 border-dashed border-gray-200 lg:h-full">
                     <div className="m-4 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-4">
                       {productByCategories?.map((product) => (
-                        <ProductCard product={product}></ProductCard>
+                        <ProductCard
+                          product={product}
+                          loading={loading}
+                        ></ProductCard>
                       ))}
                     </div>
                   </div>

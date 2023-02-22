@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        "primary-100": "#dbeafe",
         "primary-200": "#bfdbfe",
         "primary-300": "#93c5fd",
         "primary-400": "#60a5fa",
@@ -12,6 +13,7 @@ module.exports = {
         "primary-700": "#1d4ed8",
         "primary-800": "#1e40af",
         "primary-900": "#1e3a8a",
+        overplay: "rgba(0,0,0,0.9)",
       },
     },
   },

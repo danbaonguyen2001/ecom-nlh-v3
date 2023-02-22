@@ -4,8 +4,10 @@ import Slider from "../slider/Slider";
 import { RadioGroup } from "@headlessui/react";
 import { toVND } from "../../utils/format";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
+import { FaShoppingCart } from "react-icons/fa";
 import Loading from "../../screens/Loading";
 import { toast } from "react-toastify";
+import AddToCartModal from "./sub/AddToCartModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -13,6 +15,7 @@ function classNames(...classes) {
 
 const Introduce = (props) => {
   const { product, loading } = props;
+  const [openModal, setOpenModal] = useState(false);
 
   // handle selec option
   const [selectedOption, setSelectedOption] = useState(0);
@@ -23,17 +26,15 @@ const Introduce = (props) => {
   const [imgArr, setImgArr] = useState([]);
   useEffect(() => {
     let arr = [];
-    product?.productOptions?.forEach((productOption) => {
-      productOption?.colors?.forEach((color) => {
-        color?.images?.forEach((img) => {
-          arr.push(img?.urlImage);
-        });
-      });
-    });
-    const sliceArr = arr.slice(0, 7);
+    product?.productOptions[selectedOption]?.colors[selectedColor]?.images.map(
+      (color) => {
+        arr.push(color?.urlImage);
+      }
+    );
+    // const sliceArr = arr.slice(0, 7);
     // console.log(sliceArr);
-    setImgArr(sliceArr);
-  }, [product?._id]);
+    setImgArr(arr);
+  }, [product._id, selectedOption, selectedColor]);
 
   //handle quantity
   const plusQT = () => {
@@ -248,27 +249,21 @@ const Introduce = (props) => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center">
-                <button
-                  type="submit"
-                  className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                >
-                  Mua ngay
-                </button>
-              </div>
-
               <div className="flex items-center justify-center mb-4">
                 <button
+                  onClick={() => setOpenModal(true)}
                   type=""
                   className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
-                  Thêm vào giỏ hàng
+                  <FaShoppingCart className="mr-2" />
+                  Mua ngay
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
+      <AddToCartModal open={openModal} setOpen={setOpenModal} />
     </>
   );
 };
