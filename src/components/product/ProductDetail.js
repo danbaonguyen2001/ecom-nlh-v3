@@ -28,7 +28,7 @@ const ProductDetail = () => {
   useEffect(() => {
     dispatch(productDetail(slug));
   }, [product._id]);
-  // console.log(product);
+  console.log(product);
 
   //
 

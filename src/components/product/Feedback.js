@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Rating } from "@mui/material";
+import { FaStar, FaCommentAlt } from "react-icons/fa";
 import { GrSend } from "react-icons/gr";
+import { AiOutlineClockCircle } from "react-icons/ai";
 import Loading from "../../screens/Loading";
 import { toDate } from "../../utils/format";
+import AddReviewModal from "./sub/AddReviewModal";
+import AddCommentModal from "./sub/AddCommentModal";
 
 const Feedback = (props) => {
   const { product, loading, reviews, comments } = props;
-  console.log(reviews);
-  console.log(comments);
+
+  // handle add review and comment
+  const [openReview, setOpenReview] = useState(false);
+  const [openComment, setOpenComment] = useState(false);
+
+  // console.log(reviews);
+  // console.log(comments);
   return (
     <>
       {loading ? (
@@ -29,46 +38,54 @@ const Feedback = (props) => {
                 <span className="ml-2">{product?.numReviews} đánh giá</span>
               </div>
 
+              {/* Add review */}
+              <div className="flex items-center justify-center mt-4">
+                <button
+                  onClick={() => setOpenReview(true)}
+                  type=""
+                  className="  flex w-[90%] lg:w-[70%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <FaStar className="mr-2" />
+                  Đánh giá ngay
+                </button>
+              </div>
+
               {/* List */}
               <div>
                 {reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="rounded-lg border-2 border-slate-400 border-solid p-1 my-2"
-                  >
-                    <div className="flex items-center justify-between ">
-                      <div className="flex items-center">
-                        <img
-                          src={review?.avatarUrl}
-                          class="w-10 rounded-full shadow-lg mr-2"
-                          alt="Avatar"
-                        />
-                        {review?.name}
+                  <div>
+                    <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-300"></hr>
+                    <div
+                      key={index}
+                      className="rounded-lg border-2 border-slate-400 border-solid p-1 my-2"
+                    >
+                      <div className="flex items-center justify-between ">
+                        <div className="flex items-center">
+                          <img
+                            src={review?.avatarUrl}
+                            class="w-10 rounded-full shadow-lg mr-2"
+                            alt="Avatar"
+                          />
+                          {review?.name}
+                        </div>
+                        <div className="text-xs">
+                          {" "}
+                          {toDate(review?.updatedAt)}
+                        </div>
                       </div>
-                      <div> {toDate(review?.updatedAt)}</div>
-                    </div>
-                    <div className="mt-2 pl-4 w-[90%] h-auto ">
-                      <div className="flex items-center mb-2 ">
-                        <b className="mr-2">Đánh giá:</b>
-                        <Rating value={review?.rating} readOnly />
-                      </div>
-                      <div className="flex items-center flex-wrap">
-                        <b className="mr-2">Nhận xét: </b>
-                        <p> {review?.comment}</p>
+                      <div className="mt-2 pl-4 w-[90%] h-auto ">
+                        <div className="flex items-center mb-2 ">
+                          <b className="mr-2">Đánh giá:</b>
+                          <Rating value={review?.rating} readOnly />
+                        </div>
+                        <div className="flex items-center flex-wrap">
+                          <b className="mr-2">Nhận xét: </b>
+                          <p> {review?.comment}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
-
-              {/* Add review */}
-              <div className="flex items-center justify-center mt-4">
-                <button
-                  type=""
-                  className="  flex w-[90%] lg:w-[50%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                >
-                  Đánh giá ngay
-                </button>
               </div>
             </div>
 
@@ -77,6 +94,19 @@ const Feedback = (props) => {
               <h2 className="text-lg tracking-tight text-gray-900 font-bold">
                 Hỏi đáp
               </h2>
+
+              {/* Add comment */}
+              <div className="flex items-center justify-center mt-4">
+                <button
+                  onClick={() => setOpenComment(true)}
+                  type=""
+                  className="  flex w-[90%] lg:w-[70%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <FaCommentAlt className="mr-2" />
+                  Bình luận ngay
+                </button>
+              </div>
+
               {/* <button
                 type=""
                 className=" mt-4 flex w-[20%] lg:w-[20%]  items-center justify-around rounded-md border border-transparent bg-primary-600 py-3 px-8 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
@@ -86,47 +116,87 @@ const Feedback = (props) => {
               </button> */}
               <div>
                 {comments.map((comment, index) => (
-                  <div
-                    key={index}
-                    className="rounded-lg border-2 border-slate-400 border-solid p-1 my-2"
-                  >
-                    <div className="flex items-center justify-between ">
-                      <div className="flex items-center">
-                        <img
-                          src={comment?.avatarUrl}
-                          class="w-10 rounded-full shadow-lg mr-2"
-                          alt="Avatar"
-                        />
-                        {comment?.name}
-                      </div>
-                      <div> {toDate(comment?.updatedAt)}</div>
-                    </div>
-                    <div className="mt-2 pl-4 w-[90%] h-auto ">
-                      <div className="flex items-center flex-wrap">
-                        <p> {comment?.comment}</p>
-                      </div>
-                    </div>
-                    {/* Replies */}
-                    {comment?.replies.map(() => (
-                      <div className="ml-3">
-                        <div className="flex items-center justify-between ">
-                          <div className="flex items-center">
-                            <img
-                              src={comment?.avatarUrl}
-                              class="w-10 rounded-full shadow-lg mr-2"
-                              alt="Avatar"
-                            />
-                            {comment?.name}
-                          </div>
-                          <div> {toDate(comment?.updatedAt)}</div>
+                  <div>
+                    <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-300"></hr>
+                    <div key={index} className=" p-1 my-2 ">
+                      <div className="flex items-center justify-between ">
+                        <div className="flex items-center">
+                          <img
+                            src={comment?.avatarUrl}
+                            class="w-10 rounded-full shadow-lg mr-2"
+                            alt="Avatar"
+                          />
+                          {comment?.name}
                         </div>
-                        <div className="mt-2 pl-4 w-[90%] h-auto ">
-                          <div className="flex items-center flex-wrap">
-                            <p> {comment?.comment}</p>
-                          </div>
+                        <div className="text-xs flex items-center ">
+                          {" "}
+                          <AiOutlineClockCircle className="mr-2" />
+                          {toDate(comment?.updatedAt)}
                         </div>
                       </div>
-                    ))}
+                      <div className="relative mt-1 ml-4 lg:ml-10 pb-8 pt-2 pl-2  h-auto bg-gray-200 rounded-lg">
+                        <p>
+                          {" "}
+                          {comment?.comment}
+                          {/* Nhu cầu nhân sự ngày càng tăng - không sợ thất nghiệp! -
+                        Có công việc ổn định, lộ trình thăng tiến rõ ràng. -
+                        Được cập nhật những công nghệ mới và được tiếp xúc với
+                        các lãnh đạo công ty khác nhau. - Học hỏi được nhiều
+                        thứ, không sợ nhàm chán! */}
+                        </p>
+                        <div
+                          className="absolute bottom-1 right-1 flex text-xs items-center cursor-pointers font-bold"
+                          onClick={() => setOpenComment(true)}
+                        >
+                          <GrSend
+                            style={{ color: "#2563eb" }}
+                            className="mr-1"
+                          />
+                          <button className="">Trả lời</button>
+                        </div>
+                      </div>
+
+                      {/* Replies */}
+                      {comment?.replies.map(() => (
+                        <div className="  mt-2 ml-4 lg:ml-10">
+                          <div className="flex items-center justify-between ">
+                            <div className="flex items-center">
+                              <img
+                                src={comment?.avatarUrl}
+                                class="w-10 rounded-full shadow-lg mr-2"
+                                alt="Avatar"
+                              />
+                              {comment?.name}
+                            </div>
+                            <div className="text-xs">
+                              {" "}
+                              {toDate(comment?.updatedAt)}
+                            </div>
+                          </div>
+                          <div className="relative mt-1 ml-4 lg:ml-10 pb-8 pt-2 pl-2  h-auto bg-gray-200 rounded-lg">
+                            <p>
+                              {" "}
+                              {comment?.comment}
+                              {/* Nhu cầu nhân sự ngày càng tăng - không sợ thất nghiệp! -
+                        Có công việc ổn định, lộ trình thăng tiến rõ ràng. -
+                        Được cập nhật những công nghệ mới và được tiếp xúc với
+                        các lãnh đạo công ty khác nhau. - Học hỏi được nhiều
+                        thứ, không sợ nhàm chán! */}
+                            </p>
+                            <div
+                              className="absolute bottom-1 right-1 flex text-xs items-center cursor-pointers font-bold"
+                              onClick={() => setOpenComment(true)}
+                            >
+                              <GrSend
+                                style={{ color: "#2563eb" }}
+                                className="mr-1"
+                              />
+                              <button className="">Trả lời</button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -134,6 +204,18 @@ const Feedback = (props) => {
           </div>
         </div>
       )}
+
+      <AddReviewModal
+        product={product}
+        open={openReview}
+        setOpen={setOpenReview}
+      />
+
+      <AddCommentModal
+        product={product}
+        open={openComment}
+        setOpen={setOpenComment}
+      />
     </>
   );
 };

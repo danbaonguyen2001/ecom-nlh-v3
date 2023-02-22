@@ -348,17 +348,8 @@ const Filter = (props) => {
                   {productList.map((product) => (
                     <ProductCard product={product}></ProductCard>
                   ))}
-                  {/* <ProductCard />
-                  <ProductCard />
-                  <ProductCard />
-                  <ProductCard /> */}
                 </div>
               </div>
-
-              {/* /End replace */}
-              {/* <ProductCard />
-                <ProductCard />
-                <ProductCard /> */}
             </div>
           </div>
         </section>
