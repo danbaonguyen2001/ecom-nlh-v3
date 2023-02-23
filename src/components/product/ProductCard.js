@@ -10,63 +10,72 @@ const ProductCard = (props) => {
   const { loading } = props;
   // console.log(product);
   const [open, setOpen] = useState(false);
-  return (
-    <div class="relative max-w-2xl mx-auto ">
-      <div class="bg-white shadow-lg rounded-lg max-w-sm ">
-        <Link
-          to={"/product/" + product.name.replaceAll(" ", "-")}
-          state={{ slug: product?._id }}
-        >
-          <img
-            class=" scale-90 hover:scale-105 ease-in duration-500 rounded-t-lg p-8"
-            src={product?.image}
-            alt="img"
-          />
-        </Link>
-        <div class="px-5 pb-5">
-          <div>
-            <h3 class=" text-gray-900 font-semibold text-lg tracking-tight ">
-              {product?.name}
-            </h3>
-          </div>
-          <div class="flex ">
-            <i>
-              <s class="text-lg  text-gray-900 ">
-                {toVND(product?.price * 1.1)}
-              </s>
-              - 10%
-            </i>
-          </div>
-          <div class="flex ">
-            <span class="text-lg font-bold text-gray-900 k">
-              {toVND(product?.price)}
-            </span>
-          </div>
-          <div class="flex items-center mt-2.5 mb-4 ">
-            <Rating value={product?.rating} readOnly />
-            <span class="bg-blue-100 text-primary-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800 ml-3">
-              {product?.rating}
-            </span>
-            <TbEqualNot className="w-12 h-8 text-white py-1 px-2 bg-primary-600 rounded-lg cursor-pointer hover:bg-primary-800" />
-          </div>
 
-          <div className="mt-4 w-full">
-            <button
-              href="#"
-              class="w-full text-white bg-primary-7000 hover:bg-primary-800 focus:ring-4 
+  //
+  // handle add to cart
+  const [selectedOption, setSelectedOption] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  return (
+    <>
+      <div class="relative max-w-2xl mx-auto ">
+        <div class="bg-white shadow-lg rounded-lg max-w-sm ">
+          <Link
+            to={"/product/" + product.name.replaceAll(" ", "-")}
+            state={{ slug: product?._id }}
+          >
+            <img
+              class=" scale-90 hover:scale-105 ease-in duration-500 rounded-t-lg p-8"
+              src={product?.image}
+              alt="img"
+            />
+          </Link>
+          <div class="px-5 pb-5">
+            <div>
+              <h3 class=" text-gray-900 font-semibold text-lg tracking-tight ">
+                {product?.name}
+              </h3>
+            </div>
+            <div class="flex ">
+              <i>
+                <s class="text-lg  text-gray-900 ">
+                  {toVND(product?.price * 1.1)}
+                </s>
+                - 10%
+              </i>
+            </div>
+            <div class="flex ">
+              <span class="text-lg font-bold text-gray-900 k">
+                {toVND(product?.price)}
+              </span>
+            </div>
+            <div class="flex items-center mt-2.5 mb-4 ">
+              <Rating value={product?.rating} readOnly />
+              <span class="bg-blue-100 text-primary-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800 ml-3">
+                {product?.rating}
+              </span>
+              <TbEqualNot className="w-12 h-8 text-white py-1 px-2 bg-primary-600 rounded-lg cursor-pointer hover:bg-primary-800" />
+            </div>
+
+            <div className="mt-4 w-full">
+              <button
+                onClick={() => {
+                  setOpen(true);
+                }}
+                class="w-full text-white bg-primary-7000 hover:bg-primary-800 focus:ring-4 
               focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
               dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-            >
-              Thêm vào giỏ
-            </button>
-            <AddToCartModal open={open} setOpen={setOpen} />
+              >
+                Thêm vào giỏ
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* <!-- loading overlay --> */}
+        {/* <!-- loading overlay --> */}
 
-      {/* <div class="hidden absolute bg-white bg-opacity-60 z-10 h-full w-full sm:flex items-center justify-center">
+        {/* <div class="hidden absolute bg-white bg-opacity-60 z-10 h-full w-full sm:flex items-center justify-center">
         <div class="flex items-center">
           <span class="text-3xl mr-4">Loading</span>
           
@@ -93,7 +102,10 @@ const ProductCard = (props) => {
           
         </div>
       </div> */}
-    </div>
+      </div>
+
+      <AddToCartModal open={open} setOpen={setOpen} product={product} />
+    </>
   );
 };
 

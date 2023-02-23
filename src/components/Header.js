@@ -133,7 +133,7 @@ const Header = () => {
 
                   {/* Search */}
                   <div class="flex justify-center ">
-                    <div class=" xl:w-96">
+                    <div class="min-w-[140px] xl:w-96">
                       <div class="relative  flex w-full flex-wrap items-stretch">
                         <input
                           type="search"
@@ -196,7 +196,7 @@ const Header = () => {
                           <Menu.Button className="flex max-w-xs items-center rounded-full bg-primary-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-800">
                             <span className="sr-only">Open user menu</span>
                             <img
-                              className="h-8 w-8 rounded-full"
+                              className="h-8 w-8 rounded-full ring-2 ring-white"
                               src={user.imageUrl}
                               alt=""
                             />
@@ -281,7 +281,7 @@ const Header = () => {
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
                       <img
-                        className="h-10 w-10 rounded-full"
+                        className="h-10 w-10 rounded-full ring-2 ring-white"
                         src={user.imageUrl}
                         alt=""
                       />
