@@ -8,6 +8,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import Loading from "../../screens/Loading";
 import { toast } from "react-toastify";
 import AddToCartModal from "./sub/AddToCartModal";
+import ConfirmAddToCart from "./sub/ConfirmAddToCart";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -15,6 +16,8 @@ function classNames(...classes) {
 
 const Introduce = (props) => {
   const { product, loading } = props;
+
+  //handle modal add to cart
   const [openModal, setOpenModal] = useState(false);
 
   // handle selec option
@@ -263,7 +266,15 @@ const Introduce = (props) => {
           </div>
         </div>
       )}
-      <AddToCartModal open={openModal} setOpen={setOpenModal} />
+
+      <ConfirmAddToCart
+        open={openModal}
+        setOpen={setOpenModal}
+        product={product}
+        selectedOption={selectedOption}
+        selectedColor={selectedColor}
+        quantity={quantity}
+      />
     </>
   );
 };
