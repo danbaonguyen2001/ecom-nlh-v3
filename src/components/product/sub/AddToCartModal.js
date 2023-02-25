@@ -6,6 +6,9 @@ import { toast } from "react-toastify";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 import { FaShoppingCart } from "react-icons/fa";
 import { toVND } from "../../../utils/format";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../actions/cartActions";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -18,6 +21,9 @@ export default function AddToCartModal(props) {
   const [selectedColor, setSelectedColor] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   //handle Image
   const [img, setImgArr] = useState(
     product?.productOptions[selectedOption]?.colors[selectedColor]?.images[0]
@@ -26,9 +32,6 @@ export default function AddToCartModal(props) {
     let img =
       product?.productOptions[selectedOption]?.colors[selectedColor]?.images[0]
         .urlImage;
-
-    console.log(img);
-
     setImgArr(img);
   }, [product._id, selectedOption, selectedColor]);
 
@@ -70,6 +73,45 @@ export default function AddToCartModal(props) {
     }
   };
 
+  const { loading, error } = useSelector((state) => state.carts);
+  const handleAddToCart = () => {
+    const body = {
+      item: {
+        product: product?._id,
+        option: product?.productOptions[selectedOption]?._id,
+        color:
+          product?.productOptions[selectedOption]?.colors[selectedColor]?._id,
+      },
+      quantity: quantity,
+    };
+    console.log(body);
+    dispatch(addToCart(body.quantity, body.item));
+    if (!error) {
+      navigate("/cart");
+    } else if (error) {
+      toast.error(`${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    toast.success("Đã thêm sản phẩm vào giỏ hàng!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setOpen(false);
+  };
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -311,7 +353,7 @@ export default function AddToCartModal(props) {
 
                       <div className="flex items-center justify-center mb-4">
                         <button
-                          onClick={() => setOpen(false)}
+                          onClick={handleAddToCart}
                           type=""
                           className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                         >

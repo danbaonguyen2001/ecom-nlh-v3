@@ -9,6 +9,8 @@ import Loading from "../../screens/Loading";
 import { toast } from "react-toastify";
 import AddToCartModal from "./sub/AddToCartModal";
 import ConfirmAddToCart from "./sub/ConfirmAddToCart";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -74,6 +76,27 @@ const Introduce = (props) => {
       });
     } else {
       setQuantity(quantity - 1);
+    }
+  };
+
+  //
+  const { logout } = useSelector((state) => state.userLogin);
+  const navigate = useNavigate();
+  const handleOpenModal = () => {
+    if (logout) {
+      navigate("/login");
+      toast.info("Mời bạn đăng nhập vào hệ thống!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setOpenModal(true);
     }
   };
 
@@ -254,7 +277,7 @@ const Introduce = (props) => {
 
               <div className="flex items-center justify-center mb-4">
                 <button
-                  onClick={() => setOpenModal(true)}
+                  onClick={handleOpenModal}
                   type=""
                   className=" mt-4 flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >

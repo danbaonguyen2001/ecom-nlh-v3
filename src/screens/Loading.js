@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../sass/_loading.scss";
 import logo from "../assets/images/icon.png";
 import { FaCircleNotch } from "react-icons/fa";
 
 const Loading = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     // <div class="w-full h-full fixed block top-0 left-0 bg-white opacity-75 z-50">
     //   <span

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Route, Routes } from "react-router-dom";
+import { Navigate, Redirect, Route, Routes } from "react-router-dom";
 
 import ErrorBoundary from "../components/error/ErrorBoundary";
 // Public
@@ -15,11 +15,16 @@ import ForgotPass from "../components/auth/ForgotPass";
 import ChangePass from "../components/auth/ChangePass";
 import ProductDetail from "../components/product/ProductDetail";
 import ProductList from "../components/product/ProductList";
+import NotFound from "../components/error/NotFound";
 
 const Components = () => {
   return (
     <ErrorBoundary>
       <Routes>
+        {/*Exception*/}
+        <Route path="/404" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+
         {/* Public -Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
