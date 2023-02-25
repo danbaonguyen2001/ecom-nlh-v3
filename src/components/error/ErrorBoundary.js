@@ -1,46 +1,27 @@
-import React from "react";
+// mostly code from reactjs.org/docs/error-boundaries.html
+import { Component } from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
-import ErrorPage from "./Error";
-import { ErrorResponse } from "../../utils/ErrorResponse";
-const ATag = styled.a`
-  &:hover {
-    transform: translateX(15px);
-    color: blue;
-    transition: 0.2s all linear;
-  }
-`;
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: undefined, info: undefined };
-  }
-  static getDerivedStateFromError(error) {
-    console.log("jump");
-    console.log(error);
 
-    // Update state so the next render will show the fallback UI.
+class ErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
     return { hasError: true };
   }
   componentDidCatch(error, info) {
-    console.log("jump");
-    // Display fallback UI
-    this.setState({ hasError: true, error, info });
-    // You can also log the error to an error reporting service
-    console.log(error.statusCode);
+    console.error("ErrorBoundary caught an error", error, info);
   }
-
   render() {
-    const { error: systemError } = this.state;
-    const error = new ErrorResponse(
-      systemError?.message,
-      systemError?.statusCode
-    );
-    return this.state.hasError ? (
-      <ErrorPage statusCode={error.statusCode} message={error.message} />
-    ) : (
-      this.props.children
-    );
+    if (this.state.hasError) {
+      return (
+        <h2>
+          There was an error with this listing. <Link to="/">Click here</Link>{" "}
+          to back to the home page or wait five seconds.
+        </h2>
+      );
+    }
+
+    return this.props.children;
   }
 }
+
 export default ErrorBoundary;

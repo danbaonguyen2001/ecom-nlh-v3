@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toVND } from "../../utils/format";
 import { Rating } from "@mui/material";
 import { TbEqualNot } from "react-icons/tb";
 import AddToCartModal from "./sub/AddToCartModal";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const ProductCard = (props) => {
   const [product, setProduct] = useState(props?.product);
   const { loading } = props;
-  // console.log(product);
   const [open, setOpen] = useState(false);
 
   //
@@ -16,6 +17,26 @@ const ProductCard = (props) => {
   const [selectedOption, setSelectedOption] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const { logout } = useSelector((state) => state.userLogin);
+
+  const navigate = useNavigate();
+  const handleOpenModal = () => {
+    if (logout) {
+      navigate("/login");
+      toast.info("Mời bạn đăng nhập vào hệ thống!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setOpen(true);
+    }
+  };
 
   return (
     <>
@@ -60,9 +81,7 @@ const ProductCard = (props) => {
 
             <div className="mt-4 w-full">
               <button
-                onClick={() => {
-                  setOpen(true);
-                }}
+                onClick={handleOpenModal}
                 class="w-full text-white bg-primary-7000 hover:bg-primary-800 focus:ring-4 
               focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
               dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"

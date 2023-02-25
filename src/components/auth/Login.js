@@ -4,12 +4,15 @@ import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../actions/userActions";
 import Loading from "../../screens/Loading";
 import { getCarts } from "../../actions/cartActions";
+import { toast } from "react-toastify";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, userInfo } = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo, logout } = useSelector(
+    (state) => state.userLogin
+  );
   useEffect(() => {
     if (userInfo) {
       dispatch(getCarts());
@@ -20,6 +23,21 @@ const Login = () => {
     e.preventDefault();
     dispatch(login(email, password));
   };
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // if (logout) {
+    //   toast.info("Mời bạn đăng nhập vào hệ thống!", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: "light",
+    //   });
+    // }
+  });
   return (
     <div className="m-4 rounded-sm border-2 border-slate-400 ">
       {loading && <Loading />}
