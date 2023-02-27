@@ -21,10 +21,6 @@ const Components = () => {
   return (
     <ErrorBoundary>
       <Routes>
-        {/*Exception*/}
-        <Route path="/404" element={<NotFound />} />
-        <Route path="*" element={<Navigate to="/404" replace />} />
-
         {/* Public -Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -34,11 +30,15 @@ const Components = () => {
         <Route path="/product/:slug" element={<ProductDetail />} />
 
         {/* Private- Routes */}
-        <Route path="/changepass" element={<ChangePass />} />
+        <Route path="/changepass/:slug" element={<ChangePass />} />
         <Route path="/user-infor" element={<UserInfor />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/order-list" element={<Orders />} />
-        <Route path="order/:slug" element={<OrderDetail />} />
+        <Route path="/order/:slug" element={<OrderDetail />} />
+
+        {/*Exception*/}
+        <Route path="/404" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </ErrorBoundary>
   );

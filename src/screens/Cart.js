@@ -1,21 +1,25 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { TiDelete } from "react-icons/ti";
+import { GiConfirmed } from "react-icons/gi";
+import { CiDiscount1 } from "react-icons/ci";
 
 import { updateCart } from "../actions/cartActions";
 import {} from "../actions/orderActions";
 import { toVND } from "../utils/format";
 import Loading from "./Loading";
+import paypal from "../assets/images/paypal.svg";
+import vnpay from "../assets/images/vnpay.svg";
 
 const Cart = () => {
   const dispatch = useDispatch();
-  //Handle Cart
 
+  //Handle Cart
   //get cart
   const { cartItems } = useSelector((state) => state.carts);
   //check cart update
-  const { loading, error } = useSelector((state) => state.cartUpdate);
+  const { loading, error, success } = useSelector((state) => state.cartUpdate);
 
   //handle Update quantity
   const plusQT = (index) => {
@@ -149,19 +153,20 @@ const Cart = () => {
     }
   };
 
-  //
+  //Handle order
+  const [isOnline, setIsOnline] = useState(false);
   return (
     <>
       {loading && <Loading />}
-      <div class=" bg-gray-100  rounded-lg border-2 border-dashed border-primary-900 ">
-        <h1 class="mb-10 text-center text-2xl font-bold">Cart Items</h1>
+      <div class=" bg-gray-100  rounded-lg border-2 border-dashed border-gray-200 mx-2 ">
+        <h1 class="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
 
         <div
           class="  px-6  xl:px-0 
-              grid grid-cols-1 md:grid-cols-1 lg:grid-cols-12  mx-4 mb-4 gap-4"
+              grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2  mx-4 mb-4 gap-4"
         >
           {/* Items */}
-          <div class="rounded-lg  lg:col-span-7 ">
+          <div class="rounded-lg  lg:col-span-1 ">
             {cartItems?.map((cartItem, index) => (
               <div
                 class="justify-between mb-4 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
@@ -234,26 +239,239 @@ const Cart = () => {
           </div>
 
           {/* <!-- Sub total --> */}
-          <div class=" rounded-lg border bg-white p-6 shadow-md md:mt-0  lg:col-span-5">
-            <div class="mb-2 flex justify-between">
-              <p class="text-gray-700">Subtotal</p>
-              <p class="text-gray-700">$129.99</p>
-            </div>
-            <div class="flex justify-between">
-              <p class="text-gray-700">Shipping</p>
-              <p class="text-gray-700">$4.99</p>
-            </div>
+          <div class=" rounded-lg border bg-white p-6 shadow-md md:mt-0  lg:col-span-1">
+            <h3 class=" text-left text-lg font-bold">Thông tin khách hàng</h3>
             <hr class="my-4" />
-            <div class="flex justify-between">
-              <p class="text-lg font-bold">Total</p>
-              <div class="">
-                <p class="mb-1 text-lg font-bold">$134.98 USD</p>
-                <p class="text-sm text-gray-700">including VAT</p>
+
+            {/* Address */}
+            <h3 class=" text-left text-base font-bold">Địa chỉ giao hàng</h3>
+
+            <div className="w-full lg:w-full  mb-2 ">
+              <div className="w-full flex flex-wrap justify-between">
+                <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                  <div class=" w-full">
+                    <select
+                      class="form-select appearance-none block w-full p-2 text-base
+                              font-normal
+                              text-gray-700
+                              bg-white bg-clip-padding bg-no-repeat
+                              border border-solid border-gray-300
+                              rounded-md
+                              transition
+                              ease-in-out
+                              m-0
+                              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      aria-label="Default select example"
+                    >
+                      <option selected>Tỉnh</option>
+                      <option value="1">An Giang</option>
+                      <option value="2">HCM</option>
+                      <option value="3">Đồng Tháp</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                  <div class=" w-full">
+                    <select
+                      class="form-select appearance-none block w-full p-2 text-base
+                              font-normal
+                              text-gray-700
+                              bg-white bg-clip-padding bg-no-repeat
+                              border border-solid border-gray-300
+                              rounded-md
+                              transition
+                              ease-in-out
+                              m-0
+                              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      aria-label="Default select example"
+                    >
+                      <option selected>Huyện</option>
+                      <option value="1">Phú Tân</option>
+                      <option value="2">Chợ Mới</option>
+                      <option value="3">Tân Châu</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                  <div class=" w-full">
+                    <select
+                      class="form-select appearance-none block w-full p-2 text-base
+                              font-normal
+                              text-gray-700
+                              bg-white bg-clip-padding bg-no-repeat
+                              border border-solid border-gray-300
+                              rounded-md
+                              transition
+                              ease-in-out
+                              m-0
+                              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                      aria-label="Default select example"
+                    >
+                      <option selected>Xã</option>
+                      <option value="1">Phú Lâm</option>
+                      <option value="2">Phú Thạnh</option>
+                      <option value="3">Phú An</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="w-full  py-4 flex justify-center">
+                  <input
+                    required
+                    type="address"
+                    name=""
+                    id=""
+                    placeholder="Địa chỉ đang cư trú"
+                    class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                  />
+                </div>
               </div>
             </div>
-            <button class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
+            <hr class="my-4" />
+            {/* Voucher */}
+            <div className="w-full flex justify-between flex-wrap ">
+              <div class="w-full md:w-[50%] py-4 flex justify-center">
+                <input
+                  type="address"
+                  name=""
+                  id=""
+                  placeholder="Nhập mã giảm giá"
+                  class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                />
+              </div>
+
+              <div className="w-full md:w-[40%] flex items-center justify-center ">
+                <button
+                  type=""
+                  className="  flex w-full  items-center justify-center rounded-md border border-transparent 
+                  bg-primary-600 p-2 text-base font-medium text-white hover:bg-primary-700 focus:outline-none 
+                  focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <CiDiscount1 className="mr-2" />
+                  Áp dụng
+                </button>
+              </div>
+            </div>
+
+            <hr class="my-4" />
+            {/*Total   */}
+            <div>
+              <div class=" flex justify-between">
+                <p class="text-gray-700">Tổng giá trị sản phẩm</p>
+                <p class="text-gray-700 font-medium">{toVND(10000)}</p>
+              </div>
+              <div class="flex justify-between">
+                <p class="text-gray-700">Phí vận chuyển</p>
+                <p class="text-gray-700 font-medium">{toVND(0)}</p>
+              </div>
+              <div class="flex justify-between">
+                <p class="text-lg font-bold">
+                  Tổng cộng <i className="text-xs font-normal">(bao gồm VAT)</i>{" "}
+                </p>
+                <p class="mb-1 text-lg font-bold">{toVND(10000)}</p>
+              </div>
+            </div>
+            <hr class="my-4" />
+            {/* Checkout */}
+            <div>
+              <h3 class=" text-left text-base font-bold mb-2">
+                Chọn hình thức thanh toán
+              </h3>
+              <div class="flex justify-center flex-col ">
+                <div class="form-check form-check-inline mb-2">
+                  <input
+                    class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border
+                  border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                  transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 
+                  cursor-pointer"
+                    type="radio"
+                    name="1"
+                    id=""
+                    value=""
+                    // onChange={setSelectedColor(index)}
+                    required
+                    checked={!isOnline}
+                    onClick={() => setIsOnline(false)}
+                  />
+                  <label
+                    class="form-check-label inline-block text-gray-800"
+                    for="inlineRadio10"
+                  >
+                    Thanh toán khi nhận hàng
+                  </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                  <input
+                    class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border
+                  border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                  transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 
+                  cursor-pointer"
+                    type="radio"
+                    name="1"
+                    id=""
+                    value=""
+                    required
+                    onClick={() => setIsOnline(true)}
+                  />
+                  <label
+                    class="form-check-label inline-block text-gray-800"
+                    for="inlineRadio10"
+                  >
+                    Thanh toán online
+                  </label>
+                </div>
+              </div>
+
+              {/*Paypal VNPay  */}
+              {isOnline && (
+                <div className="flex justify-center mt-4 ">
+                  <button
+                    type="button"
+                    class="text-gray-900 bg-white hover:bg-gray-100 border 
+                  border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
+                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
+                  items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
+                  dark:text-gray-900 dark:hover:bg-gray-200  mb-2
+                  mr-4"
+                  >
+                    <img
+                      src={paypal}
+                      alt="paypal"
+                      class="w-full h-6 mr-2 -ml-1"
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    class="text-gray-900 bg-white hover:bg-gray-100 border 
+                  border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
+                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center 
+                  dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 
+                  dark:hover:bg-gray-200 mr-2 mb-2"
+                  >
+                    <img
+                      src={vnpay}
+                      alt="vnpay"
+                      class="w-full h-6  mr-2 -ml-1"
+                    />
+                  </button>
+                </div>
+              )}
+            </div>
+            <hr class="my-4" />
+
+            <div className="flex items-center justify-center mb-4">
+              <button
+                type=""
+                className="  flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                <GiConfirmed className="mr-2" />
+                Thanh toán
+              </button>
+            </div>
+
+            {/* <button class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
               Check out
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

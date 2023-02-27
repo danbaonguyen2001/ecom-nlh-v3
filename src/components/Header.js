@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../actions/userActions";
 import { CART_UPDATE_RESET } from "../constants/cartConstants";
 import { getCarts } from "../actions/cartActions";
+import { getHistoryOrders } from "../actions/orderActions";
 import Loading from "../screens/Loading";
 const user = {};
 const defaultAvt =
@@ -131,6 +132,14 @@ const Header = () => {
     dispatch(logout());
   };
 
+  //handle get Order
+  const order = useSelector((state) => state.historyOrders);
+  useEffect(() => {
+    if (userInfo?.status === true) {
+      dispatch(getHistoryOrders());
+    }
+    // dispatch(getHistoryOrders);
+  }, []);
   return (
     <>
       {loading && <Loading />}
@@ -173,7 +182,7 @@ const Header = () => {
 
                   {/* Search */}
                   <div class="flex justify-center ">
-                    <div class="min-w-[140px] xl:w-96">
+                    <div class="min-w-[120px] xl:w-96">
                       <div class="relative  flex w-full flex-wrap items-stretch">
                         <input
                           type="search"
