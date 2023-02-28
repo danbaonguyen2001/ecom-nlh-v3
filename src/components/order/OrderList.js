@@ -29,7 +29,7 @@ const OrderList = () => {
         <div class="rounded-lg  lg:col-span-1 mx-4">
           {listOrders
             ?.reverse()
-            .slice(0, 10)
+
             .map((OrderItem, index) => (
               <div
                 class="justify-between mb-4 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
