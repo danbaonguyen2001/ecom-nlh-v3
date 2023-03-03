@@ -140,6 +140,10 @@ const Header = () => {
     }
     // dispatch(getHistoryOrders);
   }, []);
+
+  //handle search
+  const [listSearch, setListSearch] = useState();
+
   return (
     <>
       {loading && <Loading />}
@@ -182,9 +186,10 @@ const Header = () => {
 
                   {/* Search */}
                   <div class="flex justify-center ">
-                    <div class="min-w-[120px] xl:w-96">
+                    <div class="relative w-[240px] sm:w-96">
                       <div class="relative  flex w-full flex-wrap items-stretch">
                         <input
+                          onFocus={setListSearch()}
                           type="search"
                           class="relative m-0 -mr-px block w-[1%] min-w-0 flex-auto rounded-l  
                           border border-solid border-neutral-300 bg-white bg-clip-padding 
@@ -218,6 +223,16 @@ const Header = () => {
                             />
                           </svg>
                         </button>
+                      </div>
+
+                      {/* Result Search */}
+                      <div className=" hidden absolute top-[120%] right-0 max-h-80 w-full shadow bg-gray-100 rounded-lg p-2">
+                        <h4 className="text-base font-semibold">
+                          Kết quả tìm kiếm
+                        </h4>
+                        <hr className="pb-2" />
+                        {/* list  */}
+                        <div className="flex flex-col overflow-auto"></div>
                       </div>
                     </div>
                   </div>

@@ -6,17 +6,20 @@ import Loading from "../../screens/Loading";
 import { toDate, toVND } from "../../utils/format";
 
 import { FaLongArrowAltRight } from "react-icons/fa";
+import { BsFillCartXFill } from "react-icons/bs";
+import { AiTwotoneHome } from "react-icons/ai";
 const OrderList = () => {
   const dispatch = useDispatch();
   const { loading, error, listOrders } = useSelector(
     (state) => state.historyOrders
   );
+  // console.log(listOrders.length === 0);
   const { userInfo } = useSelector((state) => state.userLogin);
-  useEffect(() => {
-    // if (userInfo) {
-    //   dispatch(getHistoryOrders());
-    // }
-  }, []);
+  // useEffect(() => {
+  //   // if (userInfo) {
+  //   //   dispatch(getHistoryOrders());
+  //   // }
+  // }, []);
 
   return (
     <>
@@ -26,11 +29,24 @@ const OrderList = () => {
         <h1 class="mb-10 text-center text-2xl font-bold">Đơn hàng gần đây</h1>
 
         {/* List Items */}
-        <div class="rounded-lg  lg:col-span-1 mx-4">
-          {listOrders
-            ?.reverse()
 
-            .map((OrderItem, index) => (
+        {listOrders?.length === 0 ? (
+          <div className="flex items-center justify-center flex-col ">
+            <BsFillCartXFill className="w-10 h-10 text-red-600" />
+            <h4 className="my-2"> Không có sản phẩm nào trong giỏ hàng</h4>
+            <Link to="/" className="flex items-center justify-center mb-4">
+              <button
+                type=""
+                className="  flex w-full  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                <AiTwotoneHome className="mr-2" />
+                Về trang chủ
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div class="rounded-lg  lg:col-span-1 mx-4">
+            {listOrders?.map((OrderItem, index) => (
               <div
                 class="justify-between mb-4 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
                 key={index}
@@ -88,7 +104,8 @@ const OrderList = () => {
                 </div>
               </div>
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </>
   );
