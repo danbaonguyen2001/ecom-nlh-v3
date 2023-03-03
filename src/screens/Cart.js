@@ -15,6 +15,20 @@ import paypal from "../assets/images/paypal.svg";
 import vnpay from "../assets/images/vnpay.svg";
 import { Link } from "react-router-dom";
 
+// import { updateCart } from '../actions/cartActions'
+// import {} from '../actions/orderActions'
+// import { toVND } from '../utils/format'
+// import Loading from './Loading'
+// import paypal from '../assets/images/paypal.svg'
+// import vnpay from '../assets/images/vnpay.svg'
+// import { getAddressDetail } from '../actions/userActions'
+import {
+  getDistrictList,
+  getProvinceList,
+  getShippingFe,
+  getWardList,
+} from "../actions/GHNActions";
+import { CLEAR_ERROR, CLEAR_ERROR_ADDRESS } from "../constants/GHNConstants";
 const Cart = () => {
   const dispatch = useDispatch();
 
@@ -25,6 +39,7 @@ const Cart = () => {
 
   //check cart update
   const { loading, error, success } = useSelector((state) => state.cartUpdate);
+  // const {loading:loadingAddress,error:errorAddress,address} = useSelector((state) => state.)
 
   //handle Update quantity
   const plusQT = (index) => {
@@ -160,6 +175,78 @@ const Cart = () => {
 
   //Handle order
   const [isOnline, setIsOnline] = useState(false);
+  const {
+    province,
+    district,
+    ward,
+    error: errorAddresslist,
+  } = useSelector((state) => state.GHN);
+  const {
+    loading: loadingFee,
+    error: errorFee,
+    shippingFee,
+  } = useSelector((state) => state.shippingFee);
+  const { addressDetail } = useSelector((state) => state.userLogin);
+  const [selectedSenderProvince, setSelectedSenderProvince] = useState(null);
+  const [selectedSenderDistrict, setSelectedSenderDistrict] = useState(null);
+  const [selectedSenderWard, setSelectedSenderWard] = useState(null);
+  useEffect(() => {
+    // if (!addressDetail) {
+    //   dispatch(getAddressDetail())
+    // }
+    if (!province) {
+      dispatch(getProvinceList());
+    }
+  }, [dispatch, province]);
+  useEffect(() => {
+    if (addressDetail) {
+      dispatch(getDistrictList(addressDetail.province.provinceID));
+      dispatch(getWardList(addressDetail.district.districtID));
+    }
+  }, [addressDetail, dispatch]);
+  useEffect(() => {
+    if (selectedSenderProvince) {
+      dispatch(getDistrictList(selectedSenderProvince.ProvinceID));
+    }
+  }, [selectedSenderProvince, dispatch]);
+  useEffect(() => {
+    if (selectedSenderDistrict) {
+      dispatch(getWardList(selectedSenderDistrict.DistrictID));
+    }
+  }, [selectedSenderDistrict, dispatch]);
+  useEffect(() => {
+    if (selectedSenderWard) {
+      dispatch(getShippingFe(selectedSenderWard));
+    }
+  }, [selectedSenderWard, dispatch]);
+  useEffect(() => {
+    if (errorFee) {
+      toast.error(`Chung tôi chưa hỗ trợ giao hàng tại địa chỉ này`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      dispatch({ type: CLEAR_ERROR });
+    }
+    if (errorAddresslist) {
+      toast.error(`Đã xảy ra lỗi,xin vui lòng thử lại.`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      dispatch({ type: CLEAR_ERROR_ADDRESS });
+    }
+  }, [errorFee, errorAddresslist, dispatch]);
   return (
     <>
       {loading && <Loading />}
