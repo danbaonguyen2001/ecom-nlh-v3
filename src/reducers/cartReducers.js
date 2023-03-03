@@ -10,18 +10,15 @@ import {
   CART_UPDATE_ITEM_FAIL,
   CART_UPDATE_RESET,
   CART_LIST_RESET,
+  CART_SAVE_SHIPPING_ADDRESS,
 } from '../constants/cartConstants'
 
-export const cartsReducer = (
-  state = { cartItems: [], shippingAddress: {} },
-  action
-) => {
+export const cartsReducer = (state = { cartItems: [] }, action) => {
   switch (action.type) {
     case CART_LIST_ITEM_REQUEST:
       return {
         loading: true,
         cartItems: [],
-        shippingAddress: {},
       }
     case CART_LIST_ITEM_SUCCESS:
       return {
@@ -32,6 +29,11 @@ export const cartsReducer = (
       return {
         loading: false,
         error: action.payload,
+      }
+    case CART_SAVE_SHIPPING_ADDRESS:
+      return {
+        ...state,
+        shippingAddress: action.payload,
       }
     case CART_LIST_RESET:
       return {}
