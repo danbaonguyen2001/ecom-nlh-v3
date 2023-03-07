@@ -5,3 +5,5 @@ export const GHN_CALCULATE_FEE =
   'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee'
 export const SHOP_ID = 3857361
 export const district_id = 3695
+
+export const APP_ID = '3dd28ab9dc684488a83dcb8541bb6b4a'

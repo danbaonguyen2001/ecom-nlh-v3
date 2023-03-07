@@ -18,8 +18,10 @@ import { cartsReducer, cartUpdateReducer } from './reducers/cartReducers'
 import {
   getOrderDetailReducer,
   getOrdersHistoryReducer,
+  payOrderReducer,
 } from './reducers/orderReducers'
 import { GHNReducers, getShippingFeReducer } from './reducers/GHNReducers'
+import { VNDToUSDReducer } from './reducers/vndtousdReducer'
 const reducers = combineReducers({
   userLogin: userLoginReducer,
   productCompare: productListReducer,
@@ -38,9 +40,12 @@ const reducers = combineReducers({
   //order
   orderDetail: getOrderDetailReducer,
   historyOrders: getOrdersHistoryReducer,
+  payOrder: payOrderReducer,
   //addresses
   GHN: GHNReducers,
   shippingFee: getShippingFeReducer,
+  //VND to USD
+  VNDToUSD: VNDToUSDReducer,
 })
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))

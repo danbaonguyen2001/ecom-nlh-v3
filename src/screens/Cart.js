@@ -4,13 +4,15 @@ import { toast } from 'react-toastify'
 import { TiDelete } from 'react-icons/ti'
 import { GiConfirmed } from 'react-icons/gi'
 import { CiDiscount1 } from 'react-icons/ci'
-
-import { updateCart } from '../actions/cartActions'
-import {} from '../actions/orderActions'
+import axios from 'axios'
+import { getCarts, updateCart } from '../actions/cartActions'
+import { payOrder } from '../actions/orderActions'
 import { toVND } from '../utils/format'
 import Loading from './Loading'
 import paypal from '../assets/images/paypal.svg'
 import vnpay from '../assets/images/vnpay.svg'
+import { PayPalButton } from 'react-paypal-button-v2'
+import { Server } from '../apis/Api'
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -19,8 +21,23 @@ import {
   getWardList,
 } from '../actions/GHNActions'
 import { CLEAR_ERROR, CLEAR_ERROR_ADDRESS } from '../constants/GHNConstants'
+import { ORDER_PAY_RESET } from '../constants/orderConstants'
+import { VNDToUSD } from '../actions/vndtousdActions'
+import { VND_TO_USD_RESET } from '../constants/vndtousdConstants'
 const Cart = () => {
   const dispatch = useDispatch()
+  //payment
+  const [vnd, setVnd] = useState('')
+  const [usd, setUsd] = useState('')
+  const [sdkReady, setSdkReady] = useState(false)
+  const { loading: loadingPay, success: successPay } = useSelector(
+    (state) => state.payOrder
+  )
+  const {
+    loading: loadingVndToUsd,
+    error: errorVndToUsd,
+    amount,
+  } = useSelector((state) => state.VNDToUSD)
 
   //Handle Cart
   //get cart
@@ -205,6 +222,13 @@ const Cart = () => {
   useEffect(() => {
     if (selectedSenderWard) {
       dispatch(getShippingFe(selectedSenderWard))
+      setVnd(
+        shippingFee?.total +
+          cartItems?.reduce(function (total, item) {
+            return (total += item?.item?.price * item?.item?.quantity)
+          }, 0)
+      )
+      dispatch(VNDToUSD(vnd))
     }
   }, [selectedSenderWard, dispatch])
   useEffect(() => {
@@ -234,7 +258,54 @@ const Cart = () => {
       })
       dispatch({ type: CLEAR_ERROR_ADDRESS })
     }
-  }, [errorFee, errorAddresslist, dispatch])
+    if (errorVndToUsd) {
+      toast.error(`Đã xảy ra lỗi,trong quá trình chuyển đổi tiền tệ.`, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+      dispatch({ type: VND_TO_USD_RESET })
+    }
+  }, [errorFee, errorAddresslist, dispatch, errorVndToUsd])
+  // payment
+  useEffect(() => {
+    const addPayPalScript = async () => {
+      const { data: clientId } = await axios.get(`${Server}/api/config/paypal`)
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+      script.async = true
+      script.onload = () => {
+        setSdkReady(true)
+      }
+      document.body.appendChild(script)
+    }
+    if (successPay) {
+      dispatch({ type: ORDER_PAY_RESET })
+    } else {
+      if (!window.paypal) {
+        addPayPalScript()
+      } else {
+        setSdkReady(true)
+      }
+    }
+  }, [dispatch, successPay, cartItems])
+
+  const successPaymentHandler = (paymentResult) => {
+    console.log(paymentResult)
+    dispatch(payOrder(paymentResult))
+  }
+  // function sumArray(arr) {
+  //   return arr.reduce((acc, val) => acc?.item?.price + val, 0)
+  // }
+  // if (cartItems) {
+  //   console.log(sumArray(JSON.parse(cartItems)))
+  // }
   return (
     <>
       {(loading || loadingFee) && <Loading />}
@@ -475,7 +546,13 @@ const Cart = () => {
             <div>
               <div class=' flex justify-between'>
                 <p class='text-gray-700'>Tổng giá trị sản phẩm</p>
-                <p class='text-gray-700 font-medium'>{toVND(10000)}</p>
+                <p class='text-gray-700 font-medium'>
+                  {toVND(
+                    cartItems?.reduce(function (total, item) {
+                      return (total += item?.item?.price * item?.item?.quantity)
+                    }, 0)
+                  )}
+                </p>
               </div>
               <div class='flex justify-between'>
                 <p class='text-gray-700'>Phí vận chuyển</p>
@@ -487,7 +564,21 @@ const Cart = () => {
                 <p class='text-lg font-bold'>
                   Tổng cộng <i className='text-xs font-normal'>(bao gồm VAT)</i>{' '}
                 </p>
-                <p class='mb-1 text-lg font-bold'>{toVND(10000)}</p>
+                <p class='mb-1 text-lg font-bold'>
+                  {shippingFee
+                    ? toVND(
+                        cartItems?.reduce(function (total, item) {
+                          return (total +=
+                            item?.item?.price * item?.item?.quantity)
+                        }, 0 + shippingFee.total)
+                      )
+                    : toVND(
+                        cartItems?.reduce(function (total, item) {
+                          return (total +=
+                            item?.item?.price * item?.item?.quantity)
+                        }, 0)
+                      )}
+                </p>
               </div>
             </div>
             <hr class='my-4' />
@@ -544,7 +635,16 @@ const Cart = () => {
               {/*Paypal VNPay  */}
               {isOnline && (
                 <div className='flex justify-center mt-4 '>
-                  <button
+                  {loadingPay && <Loading />}
+                  {!sdkReady ? (
+                    <Loading />
+                  ) : (
+                    <PayPalButton
+                      amount={amount && amount}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                  {/* <button
                     type='button'
                     class='text-gray-900 bg-white hover:bg-gray-100 border 
                   border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
@@ -573,7 +673,7 @@ const Cart = () => {
                       alt='vnpay'
                       class='w-full h-6  mr-2 -ml-1'
                     />
-                  </button>
+                  </button> */}
                 </div>
               )}
             </div>
