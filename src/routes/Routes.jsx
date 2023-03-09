@@ -16,6 +16,7 @@ import ChangePass from "../components/auth/ChangePass";
 import ProductDetail from "../components/product/ProductDetail";
 import ProductList from "../components/product/ProductList";
 import NotFound from "../components/error/NotFound";
+import PrivateRoute from "../utils/PrivateRoute";
 
 const Components = () => {
   return (
@@ -30,11 +31,13 @@ const Components = () => {
         <Route path="/product/:slug" element={<ProductDetail />} />
 
         {/* Private- Routes */}
-        <Route path="/changepass/:slug" element={<ChangePass />} />
-        <Route path="/user-infor" element={<UserInfor />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/order-list" element={<Orders />} />
-        <Route path="/order/:slug" element={<OrderDetail />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/changepass/:slug" element={<ChangePass />} />
+          <Route path="/user-infor" element={<UserInfor />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/order-list" element={<Orders />} />
+          <Route path="/order/:slug" element={<OrderDetail />} />
+        </Route>
 
         {/*Exception*/}
         <Route path="/404" element={<NotFound />} />

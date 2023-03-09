@@ -35,6 +35,7 @@ const Cart = () => {
   //Handle Cart
   //get cart
   const { cartItems } = useSelector((state) => state.carts);
+  // const { userInfo } = useSelector((state) => state.userLogin);
   // console.log(cartItems?.length === 0);
 
   //check cart update
@@ -247,6 +248,8 @@ const Cart = () => {
       dispatch({ type: CLEAR_ERROR_ADDRESS });
     }
   }, [errorFee, errorAddresslist, dispatch]);
+
+  console.log(cartItems?.length);
   return (
     <>
       {loading && <Loading />}
