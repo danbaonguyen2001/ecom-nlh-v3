@@ -12,6 +12,7 @@ const EditInforModal = (props) => {
     email: `${userInfo?.data?.user?.email}`,
     phone: `${userInfo?.data?.user?.phone}`,
     gender: `${userInfo?.data?.user?.gender}`,
+    addrerss: "",
   });
   console.log(user);
   const cancelButtonRef = useRef(null);

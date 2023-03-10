@@ -1,7 +1,9 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
+import { Token_API_GHN } from "../../apis/Api";
+import axios from "axios";
 
 const AddAddressModal = (props) => {
   const { open, setOpen, address } = props;
@@ -15,6 +17,78 @@ const AddAddressModal = (props) => {
   });
   console.log(user);
   const cancelButtonRef = useRef(null);
+
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Token: `${Token_API_GHN}`,
+    },
+  };
+  const [selectedProv, setSelectedProv] = useState("");
+  const [provList, setProvList] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [disList, setDisList] = useState([]);
+  const [selectedWard, setSelectedWard] = useState("");
+  const [wardList, setWardList] = useState([]);
+
+  //Province
+  useEffect(() => {
+    const callProv = async () => {
+      const { data } = await axios.get(
+        `https://online-gateway.ghn.vn/shiip/public-api/master-data/province`,
+        config
+      );
+      setProvList(await data.data);
+      setSelectedProv(await data.data[0]?.ProvinceID);
+    };
+    callProv();
+  }, []);
+
+  const handleChangeIDProv = (e) => {
+    setSelectedProv(e.target.value);
+  };
+
+  // Recall District
+  useEffect(() => {
+    const callDis = async () => {
+      const { data } = await axios.get(
+        `https://online-gateway.ghn.vn/shiip/public-api/master-data/district`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Token: `${Token_API_GHN}`,
+          },
+          params: {
+            province_id: selectedProv,
+          },
+        }
+      );
+      setDisList(await data.data);
+      setSelectedDistrict(await data.data[0]?.DistrictID);
+    };
+    callDis();
+  }, [selectedProv]);
+
+  const handleChangeIDDis = (e) => {
+    setSelectedDistrict(e.target.value);
+  };
+
+  //Recall Ward
+  useEffect(() => {
+    const callWard = async () => {
+      const { data } = await axios.get(
+        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${selectedDistrict}`,
+        config
+      );
+      setWardList(await data.data);
+      setSelectedWard(await data.data[0]?.WardCode);
+    };
+    callWard();
+  }, [selectedDistrict]);
+
+  const handleChangeIDWard = (e) => {
+    setSelectedWard(e.target.value);
+  };
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -73,6 +147,8 @@ const AddAddressModal = (props) => {
                           <div class="w-full lg:w-[80%]  py-4 flex justify-center">
                             <div class=" w-full">
                               <select
+                                onChange={(e) => handleChangeIDProv(e)}
+                                value={selectedProv}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -85,16 +161,24 @@ const AddAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Tỉnh</option>
-                                <option value="1">An Giang</option>
-                                <option value="2">HCM</option>
-                                <option value="3">Đồng Tháp</option>
+                                <option value="">--Tỉnh--</option>
+                                {provList?.map((prov) => (
+                                  <option
+                                    key={prov?.ProvinceID}
+                                    value={prov?.ProvinceID}
+                                    selected={prov?.ProvinceID === selectedProv}
+                                  >
+                                    {prov?.ProvinceName}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>
                           <div class="w-full lg:w-[80%]  py-4 flex justify-center">
                             <div class=" w-full">
                               <select
+                                onChange={(e) => handleChangeIDDis(e)}
+                                value={selectedDistrict}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -107,16 +191,26 @@ const AddAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Huyện</option>
-                                <option value="1">Phú Tân</option>
-                                <option value="2">Chợ Mới</option>
-                                <option value="3">Tân Châu</option>
+                                <option value="">--Huyện--</option>
+                                {disList?.map((dis) => (
+                                  <option
+                                    key={dis?.DistrictID}
+                                    value={dis?.DistrictID}
+                                    selected={
+                                      dis?.DistrictID === selectedDistrict
+                                    }
+                                  >
+                                    {dis?.DistrictName}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>
                           <div class="w-full lg:w-[80%]  py-4 flex justify-center">
                             <div class=" w-full">
                               <select
+                                onChange={(e) => handleChangeIDWard(e)}
+                                value={selectedWard}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -129,10 +223,16 @@ const AddAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Xã</option>
-                                <option value="1">Phú Lâm</option>
-                                <option value="2">Phú Thạnh</option>
-                                <option value="3">Phú An</option>
+                                <option value="">--Xã--</option>
+                                {wardList?.map((w) => (
+                                  <option
+                                    key={w?.WardCode}
+                                    value={w?.WardCode}
+                                    selected={w?.WardCode === selectedWard}
+                                  >
+                                    {w?.WardName}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                           </div>

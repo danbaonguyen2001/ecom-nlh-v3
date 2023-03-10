@@ -81,7 +81,6 @@ const ProductList = () => {
   useEffect(() => {
     if (CategoryName !== categoryName) {
       dispatch(getProductByCategory(CategoryName));
-      console.log("Call list product");
     }
   }, [CategoryName]);
 
