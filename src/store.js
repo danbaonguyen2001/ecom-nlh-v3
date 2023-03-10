@@ -19,6 +19,7 @@ import {
   getOrderDetailReducer,
   getOrdersHistoryReducer,
   payOrderReducer,
+  cancelOrderReducer,
 } from './reducers/orderReducers'
 import { GHNReducers, getShippingFeReducer } from './reducers/GHNReducers'
 import { VNDToUSDReducer } from './reducers/vndtousdReducer'
@@ -41,6 +42,7 @@ const reducers = combineReducers({
   orderDetail: getOrderDetailReducer,
   historyOrders: getOrdersHistoryReducer,
   payOrder: payOrderReducer,
+  cancelOrder: cancelOrderReducer,
   //addresses
   GHN: GHNReducers,
   shippingFee: getShippingFeReducer,

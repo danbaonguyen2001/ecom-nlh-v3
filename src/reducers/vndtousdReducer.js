@@ -14,7 +14,7 @@ export const VNDToUSDReducer = (state = {}, action) => {
     case VND_TO_USD_SUCCESS:
       return {
         loading: false,
-        amount: action.payload,
+        rates: action.payload,
       }
     case VND_TO_USD_FAIL:
       return {

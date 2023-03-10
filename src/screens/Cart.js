@@ -11,8 +11,9 @@ import { toVND } from '../utils/format'
 import Loading from './Loading'
 import paypal from '../assets/images/paypal.svg'
 import vnpay from '../assets/images/vnpay.svg'
-import { PayPalButton } from 'react-paypal-button-v2'
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
 import { Server } from '../apis/Api'
+import styled from 'styled-components'
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -36,7 +37,7 @@ const Cart = () => {
   const {
     loading: loadingVndToUsd,
     error: errorVndToUsd,
-    amount,
+    rates,
   } = useSelector((state) => state.VNDToUSD)
 
   //Handle Cart
@@ -222,13 +223,7 @@ const Cart = () => {
   useEffect(() => {
     if (selectedSenderWard) {
       dispatch(getShippingFe(selectedSenderWard))
-      setVnd(
-        shippingFee?.total +
-          cartItems?.reduce(function (total, item) {
-            return (total += item?.item?.price * item?.item?.quantity)
-          }, 0)
-      )
-      dispatch(VNDToUSD(vnd))
+      dispatch(VNDToUSD())
     }
   }, [selectedSenderWard, dispatch])
   useEffect(() => {
@@ -269,7 +264,7 @@ const Cart = () => {
         progress: undefined,
         theme: 'light',
       })
-      dispatch({ type: VND_TO_USD_RESET })
+      // dispatch({ type: VND_TO_USD_RESET })
     }
   }, [errorFee, errorAddresslist, dispatch, errorVndToUsd])
   // payment
@@ -297,9 +292,20 @@ const Cart = () => {
   }, [dispatch, successPay, cartItems])
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult)
-    dispatch(payOrder(paymentResult))
+    const shippingAddress = {
+      address: `${selectedSenderProvince}, Huyện ${selectedSenderDistrict}, ${selectedSenderWard}`,
+      city: `${selectedSenderProvince}`,
+      country: 'VN',
+    }
+    dispatch(payOrder(shippingAddress, paymentResult))
   }
+  const StyleWrap = styled.div`
+    & div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  `
   // function sumArray(arr) {
   //   return arr.reduce((acc, val) => acc?.item?.price + val, 0)
   // }
@@ -437,9 +443,8 @@ const Cart = () => {
                 </div>
                 <div class='w-full md:w-[45%]  py-4 flex justify-center'>
                   <div class=' w-full'>
-                    {selectedSenderProvince && (
-                      <select
-                        class='form-select appearance-none block w-full p-2 text-base
+                    <select
+                      class='form-select appearance-none block w-full p-2 text-base
                                 font-normal
                                 text-gray-700
                                 bg-white bg-clip-padding bg-no-repeat
@@ -449,32 +454,30 @@ const Cart = () => {
                                 ease-in-out
                                 m-0
                                 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
-                        aria-label='Default select example'
-                        onChange={(event) =>
-                          setSelectedSenderDistrict(
-                            JSON.parse(event.target.value)
-                          )
-                        }
-                      >
-                        <option selected>Huyện</option>
-                        {district &&
-                          district.map((district) => (
-                            <option
-                              key={district.DistrictID}
-                              value={JSON.stringify(district)}
-                            >
-                              {district.DistrictName}
-                            </option>
-                          ))}
-                      </select>
-                    )}
+                      aria-label='Default select example'
+                      onChange={(event) =>
+                        setSelectedSenderDistrict(
+                          JSON.parse(event.target.value)
+                        )
+                      }
+                    >
+                      <option selected>Huyện</option>
+                      {district &&
+                        district.map((district) => (
+                          <option
+                            key={district.DistrictID}
+                            value={JSON.stringify(district)}
+                          >
+                            {district.DistrictName}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                 </div>
                 <div class='w-full md:w-[45%]  py-4 flex justify-center'>
                   <div class=' w-full'>
-                    {selectedSenderDistrict && (
-                      <select
-                        class='form-select appearance-none block w-full p-2 text-base
+                    <select
+                      class='form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
                               bg-white bg-clip-padding bg-no-repeat
@@ -484,23 +487,22 @@ const Cart = () => {
                               ease-in-out
                               m-0
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
-                        aria-label='Default select example'
-                        onChange={(event) =>
-                          setSelectedSenderWard(JSON.parse(event.target.value))
-                        }
-                      >
-                        <option selected>Xã</option>
-                        {ward &&
-                          ward.map((ward) => (
-                            <option
-                              key={ward.WardCode}
-                              value={JSON.stringify(ward)}
-                            >
-                              {ward.WardName}
-                            </option>
-                          ))}
-                      </select>
-                    )}
+                      aria-label='Default select example'
+                      onChange={(event) =>
+                        setSelectedSenderWard(JSON.parse(event.target.value))
+                      }
+                    >
+                      <option selected>Xã</option>
+                      {ward &&
+                        ward.map((ward) => (
+                          <option
+                            key={ward.WardCode}
+                            value={JSON.stringify(ward)}
+                          >
+                            {ward.WardName}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                 </div>
                 <div class='w-full  py-4 flex justify-center'>
@@ -639,10 +641,18 @@ const Cart = () => {
                   {!sdkReady ? (
                     <Loading />
                   ) : (
-                    <PayPalButton
-                      amount={amount && amount}
-                      onSuccess={successPaymentHandler}
-                    />
+                    <PayPalScriptProvider>
+                      {' '}
+                      <PayPalButtons
+                        amount={(
+                          cartItems.reduce(function (total, item) {
+                            return (total +=
+                              item?.item?.price * item?.item?.quantity)
+                          }, shippingFee?.total) / rates
+                        ).toFixed(2)}
+                        onSuccess={successPaymentHandler}
+                      />
+                    </PayPalScriptProvider>
                   )}
                   {/* <button
                     type='button'

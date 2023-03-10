@@ -6,16 +6,28 @@ import {
 import axios from 'axios'
 import { APP_ID } from '../apis/Api'
 
-export const VNDToUSD = (VND) => async (dispatch) => {
+export const VNDToUSD = () => async (dispatch, getState) => {
   try {
     dispatch({ type: VND_TO_USD_REQUEST })
     const { data } = await axios.get(
       `https://openexchangerates.org/api/latest.json?app_id=${APP_ID}&symbols=VND&base=USD`
     )
-    console.log(data, 'asdasd', VND)
+    // const {
+    //   carts: { cartItems },
+    // } = getState()
+    // console.log(cartItems)
+    // const {
+    //   shippingFee: { shippingFee },
+    // } = getState()
+    // console.log(shippingFee)
+    // const vnd =
+    //   cartItems.reduce(function (total, item) {
+    //     return (total += item.item.price * item.item.quantity)
+    //   }) + shippingFee.total
+    // console.log(vnd, 'vnd')
     dispatch({
       type: VND_TO_USD_SUCCESS,
-      payload: (VND / data.rates.VND).toFixed(2),
+      payload: data.rates.VND,
     })
   } catch (error) {
     dispatch({
