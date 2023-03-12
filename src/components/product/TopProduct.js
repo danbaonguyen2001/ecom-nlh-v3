@@ -52,7 +52,7 @@ export const TopProduct = () => {
   return (
     <>
       {loading && <Loading />}
-      <div className=" p-4 ">
+      <div className=" pt-4 ">
         <h2 className="text-lg tracking-tight text-gray-900 font-bold">
           Sản phẩm nổi bật
         </h2>
@@ -63,8 +63,8 @@ export const TopProduct = () => {
             ))} */}
           <Slider {...settings} className=" flex items-center justify-start ">
             {products?.map((product, index) => (
-              <div key={index} className=" lg:mx-3">
-                <div class="bg-white shadow-lg border rounded-lg max-w-sm ">
+              <div key={index} className=" ">
+                <div class="bg-white shadow-lg border rounded-lg  ">
                   <Link
                     to={"/product/" + product.name.replaceAll(" ", "-")}
                     state={{ slug: product?._id }}

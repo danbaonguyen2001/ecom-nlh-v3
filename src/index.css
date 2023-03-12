@@ -14,3 +14,7 @@
     background-color: hsl(200, 20%, 95%);
   }
 }
+
+.heading-2 {
+  @apply text-center text-lg font-bold;
+}
