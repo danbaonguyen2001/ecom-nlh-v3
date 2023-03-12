@@ -4,23 +4,16 @@ import { toast } from "react-toastify";
 import { TiDelete } from "react-icons/ti";
 import { GiConfirmed } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
-import { BsFillCartXFill } from "react-icons/bs";
-import { AiTwotoneHome } from "react-icons/ai";
-
-import { updateCart } from "../actions/cartActions";
-import {} from "../actions/orderActions";
+import axios from "axios";
+import { getCarts, updateCart } from "../actions/cartActions";
+import { payOrder } from "../actions/orderActions";
 import { toVND } from "../utils/format";
 import Loading from "./Loading";
 import paypal from "../assets/images/paypal.svg";
 import vnpay from "../assets/images/vnpay.svg";
-import { Link } from "react-router-dom";
-
-// import { updateCart } from '../actions/cartActions'
-// import {} from '../actions/orderActions'
-// import { toVND } from '../utils/format'
-// import Loading from './Loading'
-// import paypal from '../assets/images/paypal.svg'
-// import vnpay from '../assets/images/vnpay.svg'
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { Server } from "../apis/Api";
+import styled from "styled-components";
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -29,8 +22,27 @@ import {
   getWardList,
 } from "../actions/GHNActions";
 import { CLEAR_ERROR, CLEAR_ERROR_ADDRESS } from "../constants/GHNConstants";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import { VNDToUSD } from "../actions/vndtousdActions";
+import { VND_TO_USD_RESET } from "../constants/vndtousdConstants";
+import { Link } from "react-router-dom";
+
+import { AiTwotoneHome } from "react-icons/ai";
+import { BsFillCartXFill } from "react-icons/bs";
 const Cart = () => {
   const dispatch = useDispatch();
+  //payment
+  const [vnd, setVnd] = useState("");
+  const [usd, setUsd] = useState("");
+  const [sdkReady, setSdkReady] = useState(false);
+  const { loading: loadingPay, success: successPay } = useSelector(
+    (state) => state.payOrder
+  );
+  const {
+    loading: loadingVndToUsd,
+    error: errorVndToUsd,
+    rates,
+  } = useSelector((state) => state.VNDToUSD);
 
   //Handle Cart
   //get cart
@@ -218,6 +230,7 @@ const Cart = () => {
   useEffect(() => {
     if (selectedSenderWard) {
       dispatch(getShippingFe(selectedSenderWard));
+      dispatch(VNDToUSD());
     }
   }, [selectedSenderWard, dispatch]);
   useEffect(() => {
@@ -247,13 +260,69 @@ const Cart = () => {
       });
       dispatch({ type: CLEAR_ERROR_ADDRESS });
     }
-  }, [errorFee, errorAddresslist, dispatch]);
+    if (errorVndToUsd) {
+      toast.error(`Đã xảy ra lỗi,trong quá trình chuyển đổi tiền tệ.`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      // dispatch({ type: VND_TO_USD_RESET })
+    }
+  }, [errorFee, errorAddresslist, dispatch, errorVndToUsd]);
+  // payment
+  useEffect(() => {
+    const addPayPalScript = async () => {
+      const { data: clientId } = await axios.get(`${Server}/api/config/paypal`);
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    };
+    if (successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+    } else {
+      if (!window.paypal) {
+        addPayPalScript();
+      } else {
+        setSdkReady(true);
+      }
+    }
+  }, [dispatch, successPay, cartItems]);
 
-  console.log(cartItems?.length);
+  const successPaymentHandler = (paymentResult) => {
+    const shippingAddress = {
+      address: `${selectedSenderProvince}, Huyện ${selectedSenderDistrict}, ${selectedSenderWard}`,
+      city: `${selectedSenderProvince}`,
+      country: "VN",
+    };
+    dispatch(payOrder(shippingAddress, paymentResult));
+  };
+  const StyleWrap = styled.div`
+    & div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  `;
+  // function sumArray(arr) {
+  //   return arr.reduce((acc, val) => acc?.item?.price + val, 0)
+  // }
+  // if (cartItems) {
+  //   console.log(sumArray(JSON.parse(cartItems)))
+  // }
   return (
     <>
       {loading && <Loading />}
-      <div class="  rounded-lg border-2 border-dashed border-gray-200 mx-2 ">
+      <div class="  rounded-lg  mx-2 bg-white shadow-lg ">
         <h1 class="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
 
         {cartItems?.length === 0 ? (
@@ -279,7 +348,7 @@ const Cart = () => {
             <div class="rounded-lg  lg:col-span-1 ">
               {cartItems?.map((cartItem, index) => (
                 <div
-                  class="justify-between mb-4 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
+                  class="justify-between mb-4 rounded-lg border bg-white p-6 shadow-md sm:flex sm:justify-start"
                   key={index}
                 >
                   {/* img */}
@@ -349,7 +418,7 @@ const Cart = () => {
             </div>
 
             {/* <!-- Sub total --> */}
-            <div class=" rounded-lg border bg-white p-6 shadow-md md:mt-0  lg:col-span-1">
+            <div class=" rounded-lg border bg-white p-6 shadow-md md:mt-0  lg:col-span-1 mb-2">
               <h3 class=" text-left text-lg font-bold">Thông tin khách hàng</h3>
               <hr class="my-4" />
 
@@ -372,11 +441,25 @@ const Cart = () => {
                               m-0
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         aria-label="Default select example"
+                        onChange={(event) =>
+                          setSelectedSenderProvince(
+                            JSON.parse(event.target.value)
+                          )
+                        }
                       >
                         <option selected>Tỉnh</option>
-                        <option value="1">An Giang</option>
-                        <option value="2">HCM</option>
-                        <option value="3">Đồng Tháp</option>
+                        {province &&
+                          province.map((province) => (
+                            <option
+                              key={province.ProvinceID}
+                              value={JSON.stringify(province)}
+                            >
+                              {province.ProvinceName}
+                            </option>
+                          ))}
+                        {/* <option value='1'>An Giang</option>
+                      <option value='2'>HCM</option>
+                      <option value='3'>Đồng Tháp</option> */}
                       </select>
                     </div>
                   </div>
@@ -384,21 +467,32 @@ const Cart = () => {
                     <div class=" w-full">
                       <select
                         class="form-select appearance-none block w-full p-2 text-base
-                              font-normal
-                              text-gray-700
-                              bg-white bg-clip-padding bg-no-repeat
-                              border border-solid border-gray-300
-                              rounded-md
-                              transition
-                              ease-in-out
-                              m-0
-                              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                font-normal
+                                text-gray-700
+                                bg-white bg-clip-padding bg-no-repeat
+                                border border-solid border-gray-300
+                                rounded-md
+                                transition
+                                ease-in-out
+                                m-0
+                                focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         aria-label="Default select example"
+                        onChange={(event) =>
+                          setSelectedSenderDistrict(
+                            JSON.parse(event.target.value)
+                          )
+                        }
                       >
                         <option selected>Huyện</option>
-                        <option value="1">Phú Tân</option>
-                        <option value="2">Chợ Mới</option>
-                        <option value="3">Tân Châu</option>
+                        {district &&
+                          district.map((district) => (
+                            <option
+                              key={district.DistrictID}
+                              value={JSON.stringify(district)}
+                            >
+                              {district.DistrictName}
+                            </option>
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -416,11 +510,20 @@ const Cart = () => {
                               m-0
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         aria-label="Default select example"
+                        onChange={(event) =>
+                          setSelectedSenderWard(JSON.parse(event.target.value))
+                        }
                       >
                         <option selected>Xã</option>
-                        <option value="1">Phú Lâm</option>
-                        <option value="2">Phú Thạnh</option>
-                        <option value="3">Phú An</option>
+                        {ward &&
+                          ward.map((ward) => (
+                            <option
+                              key={ward.WardCode}
+                              value={JSON.stringify(ward)}
+                            >
+                              {ward.WardName}
+                            </option>
+                          ))}
                       </select>
                     </div>
                   </div>
@@ -430,7 +533,7 @@ const Cart = () => {
                       type="address"
                       name=""
                       id=""
-                      placeholder="Địa chỉ đang cư trú"
+                      placeholder="Địa chỉ giao hàng"
                       class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
                   </div>
@@ -467,18 +570,41 @@ const Cart = () => {
               <div>
                 <div class=" flex justify-between">
                   <p class="text-gray-700">Tổng giá trị sản phẩm</p>
-                  <p class="text-gray-700 font-medium">{toVND(10000)}</p>
+                  <p class="text-gray-700 font-medium">
+                    {toVND(
+                      cartItems?.reduce(function (total, item) {
+                        return (total +=
+                          item?.item?.price * item?.item?.quantity);
+                      }, 0)
+                    )}
+                  </p>
                 </div>
                 <div class="flex justify-between">
                   <p class="text-gray-700">Phí vận chuyển</p>
-                  <p class="text-gray-700 font-medium">{toVND(0)}</p>
+                  <p class="text-gray-700 font-medium">
+                    {shippingFee && toVND(shippingFee.total)}
+                  </p>
                 </div>
                 <div class="flex justify-between">
                   <p class="text-lg font-bold">
                     Tổng cộng{" "}
                     <i className="text-xs font-normal">(bao gồm VAT)</i>{" "}
                   </p>
-                  <p class="mb-1 text-lg font-bold">{toVND(10000)}</p>
+                  <p class="mb-1 text-lg font-bold">
+                    {shippingFee
+                      ? toVND(
+                          cartItems?.reduce(function (total, item) {
+                            return (total +=
+                              item?.item?.price * item?.item?.quantity);
+                          }, 0 + shippingFee.total)
+                        )
+                      : toVND(
+                          cartItems?.reduce(function (total, item) {
+                            return (total +=
+                              item?.item?.price * item?.item?.quantity);
+                          }, 0)
+                        )}
+                  </p>
                 </div>
               </div>
               <hr class="my-4" />
@@ -535,9 +661,26 @@ const Cart = () => {
                 {/*Paypal VNPay  */}
                 {isOnline && (
                   <div className="flex justify-center mt-4 ">
-                    <button
-                      type="button"
-                      class="text-gray-900 bg-white hover:bg-gray-100 border 
+                    {loadingPay && <Loading />}
+                    {!sdkReady ? (
+                      <Loading />
+                    ) : (
+                      <PayPalScriptProvider>
+                        {" "}
+                        <PayPalButtons
+                          amount={(
+                            cartItems.reduce(function (total, item) {
+                              return (total +=
+                                item?.item?.price * item?.item?.quantity);
+                            }, shippingFee?.total) / rates
+                          ).toFixed(2)}
+                          onSuccess={successPaymentHandler}
+                        />
+                      </PayPalScriptProvider>
+                    )}
+                    {/* <button
+                    type='button'
+                    class='text-gray-900 bg-white hover:bg-gray-100 border 
                   border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
                   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
                   items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
@@ -557,20 +700,20 @@ const Cart = () => {
                   border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
                   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center 
                   dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 
-                  dark:hover:bg-gray-200 mr-2 mb-2"
-                    >
-                      <img
-                        src={vnpay}
-                        alt="vnpay"
-                        class="w-full h-6  mr-2 -ml-1"
-                      />
-                    </button>
+                  dark:hover:bg-gray-200 mr-2 mb-2'
+                  >
+                    <img
+                      src={vnpay}
+                      alt='vnpay'
+                      class='w-full h-6  mr-2 -ml-1'
+                    />
+                  </button> */}
                   </div>
                 )}
               </div>
               <hr class="my-4" />
 
-              <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center">
                 <button
                   type=""
                   className="  flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"

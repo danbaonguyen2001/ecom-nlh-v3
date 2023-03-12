@@ -53,7 +53,7 @@ const ProductDetail = () => {
         <Loading />
       ) : (
         <div
-          className="min-h-[300px] rounded-lg border-2 border-dashed border-primary-900
+          className="min-h-[300px] rounded-lg bg-white shadow-lg
               px-4 sm:px-6 lg:max-w-7xl lg:px-8 mx-4 lg:mx-auto 
     "
         >

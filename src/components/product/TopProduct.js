@@ -8,6 +8,10 @@ import { toVND } from "../../utils/format";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {
+  BsFillArrowLeftCircleFill,
+  BsFillArrowRightCircleFill,
+} from "react-icons/bs";
 
 export const TopProduct = () => {
   const dispatch = useDispatch();
@@ -19,6 +23,8 @@ export const TopProduct = () => {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
+    autoplay: true,
+    nav: true,
   });
   const [size, setSize] = useState(window.innerWidth);
 
@@ -46,19 +52,19 @@ export const TopProduct = () => {
   return (
     <>
       {loading && <Loading />}
-      <div>
+      <div className=" p-4 ">
         <h2 className="text-lg tracking-tight text-gray-900 font-bold">
           Sản phẩm nổi bật
         </h2>
-        <div className="py-6">
+        <div className="py-6 ">
           {/* <div className="m-4 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 xl:gap-x-4"> */}
           {/* {productByCategories?.map((product) => (
               <ProductCard product={product} loading={loading}></ProductCard>
             ))} */}
           <Slider {...settings} className=" flex items-center justify-start ">
             {products?.map((product, index) => (
-              <div key={index} className=" ">
-                <div class="bg-white shadow-lg rounded-lg max-w-sm ">
+              <div key={index} className=" lg:mx-3">
+                <div class="bg-white shadow-lg border rounded-lg max-w-sm ">
                   <Link
                     to={"/product/" + product.name.replaceAll(" ", "-")}
                     state={{ slug: product?._id }}

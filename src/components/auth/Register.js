@@ -42,8 +42,8 @@ const Register = () => {
         `https://online-gateway.ghn.vn/shiip/public-api/master-data/province`,
         config
       );
-      setProvList(await data.data);
-      setSelectedProv(await data.data[0]?.ProvinceID);
+      setProvList(await data?.data);
+      setSelectedProv(await data?.data[0]?.ProvinceID);
     };
     callProv();
   }, []);
@@ -67,8 +67,8 @@ const Register = () => {
           },
         }
       );
-      setDisList(await data.data);
-      setSelectedDistrict(await data.data[0]?.DistrictID);
+      setDisList(await data?.data);
+      setSelectedDistrict(await data?.data[0]?.DistrictID);
     };
     callDis();
   }, [selectedProv]);
@@ -84,8 +84,8 @@ const Register = () => {
         `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${selectedDistrict}`,
         config
       );
-      setWardList(await data.data);
-      setSelectedWard(await data.data[0]?.WardCode);
+      setWardList(await data?.data);
+      setSelectedWard(await data?.data[0]?.WardCode);
     };
     callWard();
   }, [selectedDistrict]);

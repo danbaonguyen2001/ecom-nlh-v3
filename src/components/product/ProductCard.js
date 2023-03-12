@@ -41,7 +41,7 @@ const ProductCard = (props) => {
   return (
     <>
       <div class="relative max-w-2xl mx-auto ">
-        <div class="bg-white shadow-lg rounded-lg max-w-sm ">
+        <div class="bg-white shadow-lg border rounded-lg max-w-sm ">
           <Link
             to={"/product/" + product.name.replaceAll(" ", "-")}
             state={{ slug: product?._id }}

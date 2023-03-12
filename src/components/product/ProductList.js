@@ -85,7 +85,7 @@ const ProductList = () => {
   }, [CategoryName]);
 
   return (
-    <div className="bg-white min-h-[300px]">
+    <div className="bg-white rounded-lg shadow-lg min-h-[300px]">
       {loading ? (
         <Loading />
       ) : (

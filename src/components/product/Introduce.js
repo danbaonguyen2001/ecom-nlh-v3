@@ -107,10 +107,10 @@ const Introduce = (props) => {
       ) : (
         <div className="py-6 ">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="rounded-lg shadow-lg lg:col-span-7 pt-4 py-7 ">
+            <div className="rounded-lg shadow-lg lg:col-span-7 pt-4 py-7 border ">
               <Slider imgArr={imgArr} />
             </div>
-            <div className="rounded-lg shadow-lg lg:col-span-5 p-4">
+            <div className="rounded-lg shadow-lg lg:col-span-5 p-4 border">
               {/* Option */}
               <div className="mt-10">
                 <div className="flex items-center justify-between">
