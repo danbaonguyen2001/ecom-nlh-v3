@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
 
 const EditAddressModal = (props) => {
-  const { open, setOpen, address } = props;
+  const { open, setOpen, indexAddress } = props;
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
   const [user, setUser] = useState({
@@ -13,7 +13,7 @@ const EditAddressModal = (props) => {
     phone: `${userInfo?.data?.user?.phone}`,
     gender: `${userInfo?.data?.user?.gender}`,
   });
-  console.log(user);
+  console.log(indexAddress);
   const cancelButtonRef = useRef(null);
   return (
     <>
@@ -85,10 +85,7 @@ const EditAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Tỉnh</option>
-                                <option value="1">An Giang</option>
-                                <option value="2">HCM</option>
-                                <option value="3">Đồng Tháp</option>
+                                <option value="">--Tỉnh--</option>
                               </select>
                             </div>
                           </div>
@@ -107,10 +104,7 @@ const EditAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Huyện</option>
-                                <option value="1">Phú Tân</option>
-                                <option value="2">Chợ Mới</option>
-                                <option value="3">Tân Châu</option>
+                                <option value="">--Huyện--</option>
                               </select>
                             </div>
                           </div>
@@ -129,10 +123,7 @@ const EditAddressModal = (props) => {
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 aria-label="Default select example"
                               >
-                                <option selected>Xã</option>
-                                <option value="1">Phú Lâm</option>
-                                <option value="2">Phú Thạnh</option>
-                                <option value="3">Phú An</option>
+                                <option value="">--Xã--</option>
                               </select>
                             </div>
                           </div>

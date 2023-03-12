@@ -5,13 +5,13 @@ const Information = (props) => {
   return (
     <div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-lg shadow-lg lg:col-span-1 p-4">
+        <div className="rounded-lg shadow-lg lg:col-span-1 p-4 border">
           <h2 className="text-lg tracking-tight text-gray-900 font-bold">
             Mô tả sản phẩm
           </h2>
           <p className="font-normal ">{product?.description}</p>
         </div>
-        <div className="rounded-lg shadow-lg lg:col-span-1 p-4">
+        <div className="rounded-lg shadow-lg lg:col-span-1 p-4 border">
           <h2 className="text-lg tracking-tight text-gray-900 font-bold">
             Thông số kỹ thuật{" "}
           </h2>

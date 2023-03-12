@@ -9,6 +9,14 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
+  ORDER_PAY_REQUEST,
+  ORDER_PAY_SUCCESS,
+  ORDER_PAY_FAIL,
+  ORDER_PAY_RESET,
+  CANCEL_ORDER_REQUEST,
+  CANCEL_ORDER_SUCCESS,
+  CANCEL_ORDER_FAIL,
+  CANCEL_ORDER_RESET,
 } from '../constants/orderConstants'
 
 export const getOrderDetailReducer = (
@@ -53,6 +61,51 @@ export const getOrdersHistoryReducer = (state = { listOrders: [] }, action) => {
         error: action.payload,
       }
     case ORDER_HISTORY_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const payOrderReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_PAY_REQUEST:
+      return {
+        loading: true,
+      }
+    case ORDER_PAY_SUCCESS: {
+      return {
+        loading: false,
+        success: true,
+      }
+    }
+    case ORDER_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case ORDER_PAY_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const cancelOrderReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CANCEL_ORDER_REQUEST:
+      return {
+        loading: true,
+      }
+    case CANCEL_ORDER_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+    case CANCEL_ORDER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case CANCEL_ORDER_RESET:
       return {}
     default:
       return state

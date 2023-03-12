@@ -25,7 +25,7 @@ const OrderList = () => {
     <>
       {loading && <Loading />}
       {error && <p>ERROR</p>}
-      <div class=" bg-gray-100  rounded-lg border-2 border-dashed border-gray-200 mx-2 ">
+      <div class=" bg-gray-100  rounded-lg shadow-lg bg-white mx-2 ">
         <h1 class="mb-10 text-center text-2xl font-bold">Đơn hàng gần đây</h1>
 
         {/* List Items */}
@@ -45,10 +45,10 @@ const OrderList = () => {
             </Link>
           </div>
         ) : (
-          <div class="rounded-lg  lg:col-span-1 mx-4">
+          <div class="rounded-lg   lg:col-span-1 mx-4">
             {listOrders?.map((OrderItem, index) => (
               <div
-                class="justify-between mb-4 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
+                class="justify-between mb-4 rounded-lg bg-white border p-6 shadow-md sm:flex sm:justify-start"
                 key={index}
               >
                 {/* img */}

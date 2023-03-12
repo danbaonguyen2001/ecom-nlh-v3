@@ -1,28 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { getOrderDetail } from "../../actions/orderActions";
+import { cancelOrder, getOrderDetail } from "../../actions/orderActions";
 import Loading from "../../screens/Loading";
 import { MdCancelScheduleSend } from "react-icons/md";
 import { toDate, toVND } from "../../utils/format";
 import Item from "./sub/Item";
 import CancelOrderModal from "./sub/CancelOrderModal";
+import { CANCEL_ORDER_RESET } from "../../constants/orderConstants";
 
 const OrderDetail = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
   const { loading, orderItems } = useSelector((state) => state.orderDetail);
+  const {
+    loading: loadingCancel,
+    error: errorCancel,
+    success: successCancel,
+  } = useSelector((state) => state.cancelOrder);
   useEffect(() => {
     if (slug !== orderItems?._id) {
       dispatch(getOrderDetail(slug));
     }
-  }, [slug]);
-  console.log(orderItems);
+    if (successCancel) {
+      dispatch({ type: CANCEL_ORDER_RESET });
+    }
+  }, [slug, successCancel]);
 
   //Handle cancel Order
   const [open, setOpen] = useState(false);
-
+  const cancelHandle = (orderId, description) => {
+    dispatch(cancelOrder(orderId, description));
+    setOpen(false);
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -30,7 +41,7 @@ const OrderDetail = () => {
     <>
       {loading && <Loading />}
       <div
-        className="min-h-[300px] rounded-lg shadow-lg
+        className="min-h-[300px] rounded-lg shadow-lg bg-white
               px-4 sm:px-6 lg:max-w-7xl lg:px-8 mx-4 lg:mx-auto pb-2
     "
       >
@@ -154,7 +165,12 @@ const OrderDetail = () => {
         </div>
       </div>
 
-      <CancelOrderModal open={open} setOpen={setOpen} />
+      <CancelOrderModal
+        open={open}
+        setOpen={setOpen}
+        cancelHandle={cancelHandle}
+        orderId={orderItems?._id}
+      />
     </>
   );
 };

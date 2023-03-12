@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios";
 
 import {
   GET_PROVINCE_LIST_REQUEST,
@@ -13,28 +13,28 @@ import {
   GET_SHIPPING_FEE_REQUEST,
   GET_SHIPPING_FEE_SUCCESS,
   GET_SHIPPING_FEE_FAIL,
-} from '../constants/GHNConstants'
+} from "../constants/GHNConstants";
 import {
   Token_API_GHN,
   GHN,
   GHN_CALCULATE_FEE,
   SHOP_ID,
   district_id,
-} from '../apis/Api'
+} from "../apis/Api";
 export const getProvinceList = () => async (dispatch) => {
   try {
-    dispatch({ type: GET_PROVINCE_LIST_REQUEST })
+    dispatch({ type: GET_PROVINCE_LIST_REQUEST });
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Token: `${Token_API_GHN}`,
       },
-    }
-    const { data } = await axios.get(`${GHN}/province`, config)
+    };
+    const { data } = await axios.get(`${GHN}/province`, config);
     dispatch({
       type: GET_PROVINCE_LIST_SUCCESS,
       payload: data,
-    })
+    });
   } catch (error) {
     dispatch({
       type: GET_PROVINCE_LIST_FAIL,
@@ -42,30 +42,32 @@ export const getProvinceList = () => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    })
+    });
   }
-}
+};
 export const getDistrictList = (provinceId) => async (dispatch) => {
   try {
-    dispatch({ type: GET_DISTRICT_LIST_REQUEST })
+    dispatch({ type: GET_DISTRICT_LIST_REQUEST });
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Token: `${Token_API_GHN}`,
       },
-    }
-    const { data } = await axios.post(
-      `${GHN}/district`,
-      {
+    };
+    const { data } = await axios.get(`${GHN}/district`, {
+      headers: {
+        "Content-Type": "application/json",
+        Token: `${Token_API_GHN}`,
+      },
+      params: {
         province_id: provinceId,
       },
-      config
-    )
+    });
 
     dispatch({
       type: GET_DISTRICT_LIST_SUCCESS,
       payload: data,
-    })
+    });
   } catch (error) {
     dispatch({
       type: GET_DISTRICT_LIST_FAIL,
@@ -73,26 +75,26 @@ export const getDistrictList = (provinceId) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    })
+    });
   }
-}
+};
 export const getWardList = (districtId) => async (dispatch) => {
   try {
-    dispatch({ type: GET_WARD_LIST_REQUEST })
+    dispatch({ type: GET_WARD_LIST_REQUEST });
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Token: `${Token_API_GHN}`,
       },
-    }
+    };
     const { data } = await axios.get(
       `${GHN}/ward?district_id=${districtId}`,
       config
-    )
+    );
     dispatch({
       type: GET_WARD_LIST_SUCCESS,
       payload: data,
-    })
+    });
   } catch (error) {
     dispatch({
       type: GET_WARD_LIST_FAIL,
@@ -100,21 +102,21 @@ export const getWardList = (districtId) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    })
+    });
   }
-}
+};
 export const getShippingFe = (ward) => async (dispatch) => {
   try {
     dispatch({
       type: GET_SHIPPING_FEE_REQUEST,
-    })
+    });
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Token: `${Token_API_GHN}`,
       },
-    }
-    const { data } = await axios.post(
+    };
+    const { data } = await axios.get(
       `${GHN_CALCULATE_FEE}`,
       {
         service_id: 53320, // Loại dịch vụ vận chuyển
@@ -123,14 +125,14 @@ export const getShippingFe = (ward) => async (dispatch) => {
         from_district_id: district_id, // Mã quận/huyện nơi gửi hàng
         to_district_id: ward.DistrictID, // Mã quận/huyện nơi nhận hàng
         to_ward_code: ward.WardCode, // Mã Mã phường nhận bưu kiện.
-        weight: 50, // Khối lượng gói hàng (gram)
+        weight: 500, // Khối lượng gói hàng (gram)
         length: 20, // Chiều dài (cm)
         width: 20, // Chiều rộng (cm)
-        height: 20, // Chiều cao (cm)
+        height: 10, // Chiều cao (cm)
       },
       config
-    )
-    dispatch({ type: GET_SHIPPING_FEE_SUCCESS, payload: data })
+    );
+    dispatch({ type: GET_SHIPPING_FEE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: GET_SHIPPING_FEE_FAIL,
@@ -138,6 +140,6 @@ export const getShippingFe = (ward) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    })
+    });
   }
-}
+};
