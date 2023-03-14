@@ -26,7 +26,7 @@ const techs = [
 
 const Technology = () => {
   return (
-    <div className="bg-white rounded-lg p-4 mt-4">
+    <div className="bg-white rounded-lg p-4 mt-4 shadow-md">
       <div className="flex justify-between">
         <h2 className="heading-2"> 24H CÔNG NGHỆ</h2>
         <div className="flex justify-between items-center">

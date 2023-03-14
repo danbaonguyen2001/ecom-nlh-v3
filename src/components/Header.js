@@ -16,6 +16,9 @@ import { getHistoryOrders } from "../actions/orderActions";
 import Loading from "../screens/Loading";
 
 import { getProvinceList } from "../actions/GHNActions";
+import { Server } from "../apis/Api";
+import { searchProducts } from "../actions/productActions";
+import { toVND } from "../utils/format";
 const user = {};
 const defaultAvt =
   "data:image/png;base64,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";
@@ -80,7 +83,7 @@ const Header = () => {
     if (userInfo && cartItems) {
       let { total, quantity, count } = cartItems?.reduce(
         (cartTotal, cartItem) => {
-          console.log(cartItem?.item);
+          // console.log(cartItem?.item);
           cartTotal.total += cartItem.item.price * cartItem.item.quantity;
           cartTotal.quantity += cartItem.item.quantity;
           cartTotal.count += 1;
@@ -96,7 +99,7 @@ const Header = () => {
       );
       setQuantity({ total: total, quantity: quantity, count: count });
     }
-    console.log(qt);
+    // console.log(qt);
   }, [success, cartItems]);
 
   //Check Authen
@@ -149,7 +152,22 @@ const Header = () => {
   }, []);
 
   //handle search
-  const [listSearch, setListSearch] = useState();
+  const [paramsSearch, setParamsSearch] = useState({
+    page: 1,
+    size: 10,
+    keyword: "",
+  });
+  const [isSearch, setIsSearch] = useState(false);
+  const listSearch = useSelector((state) => state.productSearch);
+  const handleChangeKeyWord = (e) => {
+    setParamsSearch({ ...paramsSearch, keyword: e.target.value });
+    console.log(paramsSearch);
+  };
+
+  const handleSearch = () => {
+    dispatch(searchProducts(paramsSearch));
+    setIsSearch(true);
+  };
 
   return (
     <>
@@ -196,7 +214,8 @@ const Header = () => {
                     <div class="relative w-[240px] sm:w-96">
                       <div class="relative  flex w-full flex-wrap items-stretch">
                         <input
-                          onFocus={setListSearch()}
+                          // onFocus={setListSearch()}
+                          onChange={handleChangeKeyWord}
                           type="search"
                           class="relative m-0 -mr-px block w-[1%] min-w-0 flex-auto rounded-l  
                           border border-solid border-neutral-300 bg-white bg-clip-padding 
@@ -216,6 +235,7 @@ const Header = () => {
                           id="button-addon1"
                           data-te-ripple-init
                           data-te-ripple-color="light"
+                          onClick={handleSearch}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -233,14 +253,55 @@ const Header = () => {
                       </div>
 
                       {/* Result Search */}
-                      <div className=" hidden absolute top-[120%] right-0 max-h-80 w-full shadow bg-gray-100 rounded-lg p-2">
-                        <h4 className="text-base font-semibold">
-                          Kết quả tìm kiếm
-                        </h4>
-                        <hr className="pb-2" />
-                        {/* list  */}
-                        <div className="flex flex-col overflow-auto"></div>
-                      </div>
+                      {isSearch && (
+                        <div
+                          className="  absolute top-[120%] right-0 max-h-80 w-[120%] md:w-full shadow bg-gray-100 
+                                          rounded-lg p-2 overflow-y-auto "
+                        >
+                          <h4 className="text-base font-semibold">
+                            Kết quả tìm kiếm
+                          </h4>
+                          <hr className="pb-2" />
+                          {/* list  */}
+                          {listSearch?.loading ? (
+                            <div>Loading...</div>
+                          ) : (
+                            <div className="flex flex-col ">
+                              {listSearch?.products.map((product, i) => (
+                                <Link
+                                  key={i}
+                                  to={
+                                    "/product/" +
+                                    product?.name?.replaceAll(" ", "-")
+                                  }
+                                  state={{ slug: product?._id }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 py-4 px-2 border bg-white rounded-lg my-1 justify-start"
+                                  onClick={() => setIsSearch(false)}
+                                >
+                                  <div className="col-span-1 mr-4 items-center">
+                                    <img
+                                      src={product?.image}
+                                      alt=""
+                                      className="max-w-[full] max-h-36 scale-img"
+                                    />
+                                  </div>
+                                  <div className="col-span-1 flex flex-col">
+                                    <h2 className="font-semibold">
+                                      {product?.name}
+                                    </h2>
+                                    <h2 className="font-medium">
+                                      {toVND(product?.price)}{" "}
+                                      <i>
+                                        {product?.productOptions[0]?.promotion}%
+                                      </i>
+                                    </h2>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 

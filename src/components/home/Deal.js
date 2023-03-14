@@ -42,17 +42,19 @@ const Deal = () => {
     window.scrollTo(0, 0);
   }, []);
   return (
-    <div className=" p-4 mt-4 pb-10">
+    <div className="bg-gray-300  p-4 mt-4 pb-10 rounded-lg">
       <div className="flex items-start">
-        <h2 className="heading-2 text-left"> DEAL KHỦNG</h2>
+        <h2 className="heading-2 text-left text-gray-900"> DEAL KHỦNG</h2>
       </div>
-      <Slider {...settings} className="mt-4 ">
-        {sliders.map((slider, i) => (
-          <div className="" key={i}>
-            <img src={slider} alt="" className="rounded-md" />
-          </div>
-        ))}
-      </Slider>
+      <div className="flex justify-center">
+        <Slider {...settings} className="mt-4 w-[95%] ">
+          {sliders.map((slider, i) => (
+            <div className="" key={i}>
+              <img src={slider} alt="" className="rounded-md" />
+            </div>
+          ))}
+        </Slider>
+      </div>
     </div>
   );
 };

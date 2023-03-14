@@ -47,7 +47,9 @@ export const TopProduct = () => {
   console.log(size);
 
   useEffect(() => {
-    dispatch(listTopProducts());
+    if (!products) {
+      dispatch(listTopProducts());
+    }
   }, []);
   return (
     <>

@@ -4,6 +4,9 @@ import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
   PRODUCT_LIST_FAIL,
+  PRODUCT_SEARCH_REQUEST,
+  PRODUCT_SEARCH_SUCCESS,
+  PRODUCT_SEARCH_FAIL,
   PRODUCT_DETAIL_REQUEST,
   PRODUCT_DETAIL_SUCCESS,
   PRODUCT_DETAIL_FAIL,
@@ -57,6 +60,28 @@ export const listProducts =
       });
     }
   };
+
+/**Search Product */
+export const searchProducts = (keyword) => async (dispatch) => {
+  try {
+    dispatch({ type: PRODUCT_SEARCH_REQUEST });
+    const { data } = await axios.get(`${Server}/api/products`, {
+      params: { ...keyword },
+    });
+    dispatch({
+      type: PRODUCT_SEARCH_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_SEARCH_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 /** Get Product Detail */
 export const productDetail = (id) => async (dispatch) => {
