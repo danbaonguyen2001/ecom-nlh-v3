@@ -16,7 +16,7 @@ const techs = [
 ];
 const Trademark = () => {
   return (
-    <div className="bg-white rounded-lg p-4 mt-4">
+    <div className="bg-white rounded-lg p-4 mt-4 shadow-md">
       <div className="flex items-start">
         <h2 className="heading-2 text-left"> THƯƠNG HIỆU NỔI BẬT</h2>
       </div>
