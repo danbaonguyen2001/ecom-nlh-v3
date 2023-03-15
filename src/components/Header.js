@@ -1,4 +1,4 @@
-import { React, Fragment, useState, useEffect } from "react";
+import { React, Fragment, useState, useEffect, useRef } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -161,7 +161,7 @@ const Header = () => {
   const listSearch = useSelector((state) => state.productSearch);
   const handleChangeKeyWord = (e) => {
     setParamsSearch({ ...paramsSearch, keyword: e.target.value });
-    console.log(paramsSearch);
+    // console.log(paramsSearch);
   };
 
   const handleSearch = () => {
@@ -169,6 +169,22 @@ const Header = () => {
     setIsSearch(true);
   };
 
+  const refOne = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+  }, []);
+
+  const handleClickOutside = (e) => {
+    if (!refOne.current.contains(e.target)) {
+      setIsSearch(false);
+      setParamsSearch({ ...paramsSearch, keyword: "" });
+    }
+
+    //  else {
+    //   console.log("IN");
+    // }
+  };
   return (
     <>
       {loading && <Loading />}
@@ -210,11 +226,10 @@ const Header = () => {
                   </div>
 
                   {/* Search */}
-                  <div class="flex justify-center ">
+                  <div class="flex justify-center " ref={refOne}>
                     <div class="relative w-[240px] sm:w-96">
                       <div class="relative  flex w-full flex-wrap items-stretch">
                         <input
-                          // onFocus={setListSearch()}
                           onChange={handleChangeKeyWord}
                           type="search"
                           class="relative m-0 -mr-px block w-[1%] min-w-0 flex-auto rounded-l  
@@ -224,6 +239,7 @@ const Header = () => {
                           focus:shadow-te-primary focus:outline-none dark:text-slate-600 dark:placeholder:text-neutral-200"
                           placeholder="Search"
                           aria-label="Search"
+                          // value={paramsSearch.keyword}
                           aria-describedby="button-addon1"
                         />
                         <button
@@ -255,16 +271,23 @@ const Header = () => {
                       {/* Result Search */}
                       {isSearch && (
                         <div
-                          className="  absolute top-[120%] right-0 max-h-80 w-[120%] md:w-full shadow bg-gray-100 
+                          className="  absolute top-[120%] right-[-15%] left-[-15%] max-h-80 w-[130%] 
+                          md:w-full md:right-0 md:left-0 shadow bg-gray-100 
                                           rounded-lg p-2 overflow-y-auto "
                         >
-                          <h4 className="text-base font-semibold">
+                          <h4 className="text-lg font-semibold">
                             Kết quả tìm kiếm
                           </h4>
                           <hr className="pb-2" />
                           {/* list  */}
                           {listSearch?.loading ? (
                             <div>Loading...</div>
+                          ) : listSearch?.products.length === 0 ? (
+                            <div>
+                              <h4 className="text-base font-semibold">
+                                Không có sản phẩm phù hợp với từ khóa
+                              </h4>
+                            </div>
                           ) : (
                             <div className="flex flex-col ">
                               {listSearch?.products.map((product, i) => (
@@ -275,24 +298,25 @@ const Header = () => {
                                     product?.name?.replaceAll(" ", "-")
                                   }
                                   state={{ slug: product?._id }}
-                                  className="grid grid-cols-1 sm:grid-cols-2 py-4 px-2 border bg-white rounded-lg my-1 justify-start"
+                                  className="grid grid-cols-1 sm:grid-cols-2 py-4 px-2 border bg-white rounded-lg my-1 items-center"
                                   onClick={() => setIsSearch(false)}
                                 >
-                                  <div className="col-span-1 mr-4 items-center">
+                                  <div className="col-span-1 mr-4 ">
                                     <img
                                       src={product?.image}
                                       alt=""
                                       className="max-w-[full] max-h-36 scale-img"
                                     />
                                   </div>
-                                  <div className="col-span-1 flex flex-col">
+                                  <div className="col-span-1 flex flex-col justify-center ">
                                     <h2 className="font-semibold">
                                       {product?.name}
                                     </h2>
                                     <h2 className="font-medium">
                                       {toVND(product?.price)}{" "}
-                                      <i>
-                                        {product?.productOptions[0]?.promotion}%
+                                      <i className="font-thin">
+                                        -{product?.productOptions[0]?.promotion}
+                                        %
                                       </i>
                                     </h2>
                                   </div>
