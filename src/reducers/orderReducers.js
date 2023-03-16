@@ -9,10 +9,10 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
-  ORDER_PAY_REQUEST,
-  ORDER_PAY_SUCCESS,
-  ORDER_PAY_FAIL,
-  ORDER_PAY_RESET,
+  CREATE_ORDER_REQUEST,
+  CREATE_ORDER_SUCCESS,
+  CREATE_ORDER_FAIL,
+  CREATE_ORDER_RESET,
   CANCEL_ORDER_REQUEST,
   CANCEL_ORDER_SUCCESS,
   CANCEL_ORDER_FAIL,
@@ -66,24 +66,25 @@ export const getOrdersHistoryReducer = (state = { listOrders: [] }, action) => {
       return state
   }
 }
-export const payOrderReducer = (state = {}, action) => {
+export const createOrderReducer = (state = {}, action) => {
   switch (action.type) {
-    case ORDER_PAY_REQUEST:
+    case CREATE_ORDER_REQUEST:
       return {
         loading: true,
       }
-    case ORDER_PAY_SUCCESS: {
+    case CREATE_ORDER_SUCCESS: {
       return {
         loading: false,
         success: true,
+        successOrderId: action.payload._id,
       }
     }
-    case ORDER_PAY_FAIL:
+    case CREATE_ORDER_FAIL:
       return {
         loading: false,
         error: action.payload,
       }
-    case ORDER_PAY_RESET:
+    case CREATE_ORDER_RESET:
       return {}
     default:
       return state

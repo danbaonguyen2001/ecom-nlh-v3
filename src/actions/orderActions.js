@@ -8,9 +8,9 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
-  ORDER_PAY_REQUEST,
-  ORDER_PAY_SUCCESS,
-  ORDER_PAY_FAIL,
+  CREATE_ORDER_REQUEST,
+  CREATE_ORDER_SUCCESS,
+  CREATE_ORDER_FAIL,
   CANCEL_ORDER_REQUEST,
   CANCEL_ORDER_SUCCESS,
   CANCEL_ORDER_FAIL,
@@ -79,13 +79,12 @@ export const getHistoryOrders = () => async (dispatch, getState) => {
     })
   }
 }
-export const payOrder =
-  (shippingAddress, paymentResult) => async (dispatch, getState) => {
+export const createOrder =
+  (dataForm, paymentResult) => async (dispatch, getState) => {
     try {
       dispatch({
-        type: ORDER_PAY_REQUEST,
+        type: CREATE_ORDER_REQUEST,
       })
-      console.log(paymentResult)
       const {
         userLogin: { userInfo },
       } = getState()
@@ -97,16 +96,16 @@ export const payOrder =
       }
       const { data } = await axios.post(
         `${Server}/api/orders`,
-        { shippingAddress, paymentResult },
+        { ...dataForm, paymentResult },
         config
       )
       dispatch({
-        type: ORDER_PAY_SUCCESS,
+        type: CREATE_ORDER_SUCCESS,
         payload: data,
       })
     } catch (error) {
       dispatch({
-        type: ORDER_PAY_FAIL,
+        type: CREATE_ORDER_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
