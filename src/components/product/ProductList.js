@@ -16,8 +16,13 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import ProductCard from "./ProductCard";
-import { Link } from "react-router-dom";
-import AddToCartModal from "./sub/AddToCartModal";
+// import { Link } from "react-router-dom";
+// import AddToCartModal from "./sub/AddToCartModal";
+
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { ProductFilters } from "../../constants/FilterByCategories";
 
 const sortOptions = [
   { name: "Ngẫu nhiên", href: "#", current: true },
@@ -82,13 +87,55 @@ const ProductList = () => {
     if (CategoryName !== categoryName) {
       dispatch(getProductByCategory(CategoryName));
     }
+    console.log(CategoryName);
   }, [CategoryName]);
+
+  //Filter
+  const [filterList, SetFilterList] = useState({});
+  useEffect(() => {
+    if (CategoryName !== categoryName) {
+      if (CategoryName === "Điện thoại") {
+        SetFilterList(ProductFilters[0]);
+      } else if (CategoryName === "Tablet") {
+      } else if (CategoryName === "Laptop") {
+      } else {
+      }
+    }
+  }, [CategoryName]);
+
+  console.log(filterList);
+
+  const [settings, setSettings] = useState({
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    nav: true,
+  });
+  const [size, setSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleSize = () => {
+      setSize(window.innerWidth);
+    };
+    window.addEventListener("resize", handleSize);
+  }, []);
+  useEffect(() => {
+    if (size < 640) {
+      setSettings({ ...settings, slidesToShow: 1 });
+    } else {
+      setSettings({ ...settings, slidesToShow: 2 });
+    }
+  }, [size]);
 
   return (
     <div className="bg-white rounded-lg shadow-lg min-h-[300px]">
       {loading ? (
         <Loading />
       ) : (
+        //
         <div>
           {/* Mobile filter dialog */}
           <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -219,6 +266,21 @@ const ProductList = () => {
               <h1 className="text-3xl font-bold tracking-tight text-gray-900">
                 {categoryName}
               </h1>
+
+              {/* Sliders */}
+              {/* <div className="mt-4 mb-8">
+                <Slider {...settings}>
+                  {sliders.map((slider, i) => (
+                    <div className=" w-full h-40" key={i}>
+                      <img
+                        src={slider}
+                        alt=""
+                        className="max-h-40 w-full rounded-md"
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              </div> */}
 
               <div className="flex items-center">
                 <Menu as="div" className="relative inline-block text-left">

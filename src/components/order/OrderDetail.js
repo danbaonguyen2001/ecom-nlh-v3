@@ -26,6 +26,7 @@ const OrderDetail = () => {
     if (successCancel) {
       dispatch({ type: CANCEL_ORDER_RESET });
     }
+    console.log(orderItems);
   }, [slug, successCancel]);
 
   //Handle cancel Order
@@ -149,13 +150,15 @@ const OrderDetail = () => {
           </div>
 
           {/* cancel */}
-          <div className="flex items-center justify-end my-4 text-red-500">
+          <div className="flex items-center justify-end my-4 text-red-500 ">
             <button
+              disabled={orderItems?.status?.statusNow !== "pending"}
               type=""
-              className="  flex w -full items-center justify-center rounded-md border border-gray-400 
-                          bg-gray-200  py-2 px-4 text-base font-medium text-red-500
-                          hover:bg-gray-300  focus:outline-none focus:ring-2
-                           focus:ring-primary-500 focus:ring-offset-2"
+              className={
+                orderItems?.status?.statusNow !== "pending"
+                  ? " flex w -full items-center justify-center rounded-md border border-gray-400   bg-gray-200  py-2 px-4 text-base font-medium opacity-50 "
+                  : " flex w -full items-center justify-center rounded-md border border-gray-400   bg-gray-200  py-2 px-4 text-base font-medium text-red-500  hover:bg-gray-300  focus:outline-none focus:ring-2    focus:ring-primary-500 focus:ring-offset-2"
+              }
               onClick={() => setOpen(true)}
             >
               <MdCancelScheduleSend className="mr-2 text-red-500" />
