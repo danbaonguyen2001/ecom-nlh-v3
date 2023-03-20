@@ -17,6 +17,10 @@ import {
   CANCEL_ORDER_SUCCESS,
   CANCEL_ORDER_FAIL,
   CANCEL_ORDER_RESET,
+  MOMO_QUICK_PAY_ORDER_FAIL,
+  MOMO_QUICK_PAY_ORDER_REQUEST,
+  MOMO_QUICK_PAY_ORDER_RESET,
+  MOMO_QUICK_PAY_ORDER_SUCCESS,
 } from '../constants/orderConstants'
 
 export const getOrderDetailReducer = (
@@ -99,6 +103,7 @@ export const cancelOrderReducer = (state = {}, action) => {
     case CANCEL_ORDER_SUCCESS:
       return {
         loading: false,
+
         success: true,
       }
     case CANCEL_ORDER_FAIL:
@@ -107,6 +112,29 @@ export const cancelOrderReducer = (state = {}, action) => {
         error: action.payload,
       }
     case CANCEL_ORDER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const quickPayReducer = (state = {}, action) => {
+  switch (action.type) {
+    case MOMO_QUICK_PAY_ORDER_REQUEST:
+      return {
+        loading: true,
+      }
+    case MOMO_QUICK_PAY_ORDER_SUCCESS:
+      return {
+        loading: false,
+        payUrl: action.payload,
+        success: true,
+      }
+    case MOMO_QUICK_PAY_ORDER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case MOMO_QUICK_PAY_ORDER_RESET:
       return {}
     default:
       return state
