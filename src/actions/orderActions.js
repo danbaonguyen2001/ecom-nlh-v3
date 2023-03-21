@@ -21,8 +21,6 @@ import {
 import { logout } from './userActions'
 import { APP_ID, Server } from '../apis/Api'
 import axios from 'axios'
-import crypto from 'crypto'
-
 export const getOrderDetail = (id) => async (dispatch, getState) => {
   try {
     dispatch({
