@@ -21,6 +21,9 @@ import {
   MOMO_QUICK_PAY_ORDER_REQUEST,
   MOMO_QUICK_PAY_ORDER_RESET,
   MOMO_QUICK_PAY_ORDER_SUCCESS,
+  QUERY_CHECKOUT_SUCCESS,
+  QUERY_CHECKOUT_REQUEST,
+  QUERY_CHECKOUT_FAIL,
 } from '../constants/orderConstants'
 
 export const getOrderDetailReducer = (
@@ -135,6 +138,28 @@ export const quickPayReducer = (state = {}, action) => {
         error: action.payload,
       }
     case MOMO_QUICK_PAY_ORDER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const queryCheckoutReducer = (state = {}, action) => {
+  switch (action.type) {
+    case QUERY_CHECKOUT_REQUEST:
+      return {
+        loading: true,
+      }
+    case QUERY_CHECKOUT_SUCCESS:
+      return {
+        loading: false,
+        data: action.payload,
+      }
+    case QUERY_CHECKOUT_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case QUERY_CHECKOUT_REQUEST:
       return {}
     default:
       return state
