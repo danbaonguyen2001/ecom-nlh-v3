@@ -1,20 +1,13 @@
+import React from "react";
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
+import { BiEdit } from "react-icons/bi";
 import { AiFillWarning } from "react-icons/ai";
-import { deleteAddress } from "../../actions/userActions";
 
-const DeleteAddressModal = (props) => {
-  const { open, setOpen, address } = props;
-
-  const dispatch = useDispatch();
-  const { loading, userInfo } = useSelector((state) => state.userLogin);
-  console.log(userInfo);
+const Modal = (props) => {
+  const { open, setOpen, title, btnName, type, children, onClick } = props;
   const cancelButtonRef = useRef(null);
-  const handleDelete = () => {
-    dispatch(deleteAddress(userInfo.data.user.addresses[address]._id));
-    setOpen(false);
-  };
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -64,26 +57,29 @@ const DeleteAddressModal = (props) => {
                           as="h3"
                           className=" flex items-center text-lg font-medium leading-6 text-gray-900 mb-1"
                         >
-                          <AiFillWarning className="text-orange-400 mr-2" />
-                          Xác nhận xóa địa chỉ
+                          {type === "infor" && (
+                            <BiEdit className="text-primary-500 mr-2" />
+                          )}
+                          {type === "warning" && (
+                            <AiFillWarning className="text-primary-500 mr-2" />
+                          )}
+
+                          {title ? title : "Tiêu đề"}
                         </Dialog.Title>
-                        <div className="mt-2 flex items-center ">
-                          {userInfo?.data?.user?.addresses[address]?.address}
-                        </div>
                       </div>
                     </div>
                   </div>
+                  <div>{children}</div>
                   <div className="bg-gray-300 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
-                      onClick={handleDelete}
                       type="button"
                       className="inline-flex w-full justify-center rounded-md border border-transparent
                      bg-primary-600 px-4 py-2 text-base font-medium text-white shadow-sm
                       hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-red-500 
                       focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                      //   onClick={() => handleAddToCart()}
+                      onClick={() => onClick()}
                     >
-                      Xóa
+                      {btnName ? btnName : "Button"}
                     </button>
                     <button
                       type="button"
@@ -107,4 +103,4 @@ const DeleteAddressModal = (props) => {
   );
 };
 
-export default DeleteAddressModal;
+export default Modal;

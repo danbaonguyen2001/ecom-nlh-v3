@@ -5,10 +5,10 @@ import { toVND } from "../../../utils/format";
 const Item = (props) => {
   const { item } = props;
 
-  console.log(item);
+  // console.log(item);
   return (
     <div class="relative max-w-2xl mx-auto ">
-      <div class="bg-white shadow-lg rounded-lg max-w-sm ">
+      <div class="bg-white border rounded-lg max-w-sm ">
         <Link
           to={"/product/" + item.name.replaceAll(" ", "-")}
           state={{ slug: item?.product }}

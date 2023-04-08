@@ -10,6 +10,8 @@ import Loading from "./Loading";
 import ChatBot from "../components/ChatBot";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthMiddleWare from "../middleware/AuthMiddleWare";
+import Compare from "./Compare";
 
 const Layout = () => {
   return (
@@ -17,12 +19,16 @@ const Layout = () => {
       <BrowserRouter>
         <Provider store={store}>
           <ToastContainer />
-          <App>
-            <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 min-h-[300px] ">
-              <Routes />
-            </div>
-            <ChatBot />
-          </App>
+          <AuthMiddleWare>
+            <App>
+              <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 min-h-[300px] ">
+                <Routes />
+              </div>
+              <ChatBot />
+              <Compare />
+            </App>
+          </AuthMiddleWare>
+
           {/* <Header />
         <Routes />
         <Footer /> */}
