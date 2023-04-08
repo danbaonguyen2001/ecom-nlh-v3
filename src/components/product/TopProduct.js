@@ -65,7 +65,7 @@ export const TopProduct = () => {
             ))} */}
           <Slider {...settings} className=" flex items-center justify-start ">
             {products?.map((product, index) => (
-              <div key={index} className=" ">
+              <div key={index} className=" px-2">
                 <div class="bg-white shadow-lg border rounded-lg  ">
                   <Link
                     to={"/product/" + product.name.replaceAll(" ", "-")}

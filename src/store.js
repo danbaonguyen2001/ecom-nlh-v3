@@ -1,8 +1,8 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-import { userLoginReducer } from './reducers/userReducers'
+import { userLoginReducer, userRegisterReducer } from "./reducers/userReducers";
 import {
   productListReducer,
   productDetailReducer,
@@ -14,22 +14,27 @@ import {
   productTopRateReducer,
   productCommentCreateReducer,
   productSearchReducer,
-} from './reducers/productReducers'
-import { cartsReducer, cartUpdateReducer } from './reducers/cartReducers'
+  compareProducts,
+} from "./reducers/productReducers";
+import { cartsReducer, cartUpdateReducer } from "./reducers/cartReducers";
 import {
   getOrderDetailReducer,
   getOrdersHistoryReducer,
   createOrderReducer,
   cancelOrderReducer,
-} from './reducers/orderReducers'
-import { GHNReducers, getShippingFeReducer } from './reducers/GHNReducers'
-import { VNDToUSDReducer } from './reducers/vndtousdReducer'
+  quickPayReducer,
+} from "./reducers/orderReducers";
+import { GHNReducers, getShippingFeReducer } from "./reducers/GHNReducers";
+import { VNDToUSDReducer } from "./reducers/vndtousdReducer";
+import { productListCompareReducer } from "./reducers/compareReducers";
 const reducers = combineReducers({
   userLogin: userLoginReducer,
+  userRegister: userRegisterReducer,
   productCompare: productListReducer,
   productSearch: productSearchReducer,
   productDetail: productDetailReducer,
   productListByCategories: productListByCategoryReducer,
+  compareProducts: compareProducts,
   productListBySubCategory: productListBySubCategoryReducer,
   productReviewCreate: productReviewCreateReducer,
   productReviewDelete: productReviewDeleteReducer,
@@ -45,15 +50,18 @@ const reducers = combineReducers({
   historyOrders: getOrdersHistoryReducer,
   createOrder: createOrderReducer,
   cancelOrder: cancelOrderReducer,
+  quickPay: quickPayReducer,
   //addresses
   GHN: GHNReducers,
   shippingFee: getShippingFeReducer,
   //VND to USD
   VNDToUSD: VNDToUSDReducer,
-})
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
-  : null
+  // Compare products
+  productListCompare: productListCompareReducer,
+});
+const userInfoFromStorage = localStorage.getItem("userInfo")
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
 
 const initialState = userInfoFromStorage
   ? {
@@ -61,12 +69,12 @@ const initialState = userInfoFromStorage
     }
   : {
       userLogin: { userInfo: userInfoFromStorage, logout: true },
-    }
-const middleware = [thunk]
+    };
+const middleware = [thunk];
 const store = createStore(
   reducers,
   initialState,
   composeWithDevTools(applyMiddleware(...middleware))
-)
+);
 
-export default store
+export default store;

@@ -72,7 +72,7 @@ export default function Banner() {
       <div className="mt-4 mb-8">
         <Slider {...settings}>
           {sliders.map((slider, i) => (
-            <div className=" w-full h-40" key={i}>
+            <div className=" w-full h-40 px-2 " key={i}>
               <img src={slider} alt="" className="max-h-40 w-full rounded-md" />
             </div>
           ))}

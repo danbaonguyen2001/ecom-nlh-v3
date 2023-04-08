@@ -2,20 +2,43 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
+import { updateProfile } from "../../actions/userActions";
+import { DefaultAvt } from "../../constants/userConstants";
+import { useNavigation } from "react-router-dom";
 
 const EditInforModal = (props) => {
   const { open, setOpen, address } = props;
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
   const [user, setUser] = useState({
+    avatar: userInfo.data.user.avatar.url
+      ? userInfo.data.user.avatar.url
+      : DefaultAvt,
     name: `${userInfo?.data?.user?.name}`,
     email: `${userInfo?.data?.user?.email}`,
     phone: `${userInfo?.data?.user?.phone}`,
     gender: `${userInfo?.data?.user?.gender}`,
-    addrerss: "",
+    addresses: userInfo?.data?.user?.addresses,
+    isNew: false,
+    addressID: "",
+    editAddress: false,
   });
   console.log(user);
+  // console.log(userInfo);
+  // console.log(userInfo?.data?.user?.addresses);
+  console.log(user.addresses[0]);
   const cancelButtonRef = useRef(null);
+  const handleOnChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  // const navigate = useNavigation();
+  const handleSubmit = () => {
+    dispatch(updateProfile(user));
+    if (userInfo.message === "User updated") {
+    }
+    setOpen(false);
+  };
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -52,7 +75,7 @@ const EditInforModal = (props) => {
                   className="relative transform overflow-hidden rounded-lg 
               bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
                 >
-                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <form className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
                       {/* <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                       <ExclamationTriangleIcon
@@ -69,6 +92,16 @@ const EditInforModal = (props) => {
                           Cập nhật thông tin cá nhân
                         </Dialog.Title>
 
+                        {userInfo?.error && (
+                          <Dialog.Title
+                            as="h3"
+                            className=" flex items-center text-lg font-medium leading-6 text-gray-900 mb-1"
+                          >
+                            <BiEdit className="text-primary-500 mr-2" />
+                            Cập nhật thông tin cá nhân
+                          </Dialog.Title>
+                        )}
+
                         {/* Input */}
                         <div className="mt-2 flex flex-wrap justify-between ">
                           <div className="w-full  mb-3">
@@ -83,8 +116,10 @@ const EditInforModal = (props) => {
                               <input
                                 required
                                 type="text"
+                                name="name"
                                 value={user?.name}
                                 placeholder="Nhập tên của bạn"
+                                onChange={handleOnChange}
                                 class=" w-full  p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                               />
                             </div>
@@ -101,13 +136,15 @@ const EditInforModal = (props) => {
                               <input
                                 required
                                 type="phone"
+                                name="phone"
                                 value={user?.phone}
                                 placeholder="Nhập số điện thoại"
+                                onChange={handleOnChange}
                                 class=" w-full  p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                               />
                             </div>
                           </div>
-                          <div className="w-full  mb-3">
+                          <div className="w-full  mb-3 ">
                             <label
                               for=""
                               class="text-base font-medium text-gray-900"
@@ -115,8 +152,9 @@ const EditInforModal = (props) => {
                               {" "}
                               Địa chỉ email{" "}
                             </label>
-                            <div class="mt-2.5">
+                            <div class="mt-2.5 opacity-40">
                               <input
+                                disabled
                                 required
                                 type="email"
                                 value={user?.email}
@@ -137,7 +175,7 @@ const EditInforModal = (props) => {
                                 <input
                                   class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                   type="radio"
-                                  name="inlineRadioOptions"
+                                  name="gender"
                                   id="inlineRadio1"
                                   value="male"
                                   checked={
@@ -160,7 +198,7 @@ const EditInforModal = (props) => {
                                 <input
                                   class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                   type="radio"
-                                  name="inlineRadioOptions"
+                                  name="gender"
                                   id="inlineRadio2"
                                   value="female"
                                   checked={user?.gender === "female"}
@@ -180,15 +218,15 @@ const EditInforModal = (props) => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </form>
                   <div className="bg-gray-300 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
-                      type="button"
+                      type="submit"
                       className="inline-flex w-full justify-center rounded-md border border-transparent
                      bg-primary-600 px-4 py-2 text-base font-medium text-white shadow-sm
                       hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-red-500 
                       focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                      //   onClick={() => handleAddToCart()}
+                      onClick={handleSubmit}
                     >
                       Cập nhật
                     </button>

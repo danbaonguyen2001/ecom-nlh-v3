@@ -5,14 +5,18 @@ import { toast } from "react-toastify";
 import { TiDelete } from "react-icons/ti";
 import { GiConfirmed } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
-import axios from "axios";
 import { getCarts, updateCart } from "../actions/cartActions";
-import { createOrder } from "../actions/orderActions";
+import {
+  createOrder,
+  getHistoryOrders,
+  initiateQuickPay,
+} from "../actions/orderActions";
 import { toVND } from "../utils/format";
 import Loading from "./Loading";
-import paypal from "../assets/images/paypal.svg";
+// import paypal from '../assets/images/paypal.svg'
 import vnpay from "../assets/images/vnpay.svg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import momo from "../assets/images/momo-seeklogo.com.svg";
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -23,17 +27,22 @@ import {
 import { CLEAR_ERROR, CLEAR_ERROR_ADDRESS } from "../constants/GHNConstants";
 import {
   CREATE_ORDER_RESET,
-  ORDER_PAY_RESET,
+  MOMO_QUICK_PAY_ORDER_RESET,
 } from "../constants/orderConstants";
 import { VNDToUSD } from "../actions/vndtousdActions";
 import { VND_TO_USD_RESET } from "../constants/vndtousdConstants";
 import { Link } from "react-router-dom";
-
 import { AiTwotoneHome } from "react-icons/ai";
 import { BsFillCartXFill } from "react-icons/bs";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {
+    loading: loadingMomo,
+    success: successMomo,
+    error: errorMomo,
+    payUrl,
+  } = useSelector((state) => state.quickPay);
   const {
     loading: loadingOder,
     success: successOrder,
@@ -235,6 +244,16 @@ const Cart = () => {
     }
   }, [selectedSenderWard, dispatch]);
   useEffect(() => {
+    if (successMomo) {
+      if (payUrl) {
+        window.location.href = `${payUrl}`;
+      }
+
+      dispatch({ type: MOMO_QUICK_PAY_ORDER_RESET });
+    }
+    if (errorMomo) {
+      dispatch({ type: MOMO_QUICK_PAY_ORDER_RESET });
+    }
     if (errorOrder) {
       toast.error(
         `Xãy ra lỗi trong quá trình thực thi! Xin vui lòng liên hệ quản trị viên.`,
@@ -264,6 +283,7 @@ const Cart = () => {
       });
       dispatch(getCarts());
       navigate(`/order/${successOrderId}`);
+      dispatch(getHistoryOrders());
       dispatch({ type: CREATE_ORDER_RESET });
     }
     if (errorFee) {
@@ -303,7 +323,7 @@ const Cart = () => {
         progress: undefined,
         theme: "light",
       });
-      // dispatch({ type: VND_TO_USD_RESET })
+      dispatch({ type: VND_TO_USD_RESET });
     }
   }, [
     errorFee,
@@ -312,6 +332,8 @@ const Cart = () => {
     errorVndToUsd,
     successOrder,
     errorOrder,
+    successMomo,
+    errorMomo,
   ]);
 
   const successPaymentHandler = (paymentResult) => {
@@ -335,12 +357,47 @@ const Cart = () => {
     };
     dispatch(createOrder(dataForm));
   };
-  // function sumArray(arr) {
-  //   return arr.reduce((acc, val) => acc?.item?.price + val, 0)
-  // }
-  // if (cartItems) {
-  //   console.log(sumArray(JSON.parse(cartItems)))
-  // }
+  const shipCodHandle = () => {
+    const dataForm = {
+      shippingAddress: {
+        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+        city: `${selectedSenderProvince?.ProvinceName}`,
+        country: "VN",
+      },
+      paymentMethod: isOnline ? "paypal" : "COD",
+      itemsPrice: cartItems?.reduce(function (total, item) {
+        return (total += item?.item?.price * item?.item?.quantity);
+      }, 0),
+      shippingPrice: shippingFee && shippingFee.total,
+      totalPrice:
+        shippingFee &&
+        cartItems?.reduce(function (total, item) {
+          return (total += item?.item?.price * item?.item?.quantity);
+        }, 0 + shippingFee.total),
+    };
+    dispatch(createOrder(dataForm));
+  };
+  const handlePaymentMomo = () => {
+    const dataForm = {
+      shippingAddress: {
+        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+        city: `${selectedSenderProvince?.ProvinceName}`,
+        country: "VN",
+      },
+      paymentMethod: isOnline ? "paypal" : "COD",
+      itemsPrice: cartItems?.reduce(function (total, item) {
+        return (total += item?.item?.price * item?.item?.quantity);
+      }, 0),
+      shippingPrice: shippingFee && shippingFee.total,
+      totalPrice:
+        shippingFee &&
+        cartItems?.reduce(function (total, item) {
+          return (total += item?.item?.price * item?.item?.quantity);
+        }, 0 + shippingFee.total),
+    };
+    dispatch(initiateQuickPay(dataForm));
+  };
+
   return (
     <>
       {loading && <Loading />}
@@ -448,7 +505,7 @@ const Cart = () => {
               {/* Address */}
               <h3 class=" text-left text-base font-bold">Địa chỉ giao hàng</h3>
 
-              <div className="w-full lg:w-full  mb-2 ">
+              <form className="w-full lg:w-full  mb-2 ">
                 <div className="w-full flex flex-wrap justify-between">
                   <div class="w-full md:w-[45%]  py-4 flex justify-center">
                     <div class=" w-full">
@@ -557,11 +614,13 @@ const Cart = () => {
                       name=""
                       id=""
                       placeholder="Địa chỉ giao hàng"
+                      aria-describedby="undefined-error"
                       class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
                   </div>
                 </div>
-              </div>
+              </form>
+
               <hr class="my-4" />
               {/* Voucher */}
               <div className="w-full flex justify-between flex-wrap ">
@@ -570,7 +629,6 @@ const Cart = () => {
                     type="address"
                     name=""
                     id=""
-                    placeholder="Nhập mã giảm giá"
                     class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                   />
                 </div>
@@ -715,8 +773,11 @@ const Cart = () => {
                               ],
                             })
                             .then((orderID) => {
-                              console.log(orderID);
                               return orderID;
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                              return error;
                             });
                         }}
                         onApprove={(data, action) => {
@@ -727,36 +788,22 @@ const Cart = () => {
                       />
                     </PayPalScriptProvider>
 
-                    {/* <button
-                    type='button'
-                    class='text-gray-900 bg-white hover:bg-gray-100 border 
+                    <button
+                      type="button"
+                      class="text-gray-900 bg-white hover:bg-gray-100 border 
                   border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
                   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
                   items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
                   dark:text-gray-900 dark:hover:bg-gray-200  mb-2
                   mr-4"
+                      onClick={() => handlePaymentMomo()}
                     >
                       <img
-                        src={paypal}
-                        alt="paypal"
+                        src={momo}
+                        alt="Momo"
                         class="w-full h-6 mr-2 -ml-1"
                       />
                     </button>
-
-                    <button
-                      type="button"
-                      class="text-gray-900 bg-white hover:bg-gray-100 border 
-                  border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
-                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center 
-                  dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 
-                  dark:hover:bg-gray-200 mr-2 mb-2'
-                  >
-                    <img
-                      src={vnpay}
-                      alt='vnpay'
-                      class='w-full h-6  mr-2 -ml-1'
-                    />
-                  </button> */}
                   </div>
                 )}
               </div>
@@ -764,11 +811,12 @@ const Cart = () => {
 
               <div className="flex items-center justify-center">
                 <button
-                  type=""
+                  type="submit"
                   className="  flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  onClick={() => shipCodHandle()}
                 >
                   <GiConfirmed className="mr-2" />
-                  Thanh toán
+                  Mua hàng
                 </button>
               </div>
 

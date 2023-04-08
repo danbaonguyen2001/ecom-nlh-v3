@@ -49,7 +49,7 @@ const Deal = () => {
       <div className="flex justify-center">
         <Slider {...settings} className="mt-4 w-[95%] ">
           {sliders.map((slider, i) => (
-            <div className="" key={i}>
+            <div className="px-2" key={i}>
               <img src={slider} alt="" className="rounded-md" />
             </div>
           ))}

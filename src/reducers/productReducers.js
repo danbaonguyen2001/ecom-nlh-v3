@@ -33,6 +33,12 @@ import {
   PRODUCT_CREATE_COMMENT_SUCCESS,
   PRODUCT_CREATE_COMMENT_FAIL,
   PRODUCT_CREATE_COMMENT_RESET,
+  ADD_PRODUCT_TO_COMPARE,
+  REMOVE_PRODUCT_OUT_COMPARE,
+  REMOVE_ALL_PRODUCTS_OUT_COMPARE,
+  COMPARE_PRODUCTS_REQUEST,
+  COMPARE_PRODUCTS_SUCCESS,
+  COMPARE_PRODUCTS_FAIL,
 } from "../constants/productsConstants";
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -101,18 +107,62 @@ export const productListByCategoryReducer = (
       return {
         loading: true,
         productByCategories: [],
+        filerProductByCategories: [],
       };
     case PRODUCT_LIST_BY_CATEGORY_SUCCESS:
       return {
+        ...state,
         loading: false,
         productByCategories: action.payload.data,
+        filerProductByCategories: action.payload.temp,
         categoryName: action.payload.categoryName,
+        success: true,
       };
     case PRODUCT_LIST_BY_CATEGORY_FAIL:
       return {
         loading: false,
         error: action.payload,
       };
+    default:
+      return state;
+  }
+};
+
+export const compareProducts = (state = { loading: false }, action) => {
+  switch (action.type) {
+    case ADD_PRODUCT_TO_COMPARE:
+      return {
+        ...state,
+        payload: action.payload,
+      };
+    case REMOVE_PRODUCT_OUT_COMPARE:
+      return {
+        ...state,
+        payload: action.payload,
+      };
+    case REMOVE_ALL_PRODUCTS_OUT_COMPARE:
+      return {
+        ...state,
+        payload: action.payload,
+      };
+    case COMPARE_PRODUCTS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case COMPARE_PRODUCTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        payload: action.payload,
+      };
+    case COMPARE_PRODUCTS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
     default:
       return state;
   }

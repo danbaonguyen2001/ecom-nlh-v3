@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getProvinceList,
   getDistrictList,
@@ -9,15 +9,31 @@ import {
 } from "../../actions/GHNActions";
 import Loading from "../../screens/Loading";
 import { Token_API_GHN, GHN } from "../../apis/Api";
+import { register } from "../../actions/userActions";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [params, setParams] = useState({
     name: "",
     phone: "",
     email: "",
-    pass: "",
+    password: "",
     address: {},
     gender: "male",
+    detailAddress: {
+      ward: {
+        wardCode: "",
+        wardName: "",
+      },
+      province: {
+        provinceID: "",
+        provinceName: "",
+      },
+      district: {
+        districtID: "",
+        districtName: "",
+      },
+    },
   });
   const config = {
     headers: {
@@ -28,6 +44,7 @@ const Register = () => {
   //handle Address
   const GHN = useSelector((state) => state.GHN);
   const dispatch = useDispatch();
+  const userRegister = useSelector((state) => state.userRegister);
   const [selectedProv, setSelectedProv] = useState("");
   const [provList, setProvList] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -44,6 +61,7 @@ const Register = () => {
       );
       setProvList(await data?.data);
       setSelectedProv(await data?.data[0]?.ProvinceID);
+      // const prov = provList[0];
     };
     callProv();
   }, []);
@@ -94,9 +112,73 @@ const Register = () => {
     setSelectedWard(e.target.value);
   };
 
+  // handle register
+  const handleOnChange = (e) => {
+    setParams({ ...params, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (params.email.includes("@admin"))
+      return alert("Email không được chứa @admin!");
+    // // Xu ly
+    const prov = provList.find((prov) => prov.ProvinceID === selectedProv);
+    const dis = disList.find((dis) => dis.DistrictID === selectedDistrict);
+    const ward = wardList.find((ward) => ward.WardCode === selectedWard);
+
+    const addressForm = {
+      address: `${params.address}, ${ward.WardName}, ${dis.DistrictName}, ${prov.ProvinceName}`,
+      detailAddress: {
+        province: {
+          provinceID: prov.ProvinceID,
+          provinceName: prov.ProvinceName,
+        },
+        district: {
+          districtID: dis.DistrictID,
+          districtName: dis.DistrictName,
+        },
+        ward: {
+          wardCode: ward.WardCode,
+          wardName: ward.WardName,
+        },
+      },
+      idDefault: true,
+    };
+
+    console.log(addressForm);
+
+    dispatch(
+      register({
+        email: params.email,
+        password: params.password,
+        gender: params.gender,
+        addressForm,
+        phone: params.phone,
+        name: params.name,
+      })
+    );
+  };
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userRegister.registered) {
+      toast.success("Bạn đã đăng ký tài khoản thành công! ", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/login");
+    }
+  }, [userRegister]);
   return (
     <>
-      {/* {GHN?.loading && <Loading />} */}
+      {userRegister?.loading && <Loading />}
+      {userRegister?.error && <h1>{userRegister?.error}</h1>}
       <div className="  m-4 rounded-sm border-2 border-slate-400">
         <section class="bg-white">
           <div class=" px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-12 lg:py-9">
@@ -116,7 +198,12 @@ const Register = () => {
               </p>
             </div>
 
-            <form action="#" method="POST" class="mt-8 ">
+            <form
+              action="#"
+              method="POST"
+              class="mt-8 "
+              onSubmit={handleSubmit}
+            >
               {/* Input */}
               <div class=" flex flex-wrap justify-between">
                 <div className="w-full lg:w-[45%] mb-3">
@@ -126,9 +213,10 @@ const Register = () => {
                   </label>
                   <div class="mt-2.5">
                     <input
+                      onChange={handleOnChange}
                       required
                       type="text"
-                      name=""
+                      name="name"
                       id=""
                       placeholder="Nhập tên của bạn"
                       class=" w-full  p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
@@ -143,9 +231,10 @@ const Register = () => {
                   </label>
                   <div class="mt-2.5">
                     <input
+                      onChange={handleOnChange}
                       required
                       type="phone"
-                      name=""
+                      name="phone"
                       placeholder="Nhập số điện thoại"
                       class=" w-full  p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -159,9 +248,10 @@ const Register = () => {
                   </label>
                   <div class="mt-2.5">
                     <input
+                      onChange={handleOnChange}
                       required
                       type="email"
-                      name=""
+                      name="email"
                       placeholder="Nhập địa chỉ Email"
                       class="w-full p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -175,9 +265,10 @@ const Register = () => {
                   </label>
                   <div class="mt-2.5">
                     <input
+                      onChange={handleOnChange}
                       required
                       type="password"
-                      name=""
+                      name="password"
                       placeholder="Nhập mật khẩu"
                       class="w-full  p-4 text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
@@ -284,8 +375,9 @@ const Register = () => {
                     <div class="w-full lg:w-[22%] py-4 flex justify-center">
                       <input
                         required
+                        onChange={handleOnChange}
                         type="address"
-                        name=""
+                        name="address"
                         placeholder="Địa chỉ đang cư trú"
                         class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                       />

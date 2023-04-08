@@ -33,7 +33,7 @@ const OrderList = () => {
         {listOrders?.length === 0 ? (
           <div className="flex items-center justify-center flex-col ">
             <BsFillCartXFill className="w-10 h-10 text-red-600" />
-            <h4 className="my-2"> Không có sản phẩm nào trong giỏ hàng</h4>
+            <h4 className="my-2"> Bạn chưa có đơn hàng nào trong hệ thống </h4>
             <Link to="/" className="flex items-center justify-center mb-4">
               <button
                 type=""

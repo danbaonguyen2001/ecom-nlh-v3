@@ -8,6 +8,7 @@ import { toDate, toVND } from "../../utils/format";
 import Item from "./sub/Item";
 import CancelOrderModal from "./sub/CancelOrderModal";
 import { CANCEL_ORDER_RESET } from "../../constants/orderConstants";
+import { getHistoryOrders } from "../../actions/orderActions";
 
 const OrderDetail = () => {
   const { slug } = useParams();
@@ -31,8 +32,10 @@ const OrderDetail = () => {
 
   //Handle cancel Order
   const [open, setOpen] = useState(false);
+
   const cancelHandle = (orderId, description) => {
     dispatch(cancelOrder(orderId, description));
+    dispatch(getHistoryOrders());
     setOpen(false);
   };
   useEffect(() => {

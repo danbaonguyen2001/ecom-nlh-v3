@@ -116,6 +116,7 @@ export const getShippingFe = (ward) => async (dispatch) => {
         Token: `${Token_API_GHN}`,
       },
     };
+    console.log(Token_API_GHN);
     const { data } = await axios.post(
       `${GHN_CALCULATE_FEE}`,
       {
