@@ -23,6 +23,7 @@ import {
   createOrderReducer,
   cancelOrderReducer,
   quickPayReducer,
+  queryCheckoutReducer,
 } from "./reducers/orderReducers";
 import { GHNReducers, getShippingFeReducer } from "./reducers/GHNReducers";
 import { VNDToUSDReducer } from "./reducers/vndtousdReducer";
@@ -51,6 +52,7 @@ const reducers = combineReducers({
   createOrder: createOrderReducer,
   cancelOrder: cancelOrderReducer,
   quickPay: quickPayReducer,
+  queryCheckout: queryCheckoutReducer,
   //addresses
   GHN: GHNReducers,
   shippingFee: getShippingFeReducer,

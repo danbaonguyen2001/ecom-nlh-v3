@@ -116,23 +116,26 @@ export const getShippingFe = (ward) => async (dispatch) => {
         Token: `${Token_API_GHN}`,
       },
     };
-    console.log(Token_API_GHN);
+    console.log(ward?.DistrictID, ward?.WardCode);
     const { data } = await axios.post(
       `${GHN_CALCULATE_FEE}`,
       {
         service_id: 53320, // Loại dịch vụ vận chuyển
         service_type_id: null, // Loại dịch vụ vận chuyển
-        shop_id: SHOP_ID, //Quản lý thông tin cửa hàng/người bán
+        // shop_id: SHOP_ID, //Quản lý thông tin cửa hàng/người bán
         from_district_id: district_id, // Mã quận/huyện nơi gửi hàng
         to_district_id: ward?.DistrictID, // Mã quận/huyện nơi nhận hàng
         to_ward_code: ward?.WardCode, // Mã Mã phường nhận bưu kiện.
-        weight: 500, // Khối lượng gói hàng (gram)
+        weight: 200, // Khối lượng gói hàng (gram)
         length: 20, // Chiều dài (cm)
         width: 20, // Chiều rộng (cm)
         height: 10, // Chiều cao (cm)
+        insurance_value: 10000,
+        coupon: null,
       },
       config
     );
+
     dispatch({ type: GET_SHIPPING_FEE_SUCCESS, payload: data });
   } catch (error) {
     dispatch({

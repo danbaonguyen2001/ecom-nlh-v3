@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { getHistoryOrders } from "../../actions/orderActions";
+import { Link, useParams } from "react-router-dom";
+import { getHistoryOrders, queryCheckout } from "../../actions/orderActions";
 import Loading from "../../screens/Loading";
 import { toDate, toVND } from "../../utils/format";
 
@@ -10,16 +10,27 @@ import { BsFillCartXFill } from "react-icons/bs";
 import { AiTwotoneHome } from "react-icons/ai";
 const OrderList = () => {
   const dispatch = useDispatch();
+  const queryParams = new URLSearchParams(window.location.search);
+  const partnerCode = queryParams.get("partnerCode");
+  const orderId = queryParams.get("orderId");
+  const requestId = queryParams.get("requestId");
+  const signature = queryParams.get("signature");
   const { loading, error, listOrders } = useSelector(
     (state) => state.historyOrders
   );
-  // console.log(listOrders.length === 0);
+  useEffect(() => {
+    if (partnerCode && orderId && requestId) {
+      const dataFrom = {
+        partnerCode,
+        orderId,
+        requestId,
+        signature,
+      };
+      dispatch(queryCheckout(dataFrom));
+    }
+  }, [partnerCode, orderId, requestId]);
+
   const { userInfo } = useSelector((state) => state.userLogin);
-  // useEffect(() => {
-  //   // if (userInfo) {
-  //   //   dispatch(getHistoryOrders());
-  //   // }
-  // }, []);
 
   return (
     <>
