@@ -255,21 +255,27 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     } = getState();
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
     };
-    console.log(formData);
+    console.log(formData.get("image"));
     const { data } = await axios.put(
       `${Server}/api/users/avatar`,
-      // `http://localhost:5000/api/users/avatar`,
       formData,
       config
     );
-    console.log(data);
 
+    // Cam on LOC HELP ME
+    // const { data } = await axios({
+    //   method: "PUT",
+    //   url: `${Server}/api/users/avatar`,
+    //   data: formData,
+    //   headers: { ...config.headers, "Content-Type": "multipart/form-data" },
+    // });
+
+    console.log(data);
     console.log(userInfo);
-    // const { user } = data;
 
     const updateUser = {
       status: true,
@@ -279,16 +285,27 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
         refresh_token: userInfo.data.refresh_token,
         user: {
           ...userInfo.data.user,
-          // ...data.user,
+          ...data,
         },
       },
     };
 
-    console.log(updateUser);
+    // console.log(updateUser);
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser });
+    localStorage.setItem("userInfo", JSON.stringify(updateUser));
 
-    // dispatch({ type: USER_UPDATE_AVATAR_SUCCESS, payload: { data } });
-    // dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser });
-    // localStorage.setItem("userInfo", JSON.stringify(updateUser));
+    if (data.success === true) {
+      toast.success("Cập nhật avatar thành công!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   } catch (error) {
     dispatch({
       type: USER_UPDATE_AVATAR_FAIL,

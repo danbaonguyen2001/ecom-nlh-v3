@@ -68,6 +68,7 @@ const EditAvatarModal = (props) => {
     // };
     dispatch(updateAvatar(formData));
     console.log(formData);
+    setOpen(false);
   };
 
   return (
