@@ -13,6 +13,9 @@ import Loading from './Loading'
 import vnpay from '../assets/images/vnpay.svg'
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
 import momo from '../assets/images/momo-seeklogo.com.svg'
+import momosvg1 from '../assets/images/momo-primary-logo/MoMo Primary Logo/svg/momo_circle_pinkbg.svg'
+import momosvg2 from '../assets/images/momo-primary-logo/MoMo Primary Logo/pdf/momo_icon_circle_pinkbg.pdf'
+import momosvg3 from '../assets/images/momo-primary-logo/MoMo Primary Logo/svg/momo_square_pinkbg.svg'
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -735,53 +738,7 @@ const Cart = () => {
 
                 {/*Paypal VNPay  */}
                 {isOnline && (
-                  <div className='flex justify-center mt-4 '>
-                    <PayPalScriptProvider
-                      options={{
-                        'client-id':
-                          'AYnnIG_uYjcamwk8Vcd5pTuDyCjl-MBx43rB-lB1eDYDNitB6swG_k97jMKAFcz0o98mjoPo1zs5ZOGP',
-                      }}
-                    >
-                      <PayPalButtons
-                        amount={(
-                          cartItems.reduce(function (total, item) {
-                            return (total +=
-                              item?.item?.price * item?.item?.quantity)
-                          }, shippingFee?.total) / rates
-                        ).toFixed(2)}
-                        createOrder={(data, action) => {
-                          return action.order
-                            .create({
-                              purchase_units: [
-                                {
-                                  amount: {
-                                    value: (
-                                      cartItems.reduce(function (total, item) {
-                                        return (total +=
-                                          item?.item?.price *
-                                          item?.item?.quantity)
-                                      }, shippingFee?.total) / rates
-                                    ).toFixed(2),
-                                  },
-                                },
-                              ],
-                            })
-                            .then((orderID) => {
-                              return orderID
-                            })
-                            .catch((error) => {
-                              console.log(error)
-                              return error
-                            })
-                        }}
-                        onApprove={(data, action) => {
-                          return action.order.capture().then((res) => {
-                            successPaymentHandler(res)
-                          })
-                        }}
-                      />
-                    </PayPalScriptProvider>
-
+                  <div className='flex justify-center mt-4 flex-col  '>
                     <button
                       type='button'
                       class='text-gray-900 bg-white hover:bg-gray-100 border 
@@ -789,15 +746,73 @@ const Cart = () => {
                   font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
                   items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
                   dark:text-gray-900 dark:hover:bg-gray-200  mb-2
-                  mr-4'
+                  mr-4 '
                       onClick={() => handlePaymentMomo()}
                     >
                       <img
-                        src={momo}
+                        src={momosvg1}
                         alt='Momo'
                         class='w-full h-6 mr-2 -ml-1'
                       />
                     </button>
+                    <div
+                      class='text-gray-900 bg-white hover:bg-gray-100 border 
+                  border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
+                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
+                  items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
+                  dark:text-gray-900 dark:hover:bg-gray-200  mb-2
+                  mr-4'
+                    >
+                      <PayPalScriptProvider
+                        options={{
+                          'client-id':
+                            'AYnnIG_uYjcamwk8Vcd5pTuDyCjl-MBx43rB-lB1eDYDNitB6swG_k97jMKAFcz0o98mjoPo1zs5ZOGP',
+                        }}
+                      >
+                        <PayPalButtons
+                          amount={(
+                            cartItems.reduce(function (total, item) {
+                              return (total +=
+                                item?.item?.price * item?.item?.quantity)
+                            }, shippingFee?.total) / rates
+                          ).toFixed(2)}
+                          createOrder={(data, action) => {
+                            return action.order
+                              .create({
+                                purchase_units: [
+                                  {
+                                    amount: {
+                                      value: (
+                                        cartItems.reduce(function (
+                                          total,
+                                          item
+                                        ) {
+                                          return (total +=
+                                            item?.item?.price *
+                                            item?.item?.quantity)
+                                        },
+                                        shippingFee?.total) / rates
+                                      ).toFixed(2),
+                                    },
+                                  },
+                                ],
+                              })
+                              .then((orderID) => {
+                                return orderID
+                              })
+                              .catch((error) => {
+                                console.log(error)
+                                return error
+                              })
+                          }}
+                          onApprove={(data, action) => {
+                            return action.order.capture().then((res) => {
+                              successPaymentHandler(res)
+                            })
+                          }}
+                        />
+                      </PayPalScriptProvider>
+                    </div>
                   </div>
                 )}
               </div>
