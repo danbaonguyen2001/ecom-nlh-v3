@@ -80,7 +80,7 @@ export const userLoginReducer = (
       return {
         ...state,
         loading: false,
-        // userInfo: action.payload,
+        userInfo: action.payload,
       };
     case USER_UPDATE_AVATAR_FAIL:
       return {

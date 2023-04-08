@@ -30,6 +30,7 @@ const AddAddressModal = (props) => {
   const [disList, setDisList] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
   const [wardList, setWardList] = useState([]);
+  const [def, setDefault] = useState(false);
 
   //Province
   useEffect(() => {
@@ -249,9 +250,11 @@ const AddAddressModal = (props) => {
                           <div class=" flex  justify-center">
                             <input
                               required
+                              checked={def}
                               type="checkbox"
                               id="default"
                               class="mr-2"
+                              onClick={() => setDefault(!def)}
                             />
                             <label
                               class="inline-block pl-[0.15rem] hover:cursor-pointer"
