@@ -253,13 +253,15 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState();
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
     };
-    console.log(formData.get("image"));
+
+    // console.log(formData.get("image"));
     const { data } = await axios.put(
       `${Server}/api/users/avatar`,
       formData,
@@ -274,8 +276,8 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     //   headers: { ...config.headers, "Content-Type": "multipart/form-data" },
     // });
 
-    console.log(data);
-    console.log(userInfo);
+    // console.log(data);
+    // console.log(userInfo);
 
     const updateUser = {
       status: true,
