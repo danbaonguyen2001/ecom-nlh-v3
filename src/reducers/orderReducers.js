@@ -9,14 +9,21 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
-  ORDER_PAY_REQUEST,
-  ORDER_PAY_SUCCESS,
-  ORDER_PAY_FAIL,
-  ORDER_PAY_RESET,
+  CREATE_ORDER_REQUEST,
+  CREATE_ORDER_SUCCESS,
+  CREATE_ORDER_FAIL,
+  CREATE_ORDER_RESET,
   CANCEL_ORDER_REQUEST,
   CANCEL_ORDER_SUCCESS,
   CANCEL_ORDER_FAIL,
   CANCEL_ORDER_RESET,
+  MOMO_QUICK_PAY_ORDER_FAIL,
+  MOMO_QUICK_PAY_ORDER_REQUEST,
+  MOMO_QUICK_PAY_ORDER_RESET,
+  MOMO_QUICK_PAY_ORDER_SUCCESS,
+  QUERY_CHECKOUT_SUCCESS,
+  QUERY_CHECKOUT_REQUEST,
+  QUERY_CHECKOUT_FAIL,
 } from '../constants/orderConstants'
 
 export const getOrderDetailReducer = (
@@ -66,24 +73,25 @@ export const getOrdersHistoryReducer = (state = { listOrders: [] }, action) => {
       return state
   }
 }
-export const payOrderReducer = (state = {}, action) => {
+export const createOrderReducer = (state = {}, action) => {
   switch (action.type) {
-    case ORDER_PAY_REQUEST:
+    case CREATE_ORDER_REQUEST:
       return {
         loading: true,
       }
-    case ORDER_PAY_SUCCESS: {
+    case CREATE_ORDER_SUCCESS: {
       return {
         loading: false,
         success: true,
+        successOrderId: action.payload._id,
       }
     }
-    case ORDER_PAY_FAIL:
+    case CREATE_ORDER_FAIL:
       return {
         loading: false,
         error: action.payload,
       }
-    case ORDER_PAY_RESET:
+    case CREATE_ORDER_RESET:
       return {}
     default:
       return state
@@ -98,6 +106,7 @@ export const cancelOrderReducer = (state = {}, action) => {
     case CANCEL_ORDER_SUCCESS:
       return {
         loading: false,
+
         success: true,
       }
     case CANCEL_ORDER_FAIL:
@@ -106,6 +115,51 @@ export const cancelOrderReducer = (state = {}, action) => {
         error: action.payload,
       }
     case CANCEL_ORDER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const quickPayReducer = (state = {}, action) => {
+  switch (action.type) {
+    case MOMO_QUICK_PAY_ORDER_REQUEST:
+      return {
+        loading: true,
+      }
+    case MOMO_QUICK_PAY_ORDER_SUCCESS:
+      return {
+        loading: false,
+        payUrl: action.payload,
+        success: true,
+      }
+    case MOMO_QUICK_PAY_ORDER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case MOMO_QUICK_PAY_ORDER_RESET:
+      return {}
+    default:
+      return state
+  }
+}
+export const queryCheckoutReducer = (state = {}, action) => {
+  switch (action.type) {
+    case QUERY_CHECKOUT_REQUEST:
+      return {
+        loading: true,
+      }
+    case QUERY_CHECKOUT_SUCCESS:
+      return {
+        loading: false,
+        data: action.payload,
+      }
+    case QUERY_CHECKOUT_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
+    case QUERY_CHECKOUT_REQUEST:
       return {}
     default:
       return state

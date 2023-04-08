@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { getHistoryOrders } from "../../actions/orderActions";
+import { Link, useParams } from "react-router-dom";
+import { getHistoryOrders, queryCheckout } from "../../actions/orderActions";
 import Loading from "../../screens/Loading";
 import { toDate, toVND } from "../../utils/format";
 
@@ -10,16 +10,27 @@ import { BsFillCartXFill } from "react-icons/bs";
 import { AiTwotoneHome } from "react-icons/ai";
 const OrderList = () => {
   const dispatch = useDispatch();
+  const queryParams = new URLSearchParams(window.location.search);
+  const partnerCode = queryParams.get("partnerCode");
+  const orderId = queryParams.get("orderId");
+  const requestId = queryParams.get("requestId");
+  const signature = queryParams.get("signature");
   const { loading, error, listOrders } = useSelector(
     (state) => state.historyOrders
   );
-  // console.log(listOrders.length === 0);
+  useEffect(() => {
+    if (partnerCode && orderId && requestId) {
+      const dataFrom = {
+        partnerCode,
+        orderId,
+        requestId,
+        signature,
+      };
+      dispatch(queryCheckout(dataFrom));
+    }
+  }, [partnerCode, orderId, requestId]);
+
   const { userInfo } = useSelector((state) => state.userLogin);
-  // useEffect(() => {
-  //   // if (userInfo) {
-  //   //   dispatch(getHistoryOrders());
-  //   // }
-  // }, []);
 
   return (
     <>
@@ -33,7 +44,7 @@ const OrderList = () => {
         {listOrders?.length === 0 ? (
           <div className="flex items-center justify-center flex-col ">
             <BsFillCartXFill className="w-10 h-10 text-red-600" />
-            <h4 className="my-2"> Không có sản phẩm nào trong giỏ hàng</h4>
+            <h4 className="my-2"> Bạn chưa có đơn hàng nào trong hệ thống </h4>
             <Link to="/" className="flex items-center justify-center mb-4">
               <button
                 type=""

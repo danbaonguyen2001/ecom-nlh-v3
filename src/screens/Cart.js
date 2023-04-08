@@ -1,19 +1,22 @@
 import { React, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { TiDelete } from "react-icons/ti";
 import { GiConfirmed } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
-import axios from "axios";
 import { getCarts, updateCart } from "../actions/cartActions";
-import { payOrder } from "../actions/orderActions";
+import {
+  createOrder,
+  getHistoryOrders,
+  initiateQuickPay,
+} from "../actions/orderActions";
 import { toVND } from "../utils/format";
 import Loading from "./Loading";
-import paypal from "../assets/images/paypal.svg";
+// import paypal from '../assets/images/paypal.svg'
 import vnpay from "../assets/images/vnpay.svg";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { Server } from "../apis/Api";
-import styled from "styled-components";
+import momo from "../assets/images/momo-seeklogo.com.svg";
 // import { getAddressDetail } from '../actions/userActions'
 import {
   getDistrictList,
@@ -22,22 +25,30 @@ import {
   getWardList,
 } from "../actions/GHNActions";
 import { CLEAR_ERROR, CLEAR_ERROR_ADDRESS } from "../constants/GHNConstants";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
+import {
+  CREATE_ORDER_RESET,
+  MOMO_QUICK_PAY_ORDER_RESET,
+} from "../constants/orderConstants";
 import { VNDToUSD } from "../actions/vndtousdActions";
 import { VND_TO_USD_RESET } from "../constants/vndtousdConstants";
 import { Link } from "react-router-dom";
-
 import { AiTwotoneHome } from "react-icons/ai";
 import { BsFillCartXFill } from "react-icons/bs";
 const Cart = () => {
   const dispatch = useDispatch();
-  //payment
-  const [vnd, setVnd] = useState("");
-  const [usd, setUsd] = useState("");
-  const [sdkReady, setSdkReady] = useState(false);
-  const { loading: loadingPay, success: successPay } = useSelector(
-    (state) => state.payOrder
-  );
+  const navigate = useNavigate();
+  const {
+    loading: loadingMomo,
+    success: successMomo,
+    error: errorMomo,
+    payUrl,
+  } = useSelector((state) => state.quickPay);
+  const {
+    loading: loadingOder,
+    success: successOrder,
+    successOrderId,
+    error: errorOrder,
+  } = useSelector((state) => state.createOrder);
   const {
     loading: loadingVndToUsd,
     error: errorVndToUsd,
@@ -185,7 +196,6 @@ const Cart = () => {
       });
     }
   };
-
   //Handle order
   const [isOnline, setIsOnline] = useState(false);
   const {
@@ -200,9 +210,9 @@ const Cart = () => {
     shippingFee,
   } = useSelector((state) => state.shippingFee);
   const { addressDetail } = useSelector((state) => state.userLogin);
-  const [selectedSenderProvince, setSelectedSenderProvince] = useState(null);
-  const [selectedSenderDistrict, setSelectedSenderDistrict] = useState(null);
-  const [selectedSenderWard, setSelectedSenderWard] = useState(null);
+  const [selectedSenderProvince, setSelectedSenderProvince] = useState("");
+  const [selectedSenderDistrict, setSelectedSenderDistrict] = useState("");
+  const [selectedSenderWard, setSelectedSenderWard] = useState("");
   useEffect(() => {
     // if (!addressDetail) {
     //   dispatch(getAddressDetail())
@@ -234,8 +244,50 @@ const Cart = () => {
     }
   }, [selectedSenderWard, dispatch]);
   useEffect(() => {
+    if (successMomo) {
+      if (payUrl) {
+        window.location.href = `${payUrl}`;
+      }
+
+      dispatch({ type: MOMO_QUICK_PAY_ORDER_RESET });
+    }
+    if (errorMomo) {
+      dispatch({ type: MOMO_QUICK_PAY_ORDER_RESET });
+    }
+    if (errorOrder) {
+      toast.error(
+        `Xãy ra lỗi trong quá trình thực thi! Xin vui lòng liên hệ quản trị viên.`,
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
+      dispatch({ type: CREATE_ORDER_RESET });
+    }
+    if (successOrder) {
+      toast.success(`Thêm đơn hàng thành công!`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      dispatch(getCarts());
+      navigate(`/order/${successOrderId}`);
+      dispatch(getHistoryOrders());
+      dispatch({ type: CREATE_ORDER_RESET });
+    }
     if (errorFee) {
-      toast.error(`Chung tôi chưa hỗ trợ giao hàng tại địa chỉ này`, {
+      toast.error(`Chúng tôi chưa hỗ trợ giao hàng tại địa chỉ này`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -271,57 +323,85 @@ const Cart = () => {
         progress: undefined,
         theme: "light",
       });
-      // dispatch({ type: VND_TO_USD_RESET })
+      dispatch({ type: VND_TO_USD_RESET });
     }
-  }, [errorFee, errorAddresslist, dispatch, errorVndToUsd]);
-  // payment
-  useEffect(() => {
-    const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get(`${Server}/api/config/paypal`);
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-      script.async = true;
-      script.onload = () => {
-        setSdkReady(true);
-      };
-      document.body.appendChild(script);
-    };
-    if (successPay) {
-      dispatch({ type: ORDER_PAY_RESET });
-    } else {
-      if (!window.paypal) {
-        addPayPalScript();
-      } else {
-        setSdkReady(true);
-      }
-    }
-  }, [dispatch, successPay, cartItems]);
+  }, [
+    errorFee,
+    errorAddresslist,
+    dispatch,
+    errorVndToUsd,
+    successOrder,
+    errorOrder,
+    successMomo,
+    errorMomo,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
-    const shippingAddress = {
-      address: `${selectedSenderProvince}, Huyện ${selectedSenderDistrict}, ${selectedSenderWard}`,
-      city: `${selectedSenderProvince}`,
-      country: "VN",
+    const dataForm = {
+      shippingAddress: {
+        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+        city: `${selectedSenderProvince?.ProvinceName}`,
+        country: "VN",
+      },
+      paymentMethod: isOnline ? "paypal" : "COD",
+      itemsPrice: cartItems?.reduce(function (total, item) {
+        return (total += item?.item?.price * item?.item?.quantity);
+      }, 0),
+      shippingPrice: shippingFee && shippingFee.total,
+      totalPrice:
+        shippingFee &&
+        cartItems?.reduce(function (total, item) {
+          return (total += item?.item?.price * item?.item?.quantity);
+        }, 0 + shippingFee.total),
+      paymentResult: paymentResult,
     };
-    dispatch(payOrder(shippingAddress, paymentResult));
+    dispatch(createOrder(dataForm));
   };
-  const StyleWrap = styled.div`
-    & div {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  `;
-  // function sumArray(arr) {
-  //   return arr.reduce((acc, val) => acc?.item?.price + val, 0)
-  // }
-  // if (cartItems) {
-  //   console.log(sumArray(JSON.parse(cartItems)))
-  // }
+  const shipCodHandle = () => {
+    const dataForm = {
+      shippingAddress: {
+        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+        city: `${selectedSenderProvince?.ProvinceName}`,
+        country: "VN",
+      },
+      paymentMethod: isOnline ? "paypal" : "COD",
+      itemsPrice: cartItems?.reduce(function (total, item) {
+        return (total += item?.item?.price * item?.item?.quantity);
+      }, 0),
+      shippingPrice: shippingFee && shippingFee.total,
+      totalPrice:
+        shippingFee &&
+        cartItems?.reduce(function (total, item) {
+          return (total += item?.item?.price * item?.item?.quantity);
+        }, 0 + shippingFee.total),
+    };
+    dispatch(createOrder(dataForm));
+  };
+  const handlePaymentMomo = () => {
+    const dataForm = {
+      shippingAddress: {
+        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+        city: `${selectedSenderProvince?.ProvinceName}`,
+        country: "VN",
+      },
+      paymentMethod: isOnline ? "paypal" : "COD",
+      itemsPrice: cartItems?.reduce(function (total, item) {
+        return (total += item?.item?.price * item?.item?.quantity);
+      }, 0),
+      shippingPrice: shippingFee && shippingFee.total,
+      totalPrice:
+        shippingFee &&
+        cartItems?.reduce(function (total, item) {
+          return (total += item?.item?.price * item?.item?.quantity);
+        }, 0 + shippingFee.total),
+    };
+    dispatch(initiateQuickPay(dataForm));
+  };
+
   return (
     <>
       {loading && <Loading />}
+      {loadingOder && <Loading />}
       <div class="  rounded-lg  mx-2 bg-white shadow-lg ">
         <h1 class="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
 
@@ -425,7 +505,7 @@ const Cart = () => {
               {/* Address */}
               <h3 class=" text-left text-base font-bold">Địa chỉ giao hàng</h3>
 
-              <div className="w-full lg:w-full  mb-2 ">
+              <form className="w-full lg:w-full  mb-2 ">
                 <div className="w-full flex flex-wrap justify-between">
                   <div class="w-full md:w-[45%]  py-4 flex justify-center">
                     <div class=" w-full">
@@ -534,11 +614,13 @@ const Cart = () => {
                       name=""
                       id=""
                       placeholder="Địa chỉ giao hàng"
+                      aria-describedby="undefined-error"
                       class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />
                   </div>
                 </div>
-              </div>
+              </form>
+
               <hr class="my-4" />
               {/* Voucher */}
               <div className="w-full flex justify-between flex-wrap ">
@@ -547,7 +629,6 @@ const Cart = () => {
                     type="address"
                     name=""
                     id=""
-                    placeholder="Nhập mã giảm giá"
                     class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                   />
                 </div>
@@ -661,53 +742,68 @@ const Cart = () => {
                 {/*Paypal VNPay  */}
                 {isOnline && (
                   <div className="flex justify-center mt-4 ">
-                    {loadingPay && <Loading />}
-                    {!sdkReady ? (
-                      <Loading />
-                    ) : (
-                      <PayPalScriptProvider>
-                        {" "}
-                        <PayPalButtons
-                          amount={(
-                            cartItems.reduce(function (total, item) {
-                              return (total +=
-                                item?.item?.price * item?.item?.quantity);
-                            }, shippingFee?.total) / rates
-                          ).toFixed(2)}
-                          onSuccess={successPaymentHandler}
-                        />
-                      </PayPalScriptProvider>
-                    )}
-                    {/* <button
-                    type='button'
-                    class='text-gray-900 bg-white hover:bg-gray-100 border 
-                  border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
-                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
-                  items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
-                  dark:text-gray-900 dark:hover:bg-gray-200  mb-2
-                  mr-4"
+                    <PayPalScriptProvider
+                      options={{
+                        "client-id":
+                          "AYnnIG_uYjcamwk8Vcd5pTuDyCjl-MBx43rB-lB1eDYDNitB6swG_k97jMKAFcz0o98mjoPo1zs5ZOGP",
+                      }}
                     >
-                      <img
-                        src={paypal}
-                        alt="paypal"
-                        class="w-full h-6 mr-2 -ml-1"
+                      <PayPalButtons
+                        amount={(
+                          cartItems.reduce(function (total, item) {
+                            return (total +=
+                              item?.item?.price * item?.item?.quantity);
+                          }, shippingFee?.total) / rates
+                        ).toFixed(2)}
+                        createOrder={(data, action) => {
+                          return action.order
+                            .create({
+                              purchase_units: [
+                                {
+                                  amount: {
+                                    value: (
+                                      cartItems.reduce(function (total, item) {
+                                        return (total +=
+                                          item?.item?.price *
+                                          item?.item?.quantity);
+                                      }, shippingFee?.total) / rates
+                                    ).toFixed(2),
+                                  },
+                                },
+                              ],
+                            })
+                            .then((orderID) => {
+                              return orderID;
+                            })
+                            .catch((error) => {
+                              console.log(error);
+                              return error;
+                            });
+                        }}
+                        onApprove={(data, action) => {
+                          return action.order.capture().then((res) => {
+                            successPaymentHandler(res);
+                          });
+                        }}
                       />
-                    </button>
+                    </PayPalScriptProvider>
 
                     <button
                       type="button"
                       class="text-gray-900 bg-white hover:bg-gray-100 border 
                   border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 
-                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center 
-                  dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 
-                  dark:hover:bg-gray-200 mr-2 mb-2'
-                  >
-                    <img
-                      src={vnpay}
-                      alt='vnpay'
-                      class='w-full h-6  mr-2 -ml-1'
-                    />
-                  </button> */}
+                  font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex 
+                  items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
+                  dark:text-gray-900 dark:hover:bg-gray-200  mb-2
+                  mr-4"
+                      onClick={() => handlePaymentMomo()}
+                    >
+                      <img
+                        src={momo}
+                        alt="Momo"
+                        class="w-full h-6 mr-2 -ml-1"
+                      />
+                    </button>
                   </div>
                 )}
               </div>
@@ -715,11 +811,12 @@ const Cart = () => {
 
               <div className="flex items-center justify-center">
                 <button
-                  type=""
+                  type="submit"
                   className="  flex w-[90%] lg:w-[80%]  items-center justify-center rounded-md border border-transparent bg-primary-600 py-3 px-8 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  onClick={() => shipCodHandle()}
                 >
                   <GiConfirmed className="mr-2" />
-                  Thanh toán
+                  Mua hàng
                 </button>
               </div>
 

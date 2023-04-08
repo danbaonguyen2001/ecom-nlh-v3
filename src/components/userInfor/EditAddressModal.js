@@ -2,18 +2,25 @@ import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
+import { DefaultAvt } from "../../constants/userConstants";
 
 const EditAddressModal = (props) => {
   const { open, setOpen, indexAddress } = props;
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userLogin);
   const [user, setUser] = useState({
+    avatar: userInfo.data.user.avatar.url
+      ? userInfo.data.user.avatar.url
+      : DefaultAvt,
     name: `${userInfo?.data?.user?.name}`,
     email: `${userInfo?.data?.user?.email}`,
     phone: `${userInfo?.data?.user?.phone}`,
     gender: `${userInfo?.data?.user?.gender}`,
+    addresses: userInfo?.data?.user?.addresses,
+    isNew: false,
+    addressID: "",
+    editAddress: true,
   });
-  console.log(indexAddress);
   const cancelButtonRef = useRef(null);
   return (
     <>
