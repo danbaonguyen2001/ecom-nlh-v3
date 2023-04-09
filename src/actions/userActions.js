@@ -1,5 +1,8 @@
-import axios from "axios";
+import axios from 'axios'
 import {
+  USER_ADD_ADDRESS_REQUEST,
+  USER_ADD_ADDRESS_SUCCESS,
+  USER_ADD_ADDRESS_FAIL,
   USER_ADDRESS_DETAIL_FAIL,
   USER_ADDRESS_DETAIL_REQUEST,
   USER_ADDRESS_DETAIL_SUCCESS,
@@ -22,30 +25,30 @@ import {
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
-} from "../constants/userConstants";
+} from '../constants/userConstants'
 import {
   CART_LIST_RESET,
   CART_SAVE_SHIPPING_ADDRESS,
-} from "../constants/cartConstants";
-import { ORDER_HISTORY_RESET } from "../constants/orderConstants";
-import { Server } from "../apis/Api";
-import { toast } from "react-toastify";
+} from '../constants/cartConstants'
+import { ORDER_HISTORY_RESET } from '../constants/orderConstants'
+import { Server, localhost } from '../apis/Api'
+import { toast } from 'react-toastify'
 
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
-    });
+    })
     const config = {
       header: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    };
+    }
     const { data } = await axios.post(
       `${Server}/api/auth/login`,
       { email, password },
       config
-    );
+    )
     // const addressDetail = data.data.user.addresses.find(
     //   (address) => address.idDefault === true
     // )
@@ -53,13 +56,13 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
-    });
+    })
     // dispatch({
     //   type: CART_SAVE_SHIPPING_ADDRESS,
     //   payload: addressDetail,
     // })
 
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -67,26 +70,26 @@ export const login = (email, password) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 
 export const register = (params) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST,
-    });
+    })
 
     const config = {
       header: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    };
+    }
     const { data } = await axios.post(
       `${Server}/api/auth/register`,
       { ...params },
       config
-    );
+    )
     // const addressDetail = data.data.user.addresses.find(
     //   (address) => address.idDefault === true
     // )
@@ -94,7 +97,7 @@ export const register = (params) => async (dispatch) => {
     dispatch({
       type: USER_REGISTER_SUCCESS,
       payload: data,
-    });
+    })
     // const navigate = useNavigate();
     // navigate("/login");
   } catch (error) {
@@ -104,32 +107,32 @@ export const register = (params) => async (dispatch) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 
 export const getProfile = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_GET_PROFILE_REQUEST,
-    });
+    })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
+    }
     // const addressId = userInfo.data.user.addresses.find(
     //   (result) => result.idDefault === true
     // );
-    const { data } = await axios.get(`${Server}/api/users/profile`, config);
+    const { data } = await axios.get(`${Server}/api/users/profile`, config)
     dispatch({
       type: USER_GET_PROFILE_SUCCESS,
       payload: data,
-    });
+    })
     // localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
     dispatch({
@@ -138,35 +141,35 @@ export const getProfile = () => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 export const getAddressDetail = () => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_ADDRESS_DETAIL_REQUEST,
-    });
+    })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
+    }
     const addressId = userInfo.data.user.addresses.find(
       (result) => result.idDefault === true
-    );
+    )
     const { data } = await axios.get(
       `${Server}/api/users/address/${addressId.detailAddress}`,
       config
-    );
+    )
     dispatch({
       type: USER_ADDRESS_DETAIL_SUCCESS,
       payload: { data, userInfo },
-    });
-    localStorage.setItem("shippingAddress", JSON.stringify(data));
+    })
+    localStorage.setItem('shippingAddress', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_ADDRESS_DETAIL_FAIL,
@@ -174,34 +177,34 @@ export const getAddressDetail = () => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 export const logout = () => (dispatch) => {
-  localStorage.removeItem("userInfo");
-  localStorage.removeItem("shippingAddress");
-  dispatch({ type: USER_LOGOUT });
-  dispatch({ type: CART_LIST_RESET });
-  dispatch({ type: ORDER_HISTORY_RESET });
-};
+  localStorage.removeItem('userInfo')
+  localStorage.removeItem('shippingAddress')
+  dispatch({ type: USER_LOGOUT })
+  dispatch({ type: CART_LIST_RESET })
+  dispatch({ type: ORDER_HISTORY_RESET })
+}
 
 export const updateProfile = (user) => async (dispatch, getState) => {
   try {
-    dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+    dispatch({ type: USER_UPDATE_PROFILE_REQUEST })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
+    }
     const { data } = await axios.put(
       `${Server}/api/users/profile`,
       { ...user },
       config
-    );
+    )
     // console.log(data);
 
     // console.log(userInfo);
@@ -209,7 +212,7 @@ export const updateProfile = (user) => async (dispatch, getState) => {
 
     const updateUser = {
       status: true,
-      message: "Authenticated",
+      message: 'Authenticated',
       data: {
         access_token: userInfo.data.access_token,
         refresh_token: userInfo.data.refresh_token,
@@ -218,23 +221,23 @@ export const updateProfile = (user) => async (dispatch, getState) => {
           ...data.user,
         },
       },
-    };
+    }
     // console.log(updateUser);
 
-    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser });
-    localStorage.setItem("userInfo", JSON.stringify(updateUser));
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser })
+    localStorage.setItem('userInfo', JSON.stringify(updateUser))
 
     if (data.success) {
-      toast.success("Cập nhật thông tin thành công!", {
-        position: "top-right",
+      toast.success('Cập nhật thông tin thành công!', {
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
-      });
+        theme: 'light',
+      })
     }
   } catch (error) {
     dispatch({
@@ -243,37 +246,37 @@ export const updateProfile = (user) => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 
 export const updateAvatar = (formData) => async (dispatch, getState) => {
   try {
-    dispatch({ type: USER_UPDATE_AVATAR_REQUEST });
+    dispatch({ type: USER_UPDATE_AVATAR_REQUEST })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
-    console.log(formData);
+    }
+    console.log(formData)
     const { data } = await axios.put(
       `${Server}/api/users/avatar`,
       // `http://localhost:5000/api/users/avatar`,
       formData,
       config
-    );
-    console.log(data);
+    )
+    console.log(data)
 
-    console.log(userInfo);
+    console.log(userInfo)
     // const { user } = data;
 
     const updateUser = {
       status: true,
-      message: "Authenticated",
+      message: 'Authenticated',
       data: {
         access_token: userInfo.data.access_token,
         refresh_token: userInfo.data.refresh_token,
@@ -282,9 +285,9 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
           // ...data.user,
         },
       },
-    };
+    }
 
-    console.log(updateUser);
+    console.log(updateUser)
 
     // dispatch({ type: USER_UPDATE_AVATAR_SUCCESS, payload: { data } });
     // dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser });
@@ -296,43 +299,77 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
+    })
   }
-};
+}
 
-export const addAddress = (id) => (dispatch) => {};
+export const addAddress = (dataForm) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_ADD_ADDRESS_REQUEST,
+    })
+    const {
+      userLogin: { userInfo },
+    } = getState()
+    console.log(userInfo.data.access_token)
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.data.access_token}`,
+      },
+    }
+    console.log({ ...dataForm })
+    const { data } = await axios.post(
+      `${Server}/api/users/address`,
+      { ...dataForm },
+      config
+    )
+    dispatch({
+      type: USER_ADD_ADDRESS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_ADD_ADDRESS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
+}
 
-export const updateAddress = (idAddressDefault) => (dispatch) => {};
+export const updateAddress = (idAddressDefault) => (dispatch) => {}
 
 export const deleteAddress = (addressID) => async (dispatch, getState) => {
   try {
     dispatch({
       type: USER_DELETE_ADDRESS_REQUEST,
-    });
+    })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
+    }
 
     const { data } = await axios.delete(
       `${Server}/api/users/address/${addressID}`,
       config
-    );
+    )
 
     const updateAddress = userInfo.data.user.addresses.filter(
       (address) => address._id !== addressID
-    );
+    )
 
-    console.log(updateAddress);
+    console.log(updateAddress)
 
     const updateUser = {
       status: true,
-      message: "Authenticated",
+      message: 'Authenticated',
       data: {
         access_token: userInfo.data.access_token,
         refresh_token: userInfo.data.refresh_token,
@@ -341,23 +378,23 @@ export const deleteAddress = (addressID) => async (dispatch, getState) => {
           addresses: updateAddress,
         },
       },
-    };
+    }
 
-    dispatch({ type: USER_DELETE_ADDRESS_SUCCESS, payload: updateUser });
+    dispatch({ type: USER_DELETE_ADDRESS_SUCCESS, payload: updateUser })
 
-    localStorage.setItem("userInfo", JSON.stringify(updateUser));
+    localStorage.setItem('userInfo', JSON.stringify(updateUser))
 
     if (data.success) {
-      toast.success("Xóa địa chỉ thành công!", {
-        position: "top-right",
+      toast.success('Xóa địa chỉ thành công!', {
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
-      });
+        theme: 'light',
+      })
     }
   } catch (error) {
     dispatch({
@@ -366,16 +403,16 @@ export const deleteAddress = (addressID) => async (dispatch, getState) => {
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
-    });
-    toast.error("Xóa địa chỉ thất bại!", {
-      position: "top-right",
+    })
+    toast.error('Xóa địa chỉ thất bại!', {
+      position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      theme: "light",
-    });
+      theme: 'light',
+    })
   }
-};
+}
