@@ -32,6 +32,7 @@ const AddAddressModal = (props) => {
   const [wardList, setWardList] = useState([])
   const [detailAddress, setDetailAddress] = useState('')
   const [addressDefault, setAddressDefault] = useState(false)
+
   //Province
   useEffect(() => {
     const callProv = async () => {
