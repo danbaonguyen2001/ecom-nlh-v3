@@ -41,7 +41,7 @@ const UserInfor = () => {
   return (
     <>
       {loading && <Loading />}
-      <div className="  rounded-lg border-2 border-dashed border-gray-200 mx-4 lg:mx-40">
+      <div className="  rounded-lg  mx-4 lg:mx-40 bg-white shadow-lg">
         <div className="m-4">
           <h1 class="mb-10 text-center text-xl font-bold ">
             Thông tin người dùng
@@ -51,13 +51,13 @@ const UserInfor = () => {
           <div className="flex flex-col justify-center items-center">
             {userInfo?.data?.user?.avatar?.url ? (
               <img
-                class="inline-block h-28 w-28 rounded-full ring-2 ring-white"
+                class="inline-block h-28 w-28 rounded-full ring-2 ring-primary-300"
                 src={userInfo?.data?.user?.avatar?.url}
                 alt="Avatar Upload"
               />
             ) : (
               <img
-                class="inline-block h-28 w-28 rounded-full ring-2 ring-white"
+                class="inline-block h-28 w-28 rounded-full ring-2 ring-primary-300"
                 src={DefaultAvt}
                 alt="Avatar Upload"
               />
