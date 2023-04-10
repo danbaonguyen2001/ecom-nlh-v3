@@ -5,14 +5,14 @@ import { AiFillWarning } from 'react-icons/ai'
 import { deleteAddress } from '../../actions/userActions'
 
 const DeleteAddressModal = (props) => {
-  const { open, setOpen, address } = props
+  const { open, setOpen, addressDetail } = props
 
   const dispatch = useDispatch()
   const { loading, userInfo } = useSelector((state) => state.userLogin)
   console.log(userInfo)
   const cancelButtonRef = useRef(null)
   const handleDelete = () => {
-    dispatch(deleteAddress(userInfo.data.user.addresses[address].detailAddress))
+    dispatch(deleteAddress(addressDetail))
     setOpen(false)
   }
   return (
@@ -68,7 +68,7 @@ const DeleteAddressModal = (props) => {
                           Xác nhận xóa địa chỉ
                         </Dialog.Title>
                         <div className='mt-2 flex items-center '>
-                          {userInfo?.data?.user?.addresses[address]?.address}
+                          {/* {userInfo?.data?.user?.addresses[address]?.address} */}
                         </div>
                       </div>
                     </div>

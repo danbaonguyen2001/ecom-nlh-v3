@@ -144,42 +144,40 @@ export const getProfile = () => async (dispatch, getState) => {
     })
   }
 }
-export const getAddressDetail = () => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: USER_ADDRESS_DETAIL_REQUEST,
-    })
-    const {
-      userLogin: { userInfo },
-    } = getState()
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${userInfo.data.access_token}`,
-      },
+export const getAddressDetail =
+  (detailAddress) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_ADDRESS_DETAIL_REQUEST,
+      })
+      const {
+        userLogin: { userInfo },
+      } = getState()
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.data.access_token}`,
+        },
+      }
+      const { data } = await axios.get(
+        `${Server}/api/users/address/${detailAddress}`,
+        config
+      )
+      dispatch({
+        type: USER_ADDRESS_DETAIL_SUCCESS,
+        payload: { data, userInfo },
+      })
+      localStorage.setItem('shippingAddress', JSON.stringify(data))
+    } catch (error) {
+      dispatch({
+        type: USER_ADDRESS_DETAIL_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
     }
-    const addressId = userInfo.data.user.addresses.find(
-      (result) => result.idDefault === true
-    )
-    const { data } = await axios.get(
-      `${Server}/api/users/address/${addressId.detailAddress}`,
-      config
-    )
-    dispatch({
-      type: USER_ADDRESS_DETAIL_SUCCESS,
-      payload: { data, userInfo },
-    })
-    localStorage.setItem('shippingAddress', JSON.stringify(data))
-  } catch (error) {
-    dispatch({
-      type: USER_ADDRESS_DETAIL_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    })
   }
-}
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo')
   localStorage.removeItem('shippingAddress')
@@ -337,7 +335,6 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
     }
-    console.log({ ...dataForm })
     const { data } = await axios.post(
       `${Server}/api/users/address`,
       { ...dataForm },
@@ -347,7 +344,28 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
       type: USER_ADD_ADDRESS_SUCCESS,
       payload: data,
     })
+    localStorage.setItem('userInfo', JSON.stringify(data))
+    toast.success('Thêm địa chỉ thành công!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
   } catch (error) {
+    toast.error('Thêm địa chỉ thất bại!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
     dispatch({
       type: USER_ADD_ADDRESS_FAIL,
       payload:
@@ -358,7 +376,7 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
   }
 }
 
-export const updateAddress = (idAddressDefault) => (dispatch) => {}
+export const updateAddress = (dataForm, addressId) => (dispatch, getState) => {}
 
 export const deleteAddress = (addressID) => async (dispatch, getState) => {
   try {
@@ -380,41 +398,19 @@ export const deleteAddress = (addressID) => async (dispatch, getState) => {
       config
     )
 
-    const updateAddress = userInfo.data.user.addresses.filter(
-      (address) => address._id !== addressID
-    )
+    dispatch({ type: USER_DELETE_ADDRESS_SUCCESS, payload: data })
 
-    console.log(updateAddress)
-
-    const updateUser = {
-      status: true,
-      message: 'Authenticated',
-      data: {
-        access_token: userInfo.data.access_token,
-        refresh_token: userInfo.data.refresh_token,
-        user: {
-          ...userInfo.data.user,
-          addresses: updateAddress,
-        },
-      },
-    }
-
-    dispatch({ type: USER_DELETE_ADDRESS_SUCCESS, payload: updateUser })
-
-    localStorage.setItem('userInfo', JSON.stringify(updateUser))
-
-    if (data.success) {
-      toast.success('Xóa địa chỉ thành công!', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light',
-      })
-    }
+    localStorage.setItem('userInfo', JSON.stringify(data))
+    toast.success('Xóa địa chỉ thành công!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
   } catch (error) {
     dispatch({
       type: USER_DELETE_ADDRESS_FAIL,
