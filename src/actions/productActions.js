@@ -32,9 +32,16 @@ import {
   PRODUCT_CREATE_COMMENT_REQUEST,
   PRODUCT_CREATE_COMMENT_SUCCESS,
   PRODUCT_CREATE_COMMENT_FAIL,
+  ADD_PRODUCT_TO_COMPARE,
+  REMOVE_ALL_PRODUCTS_OUT_COMPARE,
+  REMOVE_PRODUCT_OUT_COMPARE,
+  COMPARE_PRODUCTS_REQUEST,
+  COMPARE_PRODUCTS_FAIL,
+  COMPARE_PRODUCTS_SUCCESS,
 } from "../constants/productsConstants";
 import { logout } from "./userActions";
 import { Server } from "../apis/Api";
+import { toast } from "react-toastify";
 
 /** GET Products  */
 export const listProducts =
@@ -299,6 +306,129 @@ export const createProductComment = (params) => async (dispatch, getState) => {
     });
   }
 };
+
+// Compare products
+export const addProductCompare = (product) => (dispatch, getState) => {
+  const {
+    compareProducts: { products },
+  } = getState();
+  const isExist = products.filter((item) => product.id === item.id);
+  // console.log(isExist);
+  if (products.length === 2) {
+    toast.warn("Danh sách sản phẩm so sánh đạt giới hạn!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  } else if (isExist.length > 0) {
+    toast.warn("Sản phẩm đã có trong danh sách!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  } else {
+    products.push(product);
+    // console.log(products);
+    dispatch({ type: ADD_PRODUCT_TO_COMPARE, payload: products });
+    toast.success("Thêm vào danh sách so sánh thành công!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+};
+export const deleteOutCompare = (id) => (dispatch, getState) => {
+  const {
+    compareProducts: { products },
+  } = getState();
+  const newProducts = products.filter((item) => item.id !== id);
+  console.log(newProducts);
+  dispatch({ type: REMOVE_PRODUCT_OUT_COMPARE, payload: newProducts });
+  toast.success("Xóa sản phẩm khỏi danh sách thành công!", {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+};
+
+export const deleteAllCompare = () => (dispatch) => {
+  dispatch({ type: REMOVE_ALL_PRODUCTS_OUT_COMPARE });
+  toast.success("Xóa danh sách sản phẩm so sánh thành công!", {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+  });
+};
+
+export const compare = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: COMPARE_PRODUCTS_REQUEST });
+    const {
+      compareProducts: { products },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const product1 = products[0].name;
+    const product2 = products[1].name;
+    const mess = `Trong ${product1} và ${product2}, sản phẩm nào đáng mua hơn ? `;
+    console.log(mess);
+
+    const { data } = await axios.post(
+      `${Server}/api/products/compare`,
+
+      { message: mess }
+    );
+    console.log(data);
+    const newText = data.message.replace(/(\d+)/g, "\n$1");
+    // console.log(newText);
+    // const result = await axios.post(
+    //   `${Server}/api/products/compare`,
+
+    //   { message: `Chuyển văn bản sau thành HTML: ${data.message}` }
+    // );
+    // console.log(result);
+
+    dispatch({ type: COMPARE_PRODUCTS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: COMPARE_PRODUCTS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 export const clearErrors = () => async (dispatch) => {
   dispatch({
     type: CLEAR_ERRORS,

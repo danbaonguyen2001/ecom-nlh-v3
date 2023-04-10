@@ -4,9 +4,10 @@ import { toVND } from "../../utils/format";
 import { Rating } from "@mui/material";
 import { TbEqualNot } from "react-icons/tb";
 import AddToCartModal from "./sub/AddToCartModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../screens/Loading";
+import { addProductCompare } from "../../actions/productActions";
 
 const ProductCard = (props) => {
   // const [product, setProduct] = useState(props?.product);
@@ -40,6 +41,19 @@ const ProductCard = (props) => {
     }
   };
 
+  // Compare
+  const dispatch = useDispatch();
+  const handleCompare = () => {
+    dispatch(
+      addProductCompare({
+        id: product._id,
+        name: product.name,
+        image: product.image,
+        price: product?.price,
+        rating: product?.rating,
+      })
+    );
+  };
   return (
     <>
       {loading ? (
@@ -81,7 +95,10 @@ const ProductCard = (props) => {
                 <span class="bg-blue-100 text-primary-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-primary-200 dark:text-primary-800 ml-3">
                   {product?.rating}
                 </span>
-                <TbEqualNot className="w-12 h-8 text-white py-1 px-2 bg-primary-600 rounded-lg cursor-pointer hover:bg-primary-800" />
+                <TbEqualNot
+                  onClick={handleCompare}
+                  className="w-12 h-8 text-white py-1 px-2 bg-primary-600 rounded-lg cursor-pointer hover:bg-primary-800"
+                />
               </div>
 
               <div className="mt-4 w-full">

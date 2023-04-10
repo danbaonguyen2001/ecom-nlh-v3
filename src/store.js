@@ -31,7 +31,7 @@ import { productListCompareReducer } from "./reducers/compareReducers";
 const reducers = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
-  productCompare: productListReducer,
+  // productCompare: productListReducer,
   productSearch: productSearchReducer,
   productDetail: productDetailReducer,
   productListByCategories: productListByCategoryReducer,
