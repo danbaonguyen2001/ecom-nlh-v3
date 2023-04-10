@@ -1,4 +1,4 @@
-import { CART_SAVE_SHIPPING_ADDRESS } from "../constants/cartConstants";
+import { CART_SAVE_SHIPPING_ADDRESS } from '../constants/cartConstants'
 import {
   USER_ADD_ADDRESS_FAIL,
   USER_ADD_ADDRESS_REQUEST,
@@ -7,9 +7,9 @@ import {
   USER_UPDATE_AVATAR_FAIL,
   USER_UPDATE_AVATAR_REQUEST,
   USER_UPDATE_AVATAR_SUCCESS,
-} from "../constants/userConstants";
-import { USER_DELETE_ADDRESS_SUCCESS } from "../constants/userConstants";
-import { USER_DELETE_ADDRESS_REQUEST } from "../constants/userConstants";
+} from '../constants/userConstants'
+import { USER_DELETE_ADDRESS_SUCCESS } from '../constants/userConstants'
+import { USER_DELETE_ADDRESS_REQUEST } from '../constants/userConstants'
 import {
   USER_ADDRESS_DETAIL_FAIL,
   USER_ADDRESS_DETAIL_REQUEST,
@@ -30,7 +30,7 @@ import {
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
-} from "../constants/userConstants";
+} from '../constants/userConstants'
 export const userLoginReducer = (
   state = {
     logout: true,
@@ -40,165 +40,166 @@ export const userLoginReducer = (
   switch (action.type) {
     // login
     case USER_LOGIN_REQUEST:
-      return { loading: true };
+      return { loading: true }
     case USER_LOGIN_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload,
-      };
+      }
     case USER_LOGIN_FAIL:
       return {
         loading: false,
         error: action.payload,
-      };
+      }
 
     // Update profile
     case USER_UPDATE_PROFILE_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
     case USER_UPDATE_PROFILE_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload,
-      };
+      }
     case USER_UPDATE_PROFILE_FAIL:
       return {
         ...state,
         loading: false,
         error: action.payload,
-      };
+      }
 
     // Update avatar
     case USER_UPDATE_AVATAR_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
     case USER_UPDATE_AVATAR_SUCCESS:
       return {
         ...state,
         loading: false,
         userInfo: action.payload,
-      };
+      }
     case USER_UPDATE_AVATAR_FAIL:
       return {
         ...state,
         loading: false,
         error: action.payload,
-      };
+      }
 
     //Get profile
     case USER_GET_PROFILE_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
     case USER_GET_PROFILE_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload,
-      };
+      }
     case USER_GET_PROFILE_FAIL:
       return {
         loading: false,
         error: action.payload,
         ...state,
-      };
+      }
 
     // get address
     case USER_ADDRESS_DETAIL_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
     case USER_ADDRESS_DETAIL_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload.userInfo,
         addressDetail: action.payload.data.address,
-      };
+      }
     case USER_ADDRESS_DETAIL_FAIL:
       return {
         loading: false,
+        userInfo: action.payload.userInfo,
         error: action.payload,
-      };
+      }
 
     // Add a new address
     case USER_ADD_ADDRESS_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case USER_ADD_ADDRESS_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload,
-      };
+      }
 
     case USER_ADD_ADDRESS_FAIL:
       return {
         loading: false,
+        ...state,
         error: action.payload,
-      };
+      }
 
     // Update address
     case USER_UPDATE_ADDRESS_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case USER_UPDATE_ADDRESS_SUCCESS:
       return {
         loading: false,
         userInfo: action.payload,
-      };
+      }
 
     case USER_UPDATE_ADDRESS_FAIL:
       return {
         loading: false,
         error: action.payload,
-      };
+      }
 
     //Delete address
     case USER_DELETE_ADDRESS_REQUEST:
       return {
         ...state,
         loading: true,
-      };
+      }
     case USER_DELETE_ADDRESS_SUCCESS:
       return {
-        ...state,
         loading: false,
         userInfo: action.payload,
-      };
+      }
     case USER_DELETE_ADDRESS_FAIL:
       return {
         loading: false,
         error: action.payload,
-      };
+      }
 
     // Logout
     case USER_LOGOUT:
-      return { logout: true };
+      return { logout: true }
     default:
-      return state;
+      return state
   }
-};
+}
 
 export const userRegisterReducer = (state = { loading: false }, action) => {
   switch (action.type) {
     case USER_REGISTER_REQUEST:
-      return { loading: true };
+      return { loading: true }
     case USER_REGISTER_SUCCESS:
-      return { loading: false, registered: true };
+      return { loading: false, registered: true }
     case USER_REGISTER_FAIL:
-      return { loading: false, error: action.payload };
+      return { loading: false, error: action.payload }
 
     default:
-      return state;
+      return state
   }
-};
+}
