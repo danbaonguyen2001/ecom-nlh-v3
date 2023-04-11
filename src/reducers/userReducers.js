@@ -162,7 +162,7 @@ export const userLoginReducer = (
     case USER_UPDATE_ADDRESS_FAIL:
       return {
         loading: false,
-        error: action.payload,
+        userInfo: action.payload,
       }
 
     //Delete address

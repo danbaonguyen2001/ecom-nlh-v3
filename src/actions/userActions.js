@@ -25,6 +25,9 @@ import {
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_ADDRESS_REQUEST,
+  USER_UPDATE_ADDRESS_SUCCESS,
+  USER_UPDATE_ADDRESS_FAIL,
 } from '../constants/userConstants'
 import {
   CART_LIST_RESET,
@@ -253,21 +256,21 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     dispatch({ type: USER_UPDATE_AVATAR_REQUEST })
     const {
       userLogin: { userInfo },
-    } = getState();
+    } = getState()
 
     const config = {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${userInfo.data.access_token}`,
       },
-    };
+    }
 
     // console.log(formData.get("image"));
     const { data } = await axios.put(
       `${Server}/api/users/avatar`,
       formData,
       config
-    );
+    )
 
     // Cam on LOC HELP ME
     // const { data } = await axios({
@@ -294,20 +297,20 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     }
 
     // console.log(updateUser);
-    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser });
-    localStorage.setItem("userInfo", JSON.stringify(updateUser));
+    dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: updateUser })
+    localStorage.setItem('userInfo', JSON.stringify(updateUser))
 
     if (data.success === true) {
-      toast.success("Cập nhật avatar thành công!", {
-        position: "top-right",
+      toast.success('Cập nhật avatar thành công!', {
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
-      });
+        theme: 'light',
+      })
     }
   } catch (error) {
     dispatch({
@@ -376,7 +379,57 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
   }
 }
 
-export const updateAddress = (dataForm, addressId) => (dispatch, getState) => {}
+export const updateAddress =
+  (dataForm, addressId) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_UPDATE_ADDRESS_REQUEST })
+      const {
+        userLogin: { userInfo },
+      } = getState()
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.data.access_token}`,
+        },
+      }
+      const { data } = await axios.put(
+        `${Server}/api/users/address/${addressId}`,
+        { ...dataForm },
+        config
+      )
+      console.log({ ...dataForm })
+      dispatch({ type: USER_UPDATE_ADDRESS_SUCCESS, payload: data })
+      localStorage.setItem('userInfo', JSON.stringify(data))
+      toast.success(' Cập nhật địa chỉ thành công!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    } catch (error) {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+      dispatch({
+        type: USER_UPDATE_ADDRESS_FAIL,
+        payload: userInfo,
+      })
+      toast.error('Cập nhật địa chỉ thất bại!', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      })
+    }
+  }
 
 export const deleteAddress = (addressID) => async (dispatch, getState) => {
   try {
