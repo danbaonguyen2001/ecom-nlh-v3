@@ -373,6 +373,7 @@ export const deleteOutCompare = (id) => (dispatch, getState) => {
 
 export const deleteAllCompare = () => (dispatch) => {
   dispatch({ type: REMOVE_ALL_PRODUCTS_OUT_COMPARE });
+
   toast.success("Xóa danh sách sản phẩm so sánh thành công!", {
     position: "top-right",
     autoClose: 5000,
