@@ -8,7 +8,7 @@ import { getAddressDetail, updateAddress } from '../../actions/userActions'
 import axios from 'axios'
 const EditAddressModal = (props) => {
   const { open, setOpen, addressDetailId } = props
-
+  console.log(addressDetailId && addressDetailId)
   const dispatch = useDispatch()
   // const [selectedProv, setSelectedProv] = useState('')
   const [provList, setProvList] = useState([])
@@ -20,15 +20,15 @@ const EditAddressModal = (props) => {
   const [addressDefault, setAddressDefault] = useState(false)
   const { userInfo, addressDetail } = useSelector((state) => state.userLogin)
   const [selectedProv, setSelectedProv] = useState(
-    addressDetail[0]?.detailAddress?.province
+    addressDetail?.detailAddress?.province
   )
   const [selectedDistrict, setSelectedDistrict] = useState(
-    addressDetail[0]?.detailAddress?.district
+    addressDetail?.detailAddress?.district
   )
   const [selectedWard, setSelectedWard] = useState(
-    addressDetail[0]?.detailAddress?.ward
+    addressDetail?.detailAddress?.ward
   )
-  const [detailAddress, setDetailAddress] = useState(addressDetail[0].address)
+  const [detailAddress, setDetailAddress] = useState(addressDetail?.address)
   console.log(selectedDistrict, selectedProv, selectedWard)
   const [user, setUser] = useState({
     avatar: userInfo.data.user.avatar.url
@@ -68,7 +68,7 @@ const EditAddressModal = (props) => {
 
   // Recall District
   useEffect(() => {
-    if (selectedProv !== addressDetail[0]?.detailAddress?.province) {
+    if (selectedProv !== addressDetail?.detailAddress?.province) {
       const callDis = async () => {
         const { data } = await axios.get(
           `https://online-gateway.ghn.vn/shiip/public-api/master-data/district`,
@@ -108,7 +108,7 @@ const EditAddressModal = (props) => {
 
   //Recall Ward
   useEffect(() => {
-    if (selectedDistrict !== addressDetail[0]?.detailAddress?.district) {
+    if (selectedDistrict !== addressDetail?.detailAddress?.district) {
       const callWard = async () => {
         const { data } = await axios.get(
           `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${
@@ -361,6 +361,7 @@ const EditAddressModal = (props) => {
                       hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-red-500 
                       focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm'
                       //   onClick={() => handleAddToCart()}
+                      onClick={() => handleEditAddress()}
                     >
                       Cập nhật
                     </button>
@@ -370,8 +371,8 @@ const EditAddressModal = (props) => {
                     border-gray-300 bg-white px-4 py-2 text-base font-medium 
                     text-gray-700 shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 
                     focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
-                      onClick={() => handleEditAddress()}
                       ref={cancelButtonRef}
+                      onClick={() => setOpen(false)}
                     >
                       Trở về
                     </button>
