@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { BiEdit } from "react-icons/bi";
 import { Token_API_GHN } from "../../apis/Api";
+import { addAddress } from "../../actions/userActions";
 import axios from "axios";
 
 const AddAddressModal = (props) => {
@@ -15,7 +16,6 @@ const AddAddressModal = (props) => {
     phone: `${userInfo?.data?.user?.phone}`,
     gender: `${userInfo?.data?.user?.gender}`,
   });
-  console.log(user);
   const cancelButtonRef = useRef(null);
 
   const config = {
@@ -30,7 +30,8 @@ const AddAddressModal = (props) => {
   const [disList, setDisList] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
   const [wardList, setWardList] = useState([]);
-  const [def, setDefault] = useState(false);
+  const [detailAddress, setDetailAddress] = useState("");
+  const [addressDefault, setAddressDefault] = useState(false);
 
   //Province
   useEffect(() => {
@@ -40,15 +41,14 @@ const AddAddressModal = (props) => {
         config
       );
       setProvList(await data.data);
-      setSelectedProv(await data.data[0]?.ProvinceID);
+      setSelectedProv(await data.data[0]);
     };
     callProv();
   }, []);
 
   const handleChangeIDProv = (e) => {
-    setSelectedProv(e.target.value);
+    setSelectedProv(JSON.parse(e.target.value));
   };
-
   // Recall District
   useEffect(() => {
     const callDis = async () => {
@@ -60,35 +60,57 @@ const AddAddressModal = (props) => {
             Token: `${Token_API_GHN}`,
           },
           params: {
-            province_id: selectedProv,
+            province_id: selectedProv?.ProvinceID,
           },
         }
       );
       setDisList(await data.data);
-      setSelectedDistrict(await data.data[0]?.DistrictID);
+      setSelectedDistrict(await data.data[0]);
     };
     callDis();
   }, [selectedProv]);
 
   const handleChangeIDDis = (e) => {
-    setSelectedDistrict(e.target.value);
+    setSelectedDistrict(JSON.parse(e.target.value));
   };
 
   //Recall Ward
   useEffect(() => {
     const callWard = async () => {
       const { data } = await axios.get(
-        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${selectedDistrict}`,
+        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${selectedDistrict?.DistrictID}`,
         config
       );
       setWardList(await data.data);
-      setSelectedWard(await data.data[0]?.WardCode);
+      setSelectedWard(await data.data[0]);
     };
     callWard();
   }, [selectedDistrict]);
 
   const handleChangeIDWard = (e) => {
-    setSelectedWard(e.target.value);
+    setSelectedWard(JSON.parse(e.target.value));
+  };
+  const handleAddAddress = () => {
+    const dataForm = {
+      detail: detailAddress,
+      addressDefault: addressDefault,
+      addressDetail: {
+        province: {
+          provinceID: selectedProv?.ProvinceID,
+          provinceName: selectedProv?.ProvinceName,
+        },
+        ward: {
+          wardCode: selectedWard?.WardCode,
+          wardName: selectedWard?.WardName,
+        },
+        district: {
+          districtID: selectedDistrict?.DistrictID,
+          districtName: selectedDistrict?.DistrictName,
+        },
+      },
+    };
+    setOpen(false);
+    dispatch(addAddress(dataForm));
   };
   return (
     <>
@@ -149,7 +171,7 @@ const AddAddressModal = (props) => {
                             <div class=" w-full">
                               <select
                                 onChange={(e) => handleChangeIDProv(e)}
-                                value={selectedProv}
+                                // value={selectedProv?.ProvinceID}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -166,8 +188,11 @@ const AddAddressModal = (props) => {
                                 {provList?.map((prov) => (
                                   <option
                                     key={prov?.ProvinceID}
-                                    value={prov?.ProvinceID}
-                                    selected={prov?.ProvinceID === selectedProv}
+                                    value={JSON.stringify(prov)}
+                                    selected={
+                                      prov?.ProvinceID ===
+                                      selectedProv?.ProvinceID
+                                    }
                                   >
                                     {prov?.ProvinceName}
                                   </option>
@@ -179,7 +204,7 @@ const AddAddressModal = (props) => {
                             <div class=" w-full">
                               <select
                                 onChange={(e) => handleChangeIDDis(e)}
-                                value={selectedDistrict}
+                                // value={selectedDistrict?.DistrictID}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -196,9 +221,10 @@ const AddAddressModal = (props) => {
                                 {disList?.map((dis) => (
                                   <option
                                     key={dis?.DistrictID}
-                                    value={dis?.DistrictID}
+                                    value={JSON.stringify(dis)}
                                     selected={
-                                      dis?.DistrictID === selectedDistrict
+                                      dis?.DistrictID ===
+                                      selectedDistrict?.DistrictID
                                     }
                                   >
                                     {dis?.DistrictName}
@@ -211,7 +237,7 @@ const AddAddressModal = (props) => {
                             <div class=" w-full">
                               <select
                                 onChange={(e) => handleChangeIDWard(e)}
-                                value={selectedWard}
+                                // value={selectedWard?.WardCode}
                                 class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
@@ -228,8 +254,10 @@ const AddAddressModal = (props) => {
                                 {wardList?.map((w) => (
                                   <option
                                     key={w?.WardCode}
-                                    value={w?.WardCode}
-                                    selected={w?.WardCode === selectedWard}
+                                    value={JSON.stringify(w)}
+                                    selected={
+                                      w?.WardCode === selectedWard?.WardCode
+                                    }
                                   >
                                     {w?.WardName}
                                   </option>
@@ -240,6 +268,8 @@ const AddAddressModal = (props) => {
                           <div class="w-full lg:w-[80%] py-4 flex justify-center">
                             <input
                               required
+                              value={detailAddress}
+                              onChange={(e) => setDetailAddress(e.target.value)}
                               type="address"
                               name=""
                               id=""
@@ -250,11 +280,11 @@ const AddAddressModal = (props) => {
                           <div class=" flex  justify-center">
                             <input
                               required
-                              checked={def}
+                              checked={addressDefault}
                               type="checkbox"
                               id="default"
                               class="mr-2"
-                              onClick={() => setDefault(!def)}
+                              onClick={() => setAddressDefault(!addressDefault)}
                             />
                             <label
                               class="inline-block pl-[0.15rem] hover:cursor-pointer"
@@ -275,9 +305,9 @@ const AddAddressModal = (props) => {
                      bg-primary-600 px-4 py-2 text-base font-medium text-white shadow-sm
                       hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-red-500 
                       focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-                      //   onClick={() => handleAddToCart()}
+                      onClick={() => handleAddAddress()}
                     >
-                      Cập nhật
+                      Thêm
                     </button>
                     <button
                       type="button"

@@ -128,22 +128,25 @@ export const productListByCategoryReducer = (
   }
 };
 
-export const compareProducts = (state = { loading: false }, action) => {
+export const compareProducts = (
+  state = { loading: false, products: [] },
+  action
+) => {
   switch (action.type) {
     case ADD_PRODUCT_TO_COMPARE:
       return {
-        ...state,
-        payload: action.payload,
+        loading: false,
+        products: action.payload,
       };
     case REMOVE_PRODUCT_OUT_COMPARE:
       return {
-        ...state,
-        payload: action.payload,
+        loading: false,
+        products: action.payload,
       };
     case REMOVE_ALL_PRODUCTS_OUT_COMPARE:
       return {
-        ...state,
-        payload: action.payload,
+        loading: false,
+        products: [],
       };
     case COMPARE_PRODUCTS_REQUEST:
       return {
@@ -154,7 +157,7 @@ export const compareProducts = (state = { loading: false }, action) => {
       return {
         ...state,
         loading: false,
-        payload: action.payload,
+        messages: action.payload,
       };
     case COMPARE_PRODUCTS_FAIL:
       return {
