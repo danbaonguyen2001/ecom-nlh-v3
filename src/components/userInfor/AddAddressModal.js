@@ -109,9 +109,9 @@ const AddAddressModal = (props) => {
         },
       },
     }
+    setOpen(false)
     dispatch(addAddress(dataForm))
   }
-  console.log(selectedWard, selectedDistrict, selectedProv)
   return (
     <>
       <Transition.Root show={open} as={Fragment}>

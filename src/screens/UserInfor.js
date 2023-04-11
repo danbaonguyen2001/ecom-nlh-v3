@@ -26,16 +26,16 @@ const UserInfor = () => {
   const [openEditAddress, setOpenEditAddress] = useState(false);
   const [openDeleteAddress, setOpenDeleteAddress] = useState(false);
   const [openAddAddress, setOpenAddAddress] = useState(false);
-  const [address, setAddress] = useState(0);
+  const [addressDetail, setAddressDetail] = useState(0);
 
   const handleEditAddress = (index) => {
     setOpenEditAddress(true);
-    setAddress(index);
+    setAddressDetail(index);
   };
 
   const handleDeleteAddress = (index) => {
     setOpenDeleteAddress(true);
-    setAddress(index);
+    setAddressDetail(index);
   };
 
   return (
@@ -159,7 +159,9 @@ const UserInfor = () => {
                     <div class="flex justify-center space-x-2 mr-4 w-[45%] ">
                       <button
                         type="button"
-                        onClick={() => handleEditAddress(index)}
+                        onClick={() =>
+                          handleEditAddress(address?.detailAddress)
+                        }
                         class="flex w-full  items-center justify-center rounded-md border border-transparent 
                           bg-primary-600 p-2 text-base font-medium text-white hover:bg-primary-700 focus:outline-none 
                             focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
@@ -171,7 +173,9 @@ const UserInfor = () => {
                     <div class="flex justify-center space-x-2 w-[45%] ">
                       <button
                         type="button"
-                        onClick={() => handleDeleteAddress(index)}
+                        onClick={() =>
+                          handleDeleteAddress(address?.detailAddress)
+                        }
                         className={
                           address?.idDefault
                             ? "flex w-full  items-center justify-center rounded-md border border-solid  bg-transparent p-2 text-base font-medium text-gray-300 cursor-default  "
@@ -200,7 +204,7 @@ const UserInfor = () => {
         <EditAddressModal
           open={openEditAddress}
           setOpen={setOpenEditAddress}
-          indexAddress={address}
+          addressDetailId={addressDetail}
         />
       )}
       {openAddAddress && (
@@ -211,7 +215,7 @@ const UserInfor = () => {
         <DeleteAddressModal
           open={openDeleteAddress}
           setOpen={setOpenDeleteAddress}
-          address={address}
+          addressDetailId={addressDetail}
         />
       )}
     </>
