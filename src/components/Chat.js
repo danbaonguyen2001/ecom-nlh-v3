@@ -4,6 +4,7 @@ import { AiFillMessage } from "react-icons/ai";
 import logo from "../assets/images/logo.svg";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { BsFillSendFill } from "react-icons/bs";
+import { DefaultAvt } from "../constants/userConstants";
 
 const Chat = () => {
   const [open, setOpen] = useState(false);
@@ -59,7 +60,12 @@ const Chat = () => {
                 </div>
               ))} */}
               <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                {/* <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div> */}
+                <img
+                  src={logo}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
                 <div>
                   <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
                     <p class="text-sm">
@@ -83,7 +89,12 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                {/* <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div> */}
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
               <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
                 <div>
@@ -94,10 +105,18 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
               <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={logo}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
                 <div>
                   <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
                     <p class="text-sm">
@@ -124,7 +143,11 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
               <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
                 <div>
@@ -138,7 +161,11 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
               <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
                 <div>
@@ -149,10 +176,18 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
               <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={logo}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
                 <div>
                   <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
                     <p class="text-sm">
@@ -175,7 +210,11 @@ const Chat = () => {
                     2 min ago
                   </span>
                 </div>
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
+                <img
+                  src={DefaultAvt}
+                  alt="avt"
+                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
+                />
               </div>
             </div>
 

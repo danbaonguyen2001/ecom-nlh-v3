@@ -94,8 +94,8 @@ const ProductList = () => {
   }, [CategoryName, dispatch]);
 
   useEffect(() => {
-    if (!loading) {
-      const x = [...productByCategories];
+    if (!loading && filerProductByCategories) {
+      const x = [...filerProductByCategories];
       let tempListProduct;
       if (sort.value === 1) {
         tempListProduct = x.sort((a, b) => b.price - a.price);
@@ -134,35 +134,50 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    const x = filerProductByCategories && [...filerProductByCategories];
-    let tempListProduct;
-    for (const key in listFilter) {
-      // console.log(`${key}: ${listFilter[key]}`);
-      if (key === "manufacture") {
-        // x.filter();
-        tempListProduct = x.filter(
-          (product) => product.manufacturer.name === listFilter[key]
-        );
-      } else if (key === "color") {
-        // tempListProduct = x.filter((product) =>
-        //   product.productOptions.some((option) => {
-        //     option.colors.some((color) => {
-        //       return color.color === listFilter[key];
-        //     });
-        //   })
-        // );
-      } else {
-        tempListProduct = x.filter((product) =>
-          product.detailSpecs.map(
-            (spec) => console.log(`${key} ${listFilter[key]}`)
-            // (spec) => spec.name === key && spec.value === listFilter[key]
-          )
-        );
+    if (Object.keys(listFilter).length > 0) {
+      const x = [...productByCategories];
+      let tempListProduct;
+      for (const key in listFilter) {
+        // console.log(`${key}: ${listFilter[key]}`);
+        if (key === "manufacture") {
+          // x.filter();
+          tempListProduct =
+            listFilter[key] === ""
+              ? x
+              : x.filter(
+                  (product) => product.manufacturer.name === listFilter[key]
+                );
+        } else if (key === "color") {
+          // tempListProduct = x.filter((product) =>
+          //   product.productOptions.some((option) => {
+          //     option.colors.some((color) => {
+          //       return color.color === listFilter[key];
+          //     });
+          //   })
+          // );
+        } else {
+          tempListProduct = x.filter((product) =>
+            product.detailSpecs.map(
+              (spec) => console.log(`${key} ${listFilter[key]}`)
+              // (spec) => spec.name === key && spec.value === listFilter[key]
+            )
+          );
+        }
       }
+      setTimeout(dispatch({ type: PRODUCT_LIST_BY_CATEGORY_REQUEST }), 1000);
+      dispatch({
+        type: PRODUCT_LIST_BY_CATEGORY_SUCCESS,
+        payload: {
+          data: productByCategories,
+          categoryName: categoryName,
+          temp: tempListProduct,
+        },
+      });
+
+      console.log(listFilter);
+      console.log(tempListProduct);
+      console.log(filerProductByCategories);
     }
-    console.log(listFilter);
-    console.log(tempListProduct);
-    console.log(filerProductByCategories);
   }, [listFilter]);
 
   //Slider
@@ -267,7 +282,7 @@ const ProductList = () => {
                         {/* Filters */}
                         <form className="mt-4 border-t border-gray-200">
                           <h3 className="sr-only">Categories</h3>
-                          <ul
+                          {/* <ul
                             role="list"
                             className="px-2 py-3 font-medium text-gray-900"
                           >
@@ -281,7 +296,7 @@ const ProductList = () => {
                                 </span>
                               </li>
                             ))}
-                          </ul>
+                          </ul> */}
 
                           {filterList?.filters?.map((section) => (
                             <Disclosure
@@ -482,7 +497,7 @@ const ProductList = () => {
                     {/* Filters */}
                     <form className="hidden lg:block">
                       <h3 className="sr-only">Categories</h3>
-                      <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+                      {/* <ul className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
                         {filterList?.subCategories?.map((category) => (
                           <li key={category.name} name={category.name}>
                             <span className="cursor-pointer">
@@ -490,7 +505,7 @@ const ProductList = () => {
                             </span>
                           </li>
                         ))}
-                      </ul>
+                      </ul> */}
 
                       {filterList?.filters?.map((section) => (
                         <Disclosure
@@ -553,21 +568,27 @@ const ProductList = () => {
                     </form>
 
                     {/* Product grid */}
-                    <div className="flow lg:col-span-3">
-                      {/* Replace with your content */}
-                      <div className="rounded-lg border-4 border-dashed border-gray-200 lg:h-full">
-                        <div className="m-4 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-4">
-                          {success &&
-                            filerProductByCategories.map((product, i) => (
-                              <ProductCard
-                                key={i}
-                                product={product}
-                                loading={loading}
-                              ></ProductCard>
-                            ))}
+                    {filerProductByCategories.length > 0 ? (
+                      <div className="flow lg:col-span-3">
+                        {/* Replace with your content */}
+                        <div className="rounded-lg border-4 border-dashed border-gray-200 lg:h-full">
+                          <div className="m-4 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-4">
+                            {success &&
+                              filerProductByCategories.map((product, i) => (
+                                <ProductCard
+                                  key={i}
+                                  product={product}
+                                  loading={loading}
+                                ></ProductCard>
+                              ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <h2 className="heading-2 col-span-3 mt-4">
+                        Không có sản phẩm phù hợp với tiêu chí bạn mong muốn
+                      </h2>
+                    )}
                   </div>
                 </section>
               </main>
