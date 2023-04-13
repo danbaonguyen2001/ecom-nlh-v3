@@ -24,7 +24,7 @@ const Compare = () => {
   );
   const { CategoryName } = useParams();
   useEffect(() => {
-    if (CategoryName !== categoryName) {
+    if (CategoryName !== null && CategoryName !== categoryName) {
       dispatch(deleteAllCompare());
     }
   }, [categoryName]);

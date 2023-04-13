@@ -10,7 +10,7 @@ const AuthMiddleWare = ({ children }) => {
   const dispatch = useDispatch();
   // dispatch(getProfile());
   const navigate = useNavigate();
-  console.log(userInfo);
+  // console.log(userInfo);
   if (userInfo) {
     const decodedToken = jwtDecode(userInfo.data.access_token);
     const currentTime = Date.now() / 1000;
