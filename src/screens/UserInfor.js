@@ -34,9 +34,11 @@ const UserInfor = () => {
   };
 
   const handleDeleteAddress = (index) => {
+
     setOpenDeleteAddress(true);
     setAddressDetail(index);
   };
+
 
   return (
     <>

@@ -54,17 +54,10 @@ const Cart = () => {
     rates,
   } = useSelector((state) => state.VNDToUSD)
 
-  //Handle Cart
-  //get cart
   const { cartItems } = useSelector((state) => state.carts)
-  // const { userInfo } = useSelector((state) => state.userLogin);
-  // console.log(cartItems?.length === 0);
 
-  //check cart update
   const { loading, error, success } = useSelector((state) => state.cartUpdate)
-  // const {loading:loadingAddress,error:errorAddress,address} = useSelector((state) => state.)
 
-  //handle Update quantity
   const plusQT = (index) => {
     console.log('Plus')
 
@@ -238,7 +231,12 @@ const Cart = () => {
   }, [selectedSenderDistrict, dispatch])
   useEffect(() => {
     if (selectedSenderWard) {
-      dispatch(getShippingFe(selectedSenderWard))
+      const dataForm = {
+        province: selectedSenderProvince,
+        district: selectedSenderDistrict,
+        ward: selectedSenderWard,
+      }
+      dispatch(getShippingFe(dataForm))
       dispatch(VNDToUSD())
     }
   }, [selectedSenderWard, dispatch])

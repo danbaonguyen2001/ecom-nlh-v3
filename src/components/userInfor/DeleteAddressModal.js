@@ -5,6 +5,7 @@ import { AiFillWarning } from "react-icons/ai";
 import { deleteAddress } from "../../actions/userActions";
 
 const DeleteAddressModal = (props) => {
+
   const { open, setOpen, addressDetailId } = props;
 
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const DeleteAddressModal = (props) => {
     dispatch(deleteAddress(addressDetailId));
     setOpen(false);
   };
+
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
