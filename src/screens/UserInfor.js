@@ -35,6 +35,7 @@ const UserInfor = () => {
 
   const handleDeleteAddress = (index) => {
     setOpenDeleteAddress(true)
+    console.log(index)
     setAddressDetail(index)
   }
 

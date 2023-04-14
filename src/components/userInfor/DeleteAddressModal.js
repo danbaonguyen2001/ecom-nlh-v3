@@ -5,14 +5,13 @@ import { AiFillWarning } from 'react-icons/ai'
 import { deleteAddress } from '../../actions/userActions'
 
 const DeleteAddressModal = (props) => {
-  const { open, setOpen, addressDetail } = props
+  const { open, setOpen, addressDetailId } = props
 
   const dispatch = useDispatch()
   const { loading, userInfo } = useSelector((state) => state.userLogin)
-  console.log(userInfo)
   const cancelButtonRef = useRef(null)
   const handleDelete = () => {
-    dispatch(deleteAddress(addressDetail))
+    dispatch(deleteAddress(addressDetailId))
     setOpen(false)
   }
   return (

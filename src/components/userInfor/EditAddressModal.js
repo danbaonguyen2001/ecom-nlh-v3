@@ -29,7 +29,6 @@ const EditAddressModal = (props) => {
     addressDetail?.detailAddress?.ward
   )
   const [detailAddress, setDetailAddress] = useState(addressDetail?.address)
-  console.log(selectedDistrict, selectedProv, selectedWard)
   const [user, setUser] = useState({
     avatar: userInfo.data.user.avatar.url
       ? userInfo.data.user.avatar.url
