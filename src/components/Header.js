@@ -7,7 +7,7 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/images/logo.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../actions/userActions";
 import { CART_UPDATE_RESET } from "../constants/cartConstants";
@@ -47,6 +47,7 @@ function classNames(...classes) {
 const Header = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
+
   // Handle Nav
   const [nav, setNav] = useState([
     {
@@ -75,6 +76,33 @@ const Header = () => {
     navigation.map((item) => (item.current = false));
     setNav([...navigation]);
   };
+  const { categoryName } = useSelector(
+    (state) => state.productListByCategories
+  );
+  const { CategoryName } = useParams();
+  useEffect(() => {
+    console.log(categoryName);
+    if (categoryName) {
+      if (categoryName === "Điện thoại") {
+        // setNav([...nav, (nav[0].current = true)]);
+        // console.log(nav[0]);
+        handleCLickNav(0);
+      } else if (categoryName === "Tablet") {
+        // setNav([...nav, (nav[1].current = true)]);
+        // console.log(nav[1]);
+        handleCLickNav(1);
+      } else if (categoryName === "Laptop") {
+        // setNav([...nav, (nav[2].current = true)]);
+        // console.log(nav[2]);
+        handleCLickNav(2);
+      } else {
+        // setNav([...nav, (nav[3].current = true)]);
+        // console.log(nav[3]);
+        handleCLickNav(3);
+      }
+    }
+    console.log(nav);
+  }, [categoryName]);
 
   //Handle Cart
 
@@ -225,7 +253,7 @@ const Header = () => {
                               "px-3 py-2 rounded-md text-sm font-medium"
                             )}
                             aria-current={item.current ? "page" : undefined}
-                            onClick={() => handleCLickNav(index)}
+                            // onClick={() => handleCLickNav(index)}
                           >
                             {item.name}
                           </Link>

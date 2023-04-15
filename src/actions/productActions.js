@@ -400,7 +400,7 @@ export const compare = () => async (dispatch, getState) => {
 
     const product1 = products[0].name;
     const product2 = products[1].name;
-    const mess = `Trong ${product1} và ${product2}, sản phẩm nào đáng mua hơn ? `;
+    const mess = `So sánh ${product1} và ${product2}, sản phẩm nào đáng mua hơn? `;
     console.log(mess);
 
     const { data } = await axios.post(

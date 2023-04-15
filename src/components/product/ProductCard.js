@@ -73,7 +73,7 @@ const ProductCard = (props) => {
             </Link>
             <div class="px-5 pb-5">
               <div>
-                <h3 class=" text-gray-900 font-semibold text-lg tracking-tight ">
+                <h3 class=" text-gray-900 font-semibold text-lg tracking-tight text-clip">
                   {product?.name}
                 </h3>
               </div>
