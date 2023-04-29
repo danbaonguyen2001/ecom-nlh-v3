@@ -83,6 +83,9 @@ const OrderList = () => {
                       <b>Ngày đặt:</b> {toDate(OrderItem?.createdAt)}
                     </p>
                     <p class="mt-1 text-base text-gray-700">
+                      <b>Ngày cập nhật:</b> {toDate(OrderItem?.updatedAt)}
+                    </p>
+                    <p class="mt-1 text-base text-gray-700">
                       <b>Tổng cộng:</b> {toVND(OrderItem?.totalPrice)}
                     </p>
                   </div>

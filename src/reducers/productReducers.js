@@ -99,7 +99,7 @@ export const productDetailReducer = (
   }
 };
 export const productListByCategoryReducer = (
-  state = { productByCategories: [], categoryName: [] },
+  state = { productByCategories: [] },
   action
 ) => {
   switch (action.type) {

@@ -174,7 +174,7 @@ export const initiateQuickPay = (dataForm) => async (dispatch, getState) => {
       },
     };
     const { data } = await axios.post(
-      `http://localhost:5000/api/orders/momo`,
+      `${Server}/api/orders/momo`,
       { ...dataForm },
       config
     );
@@ -205,7 +205,7 @@ export const queryCheckout = (dataForm) => async (dispatch, getState) => {
     console.log(userInfo.data.access_token);
     console.log(dataForm);
     const { data } = await axios.post(
-      `http://localhost:5000/api/orders/momo/query`,
+      `${Server}/api/orders/momo/query`,
       { ...dataForm },
       config
     );

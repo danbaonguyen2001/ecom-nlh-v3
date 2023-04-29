@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { AiFillWarning } from "react-icons/ai";
@@ -15,6 +15,19 @@ const DeleteAddressModal = (props) => {
     dispatch(deleteAddress(addressDetailId));
     setOpen(false);
   };
+  console.log(addressDetailId);
+
+  const [address, setAddress] = useState([]);
+
+  useEffect(() => {
+    const infor = { ...userInfo };
+    console.log(infor);
+    const addressOb = infor.data.user.addresses.filter(
+      (add) => add.detailAddress === addressDetailId
+    );
+    setAddress(addressOb);
+  }, []);
+
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -69,6 +82,7 @@ const DeleteAddressModal = (props) => {
                         </Dialog.Title>
                         <div className="mt-2 flex items-center ">
                           {/* {userInfo?.data?.user?.addresses[address]?.address} */}
+                          {address[0]?.address}
                         </div>
                       </div>
                     </div>

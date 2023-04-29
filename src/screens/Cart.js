@@ -6,7 +6,11 @@ import { TiDelete } from "react-icons/ti";
 import { GiConfirmed } from "react-icons/gi";
 import { CiDiscount1 } from "react-icons/ci";
 import { getCarts, updateCart } from "../actions/cartActions";
-import { createOrder, initiateQuickPay } from "../actions/orderActions";
+import {
+  createOrder,
+  getHistoryOrders,
+  initiateQuickPay,
+} from "../actions/orderActions";
 import { toVND } from "../utils/format";
 import Loading from "./Loading";
 // import paypal from '../assets/images/paypal.svg'
@@ -54,17 +58,10 @@ const Cart = () => {
     rates,
   } = useSelector((state) => state.VNDToUSD);
 
-  //Handle Cart
-  //get cart
   const { cartItems } = useSelector((state) => state.carts);
-  // const { userInfo } = useSelector((state) => state.userLogin);
-  // console.log(cartItems?.length === 0);
 
-  //check cart update
   const { loading, error, success } = useSelector((state) => state.cartUpdate);
-  // const {loading:loadingAddress,error:errorAddress,address} = useSelector((state) => state.)
 
-  //handle Update quantity
   const plusQT = (index) => {
     console.log("Plus");
 
@@ -238,7 +235,12 @@ const Cart = () => {
   }, [selectedSenderDistrict, dispatch]);
   useEffect(() => {
     if (selectedSenderWard) {
-      dispatch(getShippingFe(selectedSenderWard));
+      const dataForm = {
+        province: selectedSenderProvince,
+        district: selectedSenderDistrict,
+        ward: selectedSenderWard,
+      };
+      dispatch(getShippingFe(dataForm));
       dispatch(VNDToUSD());
     }
   }, [selectedSenderWard, dispatch]);
@@ -283,6 +285,7 @@ const Cart = () => {
       dispatch(getCarts());
       navigate(`/order/${successOrderId}`);
       dispatch({ type: CREATE_ORDER_RESET });
+      dispatch(getHistoryOrders());
     }
     if (errorFee) {
       toast.error(`Chung tôi chưa hỗ trợ giao hàng tại địa chỉ này`, {
@@ -761,7 +764,7 @@ const Cart = () => {
                   font-medium rounded-lg text-sm px-5 py-2.5 text-center  
                   items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 
                   dark:text-gray-900 dark:hover:bg-gray-200  mb-2 flex justify-center items-center
-                  mr-4"
+                  mr-4 z-0"
                     >
                       <PayPalScriptProvider
                         options={{
