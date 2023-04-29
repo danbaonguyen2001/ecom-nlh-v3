@@ -63,6 +63,7 @@ const Login = () => {
                 action="#"
                 method="POST"
                 class="mt-8"
+                autoComplete="true"
               >
                 <div class="space-y-5">
                   <div>

@@ -24,8 +24,10 @@ const Compare = () => {
   );
   const { CategoryName } = useParams();
   useEffect(() => {
-    if (CategoryName !== null && CategoryName !== categoryName) {
-      dispatch(deleteAllCompare());
+    if (CategoryName !== null) {
+      if (CategoryName !== categoryName && products.length > 0) {
+        dispatch(deleteAllCompare());
+      }
     }
   }, [categoryName]);
 
