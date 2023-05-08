@@ -3,7 +3,8 @@ import { useState } from "react";
 import { AiFillMessage } from "react-icons/ai";
 import logo from "../assets/images/logo.svg";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { BsFillSendFill } from "react-icons/bs";
+import { GoPrimitiveDot } from "react-icons/go";
+import { FaUserCircle } from "react-icons/fa";
 import { DefaultAvt } from "../constants/userConstants";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ var socket;
 const Chat = () => {
   const [open, setOpen] = useState(false);
   const { logout, userInfo } = useSelector((state) => state.userLogin);
+  // console.log(userInfo?.data?.user?._id);
 
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,10 +41,9 @@ const Chat = () => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-
-    // eslint-disable-next-line
   }, []);
 
+  // Fetch chat
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -51,6 +52,7 @@ const Chat = () => {
           config
         );
         setSelectedChat(await data);
+        setMessages(await data?.messages);
         socket.emit("join chat", selectedChat?.chatId);
       } catch (error) {
         toast.error("Lỗi Server rồi!", {
@@ -67,8 +69,8 @@ const Chat = () => {
     };
     fetchChats();
   }, []);
-  console.log(selectedChat);
 
+  // Send messages
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat?.chatId);
@@ -82,11 +84,10 @@ const Chat = () => {
           config
         );
         setNewMessage("");
-
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
-        toast.error("Lỗi Server rồi fen ơi!", {
+        toast.error("Lỗi Server rồi bạn ơi!", {
           position: "top-right",
           autoClose: 800,
           hideProgressBar: false,
@@ -100,12 +101,35 @@ const Chat = () => {
     }
   };
 
+  //Recieve messages
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+      console.log(newMessageRecieved);
       setMessages([...messages, newMessageRecieved]);
     });
-    console.log(messages);
   });
+
+  // Typing
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
+  };
 
   const handleOpen = () => {
     if (logout) {
@@ -125,14 +149,7 @@ const Chat = () => {
     }
   };
 
-  // console.log(Date(selectedChat?.messages[0]?.updatedAt) - Date.now());
-  // console.log(new Date(selectedChat?.messages[0]?.updatedAt));
-  // const a = new Date(selectedChat?.messages[0]?.updatedAt);
-  // console.log(a.getFullYear());
-  // console.log(a.get);
-  // const b = Date();
-  // console.log(Date());
-  // console.log(b - a);
+  console.log(messages);
   return (
     <>
       {open ? (
@@ -151,42 +168,8 @@ const Chat = () => {
             </header>
             {/* Content */}
             <div class="flex flex-col flex-grow h-auto md:max-h-[360px] p-4 overflow-auto">
-              {/* {Array(3).map((i) => (
-                <div>
-                  <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
-                    <div>
-                      <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
-                        <p class="text-sm">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit.
-                        </p>
-                      </div>
-                      <span class="text-xs text-gray-500 leading-none">
-                        2 min ago
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                    <div>
-                      <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                        <p class="text-sm">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit, sed do eiusmod tempor incididunt ut labore et
-                          dolore magna aliqua.{" "}
-                        </p>
-                      </div>
-                      <span class="text-xs text-gray-500 leading-none">
-                        2 min ago
-                      </span>
-                    </div>
-                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div>
-                  </div>
-                </div>
-              ))} */}
-
-              {selectedChat?.messages?.map((mess, i) =>
-                mess?.sender.email === "1911021@student.hcmute.edu.vn" ? (
+              {messages?.map((mess, i) =>
+                mess?.sender?._id !== userInfo?.data?.user?._id ? (
                   <div class="flex w-full mt-2 space-x-3 max-w-xs" key={i}>
                     {/* <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div> */}
                     <img
@@ -203,7 +186,7 @@ const Chat = () => {
                         <p class="text-sm">{mess?.content}</p>
                       </div>
                       <span class="text-xs text-gray-500 leading-none">
-                        {toDate(mess.updatedAt - Date.now())}
+                        {toDateNow(mess?.updatedAt)}
                       </span>
                     </div>
                   </div>
@@ -233,134 +216,20 @@ const Chat = () => {
                   </div>
                 )
               )}
-
-              {/* <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                <div>
-                  <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                    <p class="text-sm">Lorem ipsum dolor sit amet.</p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-                <img
-                  src={DefaultAvt}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
+              <div className="flex space-x-3 items-center  ">
+                <FaUserCircle className="w-6 h-6" />
+                <GoPrimitiveDot className="w-4 h-4  translate-y-3" />
+                <GoPrimitiveDot className="w-4 h-4 translate-y-2" />
+                <GoPrimitiveDot className="w-4 h-4 translate-y-1" />
+                <GoPrimitiveDot className="w-4 h-4" />
               </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                <img
-                  src={logo}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-                <div>
-                  <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
-                    <p class="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.{" "}
-                    </p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-              </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                <div>
-                  <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                    <p class="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.{" "}
-                    </p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-                <img
-                  src={DefaultAvt}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-              </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                <div>
-                  <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                    <p class="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt.
-                    </p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-                <img
-                  src={DefaultAvt}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-              </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                <div>
-                  <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                    <p class="text-sm">Lorem ipsum dolor sit amet.</p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-                <img
-                  src={DefaultAvt}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-              </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs">
-                <img
-                  src={logo}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-                <div>
-                  <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">
-                    <p class="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.{" "}
-                    </p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-              </div>
-              <div class="flex w-full mt-2 space-x-3 max-w-xs ml-auto justify-end">
-                <div>
-                  <div class="bg-blue-600 text-white p-3 rounded-l-lg rounded-br-lg">
-                    <p class="text-sm">Lorem ipsum dolor sit.</p>
-                  </div>
-                  <span class="text-xs text-gray-500 leading-none">
-                    2 min ago
-                  </span>
-                </div>
-                <img
-                  src={DefaultAvt}
-                  alt="avt"
-                  className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
-                />
-              </div> */}
             </div>
 
             {/*Input */}
             <div class="bg-gray-200 p-4 border-t border-gray-400 relative">
               <input
                 onKeyDown={sendMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
+                onChange={typingHandler}
                 class="flex items-center h-10 w-full rounded px-3 text-sm "
                 type="text"
                 placeholder="Nhập tin nhắn…"
