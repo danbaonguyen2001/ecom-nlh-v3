@@ -100,16 +100,7 @@ export default function AddToCartModal(props) {
         theme: "light",
       });
     }
-    toast.success("Đã thêm sản phẩm vào giỏ hàng!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+
     setOpen(false);
   };
   return (

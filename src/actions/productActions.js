@@ -42,6 +42,7 @@ import {
 import { logout } from "./userActions";
 import { Server } from "../apis/Api";
 import { toast } from "react-toastify";
+import { toastError, toastSuccess } from "../utils/ultils";
 
 /** GET Products  */
 export const listProducts =
@@ -196,7 +197,7 @@ export const createProductReview =
         },
       };
 
-      await axios.post(
+      const { data } = await axios.post(
         `${Server}/api/products/${productId}/reviews`,
         {
           rating: review.rating,
@@ -208,6 +209,9 @@ export const createProductReview =
       dispatch({
         type: PRODUCT_CREATE_REVIEW_SUCCESS,
       });
+      if (data?.message === "Review added") {
+        toastSuccess("Thêm đánh giá thành công!");
+      }
     } catch (error) {
       const message =
         error.response && error.response.data.message
@@ -216,6 +220,7 @@ export const createProductReview =
       if (message === "Not authorized, token failed") {
         dispatch(logout());
       }
+      toastError("Thêm đánh giá thất bại!");
       dispatch({
         type: PRODUCT_CREATE_REVIEW_FAIL,
         payload: message,
@@ -292,6 +297,9 @@ export const createProductComment = (params) => async (dispatch, getState) => {
       type: PRODUCT_CREATE_COMMENT_SUCCESS,
       payload: data,
     });
+    if (data.success) {
+      toastSuccess("Thêm bình luận thành công");
+    }
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -300,6 +308,7 @@ export const createProductComment = (params) => async (dispatch, getState) => {
     if (message === "Login first to access this resource.") {
       dispatch(logout());
     }
+    toastError("Thêm bình luận thất bại!");
     dispatch({
       type: PRODUCT_CREATE_COMMENT_FAIL,
       payload: message,

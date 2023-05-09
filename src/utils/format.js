@@ -23,32 +23,10 @@ export const toDate = function (date = new Date()) {
 
 export const toDateNow = function (date = new Date()) {
   let daTemp = new Date(date);
-  let dateNow = new Date();
-  let x = "";
-  console.log(dateNow);
-  console.log(daTemp);
   const day = daTemp.getDay();
   const month = daTemp.getMonth();
   const year = daTemp.getFullYear();
   const time = daTemp.getHours() + ":" + daTemp.getMinutes();
-  console.log(time);
-  //   return day.toLocaleDateString("vi-VN", {
-  //     year: "numeric",
-  //     month: "long",
-  //     day: "numeric",
-  //   });
-  console.log(dateNow.getDate() === daTemp.getDate());
-  console.log(dateNow.getTime() - daTemp.getTime());
-  const a = dateNow.getTime() - daTemp.getTime();
-  console.log(Date(a));
-
-  if (dateNow.getDate() > daTemp.getDate()) {
-    // if(dateNow.getTime())
-  }
-  //   Same date
-  else {
-  }
-
   return time + "-" + day + "/" + month + "/" + year;
 };
 //handler search params

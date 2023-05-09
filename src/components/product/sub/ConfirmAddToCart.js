@@ -23,7 +23,7 @@ export default function ConfirmAddToCart(props) {
     option: product?.productOptions[selectedOption]?._id,
     color: product?.productOptions[selectedOption]?.colors[selectedColor]?._id,
   };
-  console.log(item, { quantity });
+
   const handleAddToCart = () => {
     dispatch(addToCart(quantity, item));
     if (!error) {
@@ -40,16 +40,7 @@ export default function ConfirmAddToCart(props) {
         theme: "light",
       });
     }
-    toast.success("Đã thêm sản phẩm vào giỏ hàng!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+
     setOpen(false);
   };
 
