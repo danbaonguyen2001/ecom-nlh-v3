@@ -13,6 +13,7 @@ import axios from "axios";
 import { Server } from "../apis/Api";
 import io from "socket.io-client";
 import { toDate, toDateNow } from "../utils/format";
+
 var socket;
 
 const Chat = () => {
@@ -37,11 +38,15 @@ const Chat = () => {
 
   useEffect(() => {
     socket = io(`${Server}`);
-    socket.emit("setup", `${userInfo?.data?.user}`);
-    socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
-    socket.on("stop typing", () => setIsTyping(false));
-  }, []);
+    if (userInfo) {
+      socket.emit("setup", userInfo?.data?.user);
+      socket.on("connected", () => setSocketConnected(true));
+      socket.on("typing", () => {
+        setIsTyping(true);
+      });
+      socket.on("stop typing", () => setIsTyping(false));
+    }
+  }, [userInfo]);
 
   // Fetch chat
   useEffect(() => {
@@ -53,7 +58,7 @@ const Chat = () => {
         );
         setSelectedChat(await data);
         setMessages(await data?.messages);
-        socket.emit("join chat", selectedChat?.chatId);
+        await socket.emit("join chat", data?.chatId);
       } catch (error) {
         toast.error("Lỗi Server rồi!", {
           position: "top-right",
@@ -67,7 +72,9 @@ const Chat = () => {
         });
       }
     };
-    fetchChats();
+    if (userInfo) {
+      fetchChats();
+    }
   }, []);
 
   // Send messages
@@ -174,9 +181,7 @@ const Chat = () => {
                     {/* <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300"></div> */}
                     <img
                       src={
-                        mess?.sender?.avatar
-                          ? mess?.sender?.avatar?.url
-                          : DefaultAvt
+                        mess?.sender?.avatar ? mess?.sender?.avatar?.url : logo
                       }
                       alt="avt"
                       className="w-10 h-10  ring-1 ring-primary-600 rounded-full "
@@ -216,13 +221,15 @@ const Chat = () => {
                   </div>
                 )
               )}
-              <div className="flex space-x-3 items-center ">
-                <FaUserCircle className="w-6 h-6" />
-                <GoPrimitiveDot className="w-4 h-4  animate-bounce" />
-                <GoPrimitiveDot className="w-4 h-4 animate-bounce" />
-                <GoPrimitiveDot className="w-4 h-4 animate-bounce " />
-                <GoPrimitiveDot className="w-4 h-4 animate-bounce" />
-              </div>
+              {istyping && (
+                <div className="flex space-x-3 items-center animate-pulse ">
+                  {/* <FaUserCircle className="w-6 h-6" /> */}
+                  <GoPrimitiveDot className="w-4 h-4  " />
+                  <GoPrimitiveDot className="w-4 h-4 " />
+                  <GoPrimitiveDot className="w-4 h-4 " />
+                  <GoPrimitiveDot className="w-4 h-4" />
+                </div>
+              )}
             </div>
 
             {/*Input */}

@@ -37,6 +37,7 @@ import { VND_TO_USD_RESET } from "../constants/vndtousdConstants";
 import { Link } from "react-router-dom";
 import { AiTwotoneHome } from "react-icons/ai";
 import { BsFillCartXFill } from "react-icons/bs";
+import { toastError, toastSuccess, toastWarn } from "../utils/ultils";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,16 +68,7 @@ const Cart = () => {
 
     //checkout qt
     if (cartItems[index].item.quantity === cartItems[index].item.countInStock) {
-      toast.error("Số lượng đạt giới hạn", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastWarn("Số lượng đạt giới hạn!");
     } else {
       const body = {
         itemId: cartItems[index]?._id,
@@ -86,27 +78,9 @@ const Cart = () => {
       dispatch(updateCart(body.itemId, body.quantity));
       // check error
       if (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toastError(`${error}`);
       } else {
-        toast.success("Tăng số lượng thành công!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toastSuccess("Tăng số lượng thành công!");
       }
     }
   };
@@ -115,16 +89,7 @@ const Cart = () => {
     console.log("Minus");
     // check qt
     if (cartItems[index].item.quantity === 1) {
-      toast.error("Không thể giảm tiếp!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastWarn("Không thể giảm tiếp!");
     } else {
       const body = {
         itemId: cartItems[index]?._id,
@@ -135,27 +100,9 @@ const Cart = () => {
 
       //check error
       if (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toastError(`${error}`);
       } else {
-        toast.success("Giảm số lượng thành công!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toastSuccess("Giảm số lượng thành công!");
       }
     }
   };
@@ -169,27 +116,9 @@ const Cart = () => {
 
     dispatch(updateCart(body.itemId, body.quantity));
     if (error) {
-      toast.error(`${error}`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastError(`${error}`);
     } else if (loading === false) {
-      toast.success(`Xóa sản phẩm thành công`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess(`Xóa sản phẩm thành công!`);
     }
   };
   //Handle order
@@ -272,58 +201,25 @@ const Cart = () => {
       dispatch({ type: CREATE_ORDER_RESET });
     }
     if (successOrder) {
-      toast.success(`Thêm đơn hàng thành công!`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess("Thêm đơn hàng thành công!");
+
       dispatch(getCarts());
       navigate(`/order/${successOrderId}`);
       dispatch({ type: CREATE_ORDER_RESET });
       dispatch(getHistoryOrders());
     }
     if (errorFee) {
-      toast.error(`Chung tôi chưa hỗ trợ giao hàng tại địa chỉ này`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastWarn("Chung tôi chưa hỗ trợ giao hàng tại địa chỉ này!");
+
       dispatch({ type: CLEAR_ERROR });
     }
     if (errorAddresslist) {
-      toast.error(`Đã xảy ra lỗi,xin vui lòng thử lại.`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastError("Đã xảy ra lỗi,xin vui lòng thử lại!");
+
       dispatch({ type: CLEAR_ERROR_ADDRESS });
     }
     if (errorVndToUsd) {
-      toast.error(`Đã xảy ra lỗi,trong quá trình chuyển đổi tiền tệ.`, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastError("Đã xảy ra lỗi,trong quá trình chuyển đổi tiền tệ");
       dispatch({ type: VND_TO_USD_RESET });
     }
   }, [

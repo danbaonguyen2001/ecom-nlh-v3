@@ -24,6 +24,7 @@ import {
 import { logout } from "./userActions";
 import { Server } from "../apis/Api";
 import axios from "axios";
+import { toastSuccess } from "../utils/ultils";
 export const getOrderDetail = (id) => async (dispatch, getState) => {
   try {
     dispatch({
@@ -147,6 +148,10 @@ export const cancelOrder =
         type: CANCEL_ORDER_SUCCESS,
         payload: data,
       });
+      if (data?.success) {
+        toastSuccess("Hủy đơn hàng thành công");
+        dispatch(getHistoryOrders());
+      }
       dispatch({
         type: ORDER_DETAIL_SUCCESS,
         payload: data,

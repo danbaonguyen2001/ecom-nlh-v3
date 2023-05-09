@@ -18,6 +18,7 @@ const OrderList = () => {
   const { loading, error, listOrders } = useSelector(
     (state) => state.historyOrders
   );
+  const cancelOrder = useSelector((state) => state.cancelOrder);
   useEffect(() => {
     if (partnerCode && orderId && requestId) {
       const dataFrom = {
@@ -34,7 +35,7 @@ const OrderList = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {(loading || cancelOrder?.loading) && <Loading />}
       {error && <p>ERROR</p>}
       <div class=" bg-gray-100  rounded-lg shadow-lg bg-white mx-2 ">
         <h1 class="mb-10 text-center text-2xl font-bold">Đơn hàng gần đây</h1>

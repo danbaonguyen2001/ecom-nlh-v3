@@ -92,7 +92,14 @@ const AddAddressModal = (props) => {
   };
   const handleAddAddress = () => {
     const dataForm = {
-      detail: detailAddress,
+      detail:
+        detailAddress +
+        ", " +
+        selectedWard?.WardName +
+        ", " +
+        selectedDistrict?.DistrictName +
+        ", " +
+        selectedProv?.ProvinceName,
       addressDefault: addressDefault,
       addressDetail: {
         province: {

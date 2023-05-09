@@ -17,7 +17,7 @@ const CancelOrderModal = (props) => {
   } = props;
   const navigate = useNavigate();
   const cancelButtonRef = useRef(null);
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState("Đổi ý");
   const dispatch = useDispatch();
   // console.log(reason);
   return (

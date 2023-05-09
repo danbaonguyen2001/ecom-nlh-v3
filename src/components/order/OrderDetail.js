@@ -35,7 +35,7 @@ const OrderDetail = () => {
 
   const cancelHandle = (orderId, description) => {
     dispatch(cancelOrder(orderId, description));
-    dispatch(getHistoryOrders());
+
     setOpen(false);
   };
   useEffect(() => {

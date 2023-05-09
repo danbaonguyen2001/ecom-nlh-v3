@@ -232,17 +232,18 @@ const Introduce = (props) => {
 
               <div className=" flex justify-start flex-col">
                 <p className="text-3xl tracking-tight text-gray-900 font-semibold ">
-                  {toVND(
-                    product?.productOptions[selectedOption]?.price *
-                      (1 -
-                        product?.productOptions[selectedOption]?.promotion *
-                          0.01)
-                  )}
+                  {toVND(product?.productOptions[selectedOption]?.price)}
                 </p>
                 <p className="text-3xl tracking-tight text-gray-900  my-4">
                   <i>
                     <s className="mr-4">
-                      {toVND(product?.productOptions[selectedOption]?.price)}
+                      {toVND(
+                        (product?.productOptions[selectedOption]?.price /
+                          (100 -
+                            product?.productOptions[selectedOption]
+                              ?.promotion)) *
+                          100
+                      )}
                     </s>
                   </i>
                   <i>
