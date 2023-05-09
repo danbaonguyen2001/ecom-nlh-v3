@@ -32,9 +32,8 @@ const EditAddressModal = (props) => {
   );
   const [selectedWard, setSelectedWard] = useState(
     addressDetail?.detailAddress?.ward
-
-  )
-  const [detailAddress, setDetailAddress] = useState(addressDetail?.address)
+  );
+  const [detailAddress, setDetailAddress] = useState(addressDetail?.address);
 
   const [user, setUser] = useState({
     avatar: userInfo.data.user.avatar.url
@@ -142,7 +141,14 @@ const EditAddressModal = (props) => {
 
   const handleEditAddress = () => {
     const dataForm = {
-      detail: detailAddress,
+      detail:
+        detailAddress +
+        ", " +
+        selectedWard?.WardName +
+        ", " +
+        selectedDistrict?.DistrictName +
+        ", " +
+        selectedProv?.ProvinceName,
       addressDefault: isDfault,
       addressDetail: {
         province: {

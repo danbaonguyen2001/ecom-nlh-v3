@@ -216,12 +216,12 @@ const Chat = () => {
                   </div>
                 )
               )}
-              <div className="flex space-x-3 items-center  ">
+              <div className="flex space-x-3 items-center ">
                 <FaUserCircle className="w-6 h-6" />
-                <GoPrimitiveDot className="w-4 h-4  translate-y-3" />
-                <GoPrimitiveDot className="w-4 h-4 translate-y-2" />
-                <GoPrimitiveDot className="w-4 h-4 translate-y-1" />
-                <GoPrimitiveDot className="w-4 h-4" />
+                <GoPrimitiveDot className="w-4 h-4  animate-bounce" />
+                <GoPrimitiveDot className="w-4 h-4 animate-bounce" />
+                <GoPrimitiveDot className="w-4 h-4 animate-bounce " />
+                <GoPrimitiveDot className="w-4 h-4 animate-bounce" />
               </div>
             </div>
 

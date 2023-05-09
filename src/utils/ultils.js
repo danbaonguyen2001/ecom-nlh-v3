@@ -6,3 +6,26 @@
 // //     const navigate = useNavigate();
 // //     return 0;
 // }
+import { toast } from "react-toastify";
+const configToast = {
+  position: "top-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+};
+
+export const toastSuccess = (mess) => {
+  toast.success(`${mess}`, configToast);
+};
+
+export const toastError = (mess) => {
+  toast.error(`${mess}`, configToast);
+};
+
+export const toastWarn = (mess) => {
+  toast.warn(`${mess}`, configToast);
+};

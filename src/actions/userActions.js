@@ -36,6 +36,7 @@ import {
 import { ORDER_HISTORY_RESET } from "../constants/orderConstants";
 import { Server, localhost } from "../apis/Api";
 import { toast } from "react-toastify";
+import { toastSuccess, toastWarn } from "../utils/ultils";
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -67,16 +68,7 @@ export const login = (email, password) => async (dispatch) => {
 
     localStorage.setItem("userInfo", JSON.stringify(data));
     if (data.status) {
-      toast.success("Đăng nhập thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess("Đăng nhập thành công");
     }
   } catch (error) {
     dispatch({
@@ -86,16 +78,8 @@ export const login = (email, password) => async (dispatch) => {
           ? error.response.data.message
           : error.message,
     });
-    toast.warn(`${error.response.data.message}`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+
+    toastWarn(`${error.response.data.message}`);
   }
 };
 
@@ -125,6 +109,11 @@ export const register = (params) => async (dispatch) => {
     });
     // const navigate = useNavigate();
     // navigate("/login");
+    if (data.success) {
+      toastSuccess(
+        "Đăng ký tài khoản thành công. Xác thực mail để có thể đăng nhập!"
+      );
+    }
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
@@ -133,6 +122,7 @@ export const register = (params) => async (dispatch) => {
           ? error.response.data.message
           : error.message,
     });
+    toastWarn("Đăng ký thất bại, kiểm tra lại thông tin đã cung cấp!");
   }
 };
 
@@ -167,10 +157,11 @@ export const getProfile = () => async (dispatch, getState) => {
           ? error.response.data.message
           : error.message,
     });
+    toastWarn(`${error.response.data.message}`);
   }
 };
 export const getAddressDetail =
-  (detailAddress) => async (dispatch, getState) => {
+  (addressDetailId) => async (dispatch, getState) => {
     try {
       dispatch({
         type: USER_ADDRESS_DETAIL_REQUEST,
@@ -185,7 +176,7 @@ export const getAddressDetail =
         },
       };
       const { data } = await axios.get(
-        `${Server}/api/users/address/${detailAddress}`,
+        `${Server}/api/users/address/${addressDetailId}`,
         config
       );
       dispatch({
@@ -201,6 +192,7 @@ export const getAddressDetail =
             ? error.response.data.message
             : error.message,
       });
+      toastWarn(`${error.response.data.message}`);
     }
   };
 export const logout = () => (dispatch) => {
@@ -209,16 +201,7 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: CART_LIST_RESET });
   dispatch({ type: ORDER_HISTORY_RESET });
-  toast.success("Đăng xuất thành công!", {
-    position: "top-right",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-  });
+  toastSuccess("Đăng xuất thành công");
 };
 
 export const updateProfile = (user) => async (dispatch, getState) => {
@@ -261,16 +244,7 @@ export const updateProfile = (user) => async (dispatch, getState) => {
     localStorage.setItem("userInfo", JSON.stringify(updateUser));
 
     if (data.success) {
-      toast.success("Cập nhật thông tin thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess("Cập nhật thông tin thành công!");
     }
   } catch (error) {
     dispatch({
@@ -280,6 +254,7 @@ export const updateProfile = (user) => async (dispatch, getState) => {
           ? error.response.data.message
           : error.message,
     });
+    toastWarn(`${error.response.data.message}`);
   }
 };
 
@@ -333,16 +308,7 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
     localStorage.setItem("userInfo", JSON.stringify(updateUser));
 
     if (data.success === true) {
-      toast.success("Cập nhật avatar thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess("Cập nhật avatar thành công!");
     }
   } catch (error) {
     dispatch({
@@ -352,6 +318,7 @@ export const updateAvatar = (formData) => async (dispatch, getState) => {
           ? error.response.data.message
           : error.message,
     });
+    toastWarn(`${error.response.data.message}`);
   }
 };
 
@@ -380,27 +347,8 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
       payload: data,
     });
     localStorage.setItem("userInfo", JSON.stringify(data));
-    toast.success("Thêm địa chỉ thành công!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toastSuccess("Thêm địa chỉ thành công!");
   } catch (error) {
-    toast.error("Thêm địa chỉ thất bại!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
     dispatch({
       type: USER_ADD_ADDRESS_FAIL,
       payload:
@@ -408,6 +356,7 @@ export const addAddress = (dataForm) => async (dispatch, getState) => {
           ? error.response.data.message
           : error.message,
     });
+    toastWarn("Thêm địa chỉ thất bại!");
   }
 };
 
@@ -432,16 +381,7 @@ export const updateAddress =
       console.log({ ...dataForm });
       dispatch({ type: USER_UPDATE_ADDRESS_SUCCESS, payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
-      toast.success(" Cập nhật địa chỉ thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastSuccess(" Cập nhật địa chỉ thành công!");
     } catch (error) {
       const {
         userLogin: { userInfo },
@@ -450,16 +390,7 @@ export const updateAddress =
         type: USER_UPDATE_ADDRESS_FAIL,
         payload: userInfo,
       });
-      toast.error("Cập nhật địa chỉ thất bại!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toastWarn("Cập nhật địa chỉ thất bại!");
     }
   };
 
@@ -486,16 +417,7 @@ export const deleteAddress = (addressID) => async (dispatch, getState) => {
     dispatch({ type: USER_DELETE_ADDRESS_SUCCESS, payload: data });
 
     localStorage.setItem("userInfo", JSON.stringify(data));
-    toast.success("Xóa địa chỉ thành công!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toastSuccess("Xóa địa chỉ thành công!");
   } catch (error) {
     dispatch({
       type: USER_DELETE_ADDRESS_FAIL,
@@ -504,15 +426,6 @@ export const deleteAddress = (addressID) => async (dispatch, getState) => {
           ? error.response.data.message
           : error.message,
     });
-    toast.error("Xóa địa chỉ thất bại!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toastWarn("Xóa địa chỉ thất bại!");
   }
 };
