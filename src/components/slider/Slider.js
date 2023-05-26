@@ -46,7 +46,7 @@ const Slider = (props) => {
         ></div>
       </div> */}
       <div className="w-full h-full flex items-center justify-center m-auto ">
-        <img class="h-auto max-w-full" src={imgArr[curIndex]} alt="img"></img>
+        <img class="max-h-full w-auto" src={imgArr[curIndex]} alt="img"></img>
       </div>
 
       {/* Left arrow */}
