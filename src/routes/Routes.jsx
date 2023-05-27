@@ -17,6 +17,8 @@ import ProductDetail from "../components/product/ProductDetail";
 import ProductList from "../components/product/ProductList";
 import NotFound from "../components/error/NotFound";
 import PrivateRoute from "../utils/PrivateRoute";
+import Help from "../screens/Help";
+import General from "../screens/General.";
 
 const Components = () => {
   return (
@@ -29,6 +31,8 @@ const Components = () => {
         <Route path="/forgotpass" element={<ForgotPass />} />
         <Route path="/:CategoryName" element={<ProductList />} />
         <Route path="/product/:slug" element={<ProductDetail />} />
+        <Route path="/help" element={<Help />} />
+        <Route path="/general" element={<General />} />
 
         {/* Private- Routes */}
         <Route element={<PrivateRoute />}>
