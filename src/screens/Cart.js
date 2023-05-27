@@ -134,7 +134,8 @@ const Cart = () => {
     error: errorFee,
     shippingFee,
   } = useSelector((state) => state.shippingFee);
-  const { addressDetail } = useSelector((state) => state.userLogin);
+  const { addressDetail, userInfo } = useSelector((state) => state.userLogin);
+  console.log(userInfo);
   const [selectedSenderProvince, setSelectedSenderProvince] = useState("");
   const [selectedSenderDistrict, setSelectedSenderDistrict] = useState("");
   const [selectedSenderWard, setSelectedSenderWard] = useState("");
@@ -396,9 +397,29 @@ const Cart = () => {
 
             {/* <!-- Sub total --> */}
             <div class=" rounded-lg border bg-white p-6 shadow-md md:mt-0  lg:col-span-1 mb-2">
-              <h3 class=" text-left text-lg font-bold">Thông tin khách hàng</h3>
+              <h3 class=" text-left text-lg font-bold">Thông tin đơn hàng</h3>
               <hr class="my-4" />
+              {/* Infor */}
+              <h3 class=" text-left text-base font-bold">
+                Thông tin khách hàng
+              </h3>
+              <div className="flex mt-1 ">
+                <b className="font-medium">Tên khách hàng:</b>
+                &nbsp;
+                <p>{userInfo?.data?.user?.name}</p>
+              </div>
+              <div className="flex my-2">
+                <b className="font-medium">Điện thoại:</b>
+                &nbsp;
+                <p>{userInfo?.data?.user?.phone}</p>
+              </div>
+              <div className="flex mb-1">
+                <b className="font-medium">Email:</b>
+                &nbsp;
+                <p>{userInfo?.data?.user?.email}</p>
+              </div>
 
+              <hr class="my-4" />
               {/* Address */}
               <h3 class=" text-left text-base font-bold">Địa chỉ giao hàng</h3>
 
