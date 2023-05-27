@@ -225,10 +225,10 @@ const ProductList = () => {
               </p>
               <Link
                 to="/"
-                className="bg-primary-400 rounded-md p-2 text-white flex items-center mt-2  "
+                className="bg-primary-600 hover:bg-primary-400 rounded-md p-2 text-white flex items-center mt-2  "
               >
                 {" "}
-                <MdOutlineArrowBack className="w-4 h-4 mr-2" />
+                <MdOutlineArrowBack className="w-4 h-4 mr-1" />
                 Về trang chủ
               </Link>
             </div>
