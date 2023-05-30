@@ -33,10 +33,10 @@ const Components = () => {
         <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/help" element={<Help />} />
         <Route path="/general" element={<General />} />
+        <Route path="/changepass" element={<ChangePass />} />
 
         {/* Private- Routes */}
         <Route element={<PrivateRoute />}>
-          <Route path="/changepass/:slug" element={<ChangePass />} />
           <Route path="/user-infor" element={<UserInfor />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order-list" element={<Orders />} />
