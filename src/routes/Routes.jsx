@@ -19,6 +19,7 @@ import NotFound from "../components/error/NotFound";
 import PrivateRoute from "../utils/PrivateRoute";
 import Help from "../screens/Help";
 import General from "../screens/General.";
+import ReTypePass from "../components/auth/ReTypePass";
 
 const Components = () => {
   return (
@@ -34,6 +35,7 @@ const Components = () => {
         <Route path="/help" element={<Help />} />
         <Route path="/general" element={<General />} />
         <Route path="/changepass" element={<ChangePass />} />
+        <Route path="/retypepass/:slug" element={<ReTypePass />} />
 
         {/* Private- Routes */}
         <Route element={<PrivateRoute />}>

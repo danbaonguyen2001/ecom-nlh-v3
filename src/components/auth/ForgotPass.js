@@ -17,7 +17,7 @@ const ForgotPass = () => {
           {/* <!-- Col --> */}
           <div class="w-full lg:w-1/2 bg-white p-5 rounded-lg lg:rounded-l-none">
             <div class="px-8 mb-4 text-center">
-              <h3 class="pt-4 mb-2 text-2xl">Lấy lại mật khẩu</h3>
+              <h3 class="pt-4 mb-2 text-2xl font-semibold">Quên mật khẩu</h3>
             </div>
             <form class="px-8 pt-6 pb-8 mb-4 bg-white rounded">
               <div class="mb-4">
