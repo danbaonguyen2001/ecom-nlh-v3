@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 
 const background =
   "https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn/2023/03/banner/kdhjd-1920x450.jpg";
@@ -18,18 +19,22 @@ const promotions = [
   {
     name: "Điện thoại hot",
     icon: "https://cdn.tgdd.vn//content/icon-TGDD-OF-100x100.gif",
+    href: "/Điện thoại",
   },
   {
     name: "Laptop giảm sốc",
     icon: "https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn//content/120-x-120a-120x120.png",
+    href: "/Laptop",
   },
   {
     name: "Tablet độc quyền",
     icon: "https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn//content/Frame-46604--1--120x120-1.png",
+    href: "/Tablet",
   },
   {
     name: "Phụ kiện mới về",
     icon: "https://img.tgdd.vn/imgt/f_webp,fit_outside,quality_100/https://cdn.tgdd.vn//content/Group-8-120x120-2.png",
+    href: "/Phụ kiện",
   },
 ];
 export default function Banner() {
@@ -82,15 +87,17 @@ export default function Banner() {
       {/* Promotions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {promotions.map((pro, i) => (
-          <div
-            className="rounded-lg shadow-lg lg:col-span-1 p-4 border flex items-center justify-around"
+          <Link
+            className="rounded-lg shadow-lg lg:col-span-1 p-4 border flex items-center justify-around hello"
             key={i}
+            to={pro?.href}
           >
             <img src={pro.icon} alt="icon" className="w-14 h-14" />
+
             <h2 className="text-lg tracking-tight text-gray-900 font-bold">
               {pro.name}
             </h2>
-          </div>
+          </Link>
         ))}
       </div>
 

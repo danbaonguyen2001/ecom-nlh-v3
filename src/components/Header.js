@@ -161,6 +161,7 @@ const Header = () => {
         { name: "Tài khoản của tôi", href: "/user-infor" },
         { name: "Đơn hàng của tôi", href: "/order-list" },
         { name: "Đăng xuất", href: "/" },
+        { name: "Đổi mật khẩu", href: "/changepass" },
       ]);
     } else {
       user.name = "User Name";

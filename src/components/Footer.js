@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../assets/images/logo.svg";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -12,47 +13,47 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Thông tin chung{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tầm nhìn{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Hành trình{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tuyển dụng{" "}
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -63,47 +64,47 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Đơn hàng{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Bảo hành{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Kỹ thuật{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Tư vấn{" "}
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -114,47 +115,47 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Sản phẩm mới{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Công nghệ{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Bài viết{" "}
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/general"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     {" "}
                     Đánh giá{" "}
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -164,43 +165,43 @@ const Footer = () => {
 
               <ul class="mt-8 space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Hỗ trợ khách hàng
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Chi tiết vận chuyển
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Điều khoản
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/help"
                     title=""
                     class="text-primary-300 transition-all duration-200 hover:text-white focus:text-white"
                   >
                     Chính sách
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -212,7 +213,7 @@ const Footer = () => {
                 <ul class="flex items-center justify-start space-x-8">
                   <li>
                     <a
-                      href="#"
+                      href="https://www.facebook.com/profile.php?id=100014233354327"
                       title=""
                       class="block text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                     >
@@ -229,7 +230,7 @@ const Footer = () => {
 
                   <li>
                     <a
-                      href="#"
+                      href="https://www.facebook.com/profile.php?id=100014233354327"
                       title=""
                       class="block text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                     >
@@ -246,7 +247,7 @@ const Footer = () => {
 
                   <li>
                     <a
-                      href="#"
+                      href="https://www.facebook.com/profile.php?id=100014233354327"
                       title=""
                       class="block text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                     >
@@ -265,7 +266,7 @@ const Footer = () => {
 
                   <li>
                     <a
-                      href="#"
+                      href="https://github.com/danbaonguyen2001"
                       title=""
                       class="block text-white transition-all duration-200 hover:text-opacity-80 focus:text-opacity-80"
                     >
