@@ -4,7 +4,7 @@ const ForgotPass = () => {
   return (
     // <><!-- Container -->
     <div class="container mx-auto ">
-      <div class="flex justify-center px-6 my-12 ">
+      <div class="flex justify-center px-6 my-4 ">
         {/* <!-- Row --> */}
         <div class="w-full xl:w-3/4 lg:w-11/12 flex rounded-sm border-2 border-slate-400">
           {/* <!-- Col --> */}
