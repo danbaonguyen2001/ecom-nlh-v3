@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ForgotPass = () => {
   return (
@@ -66,20 +67,20 @@ const ForgotPass = () => {
               </div>
               <hr class="mb-6 border-t" />
               <div class="text-center">
-                <a
+                <Link
                   class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800 font-semibold"
-                  href="./register.html"
+                  to="/register"
                 >
                   Đăng ký
-                </a>
+                </Link>
               </div>
               <div class="text-center">
-                <a
+                <Link
                   class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800 font-semibold"
-                  href="./index.html"
+                  to="/login"
                 >
                   Đã có tài khoản? Đăng nhập
-                </a>
+                </Link>
               </div>
             </form>
           </div>
