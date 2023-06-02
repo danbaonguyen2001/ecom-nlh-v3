@@ -111,6 +111,7 @@ export const updateCart = (itemId, quantity) => async (dispatch, getState) => {
       type: CART_LIST_ITEM_SUCCESS,
       payload: data,
     });
+    toastSuccess("Cập nhật giỏ hàng thành công!");
   } catch (error) {
     const message =
       error.response && error.response.data.message
