@@ -139,6 +139,7 @@ const Cart = () => {
   const [selectedSenderProvince, setSelectedSenderProvince] = useState("");
   const [selectedSenderDistrict, setSelectedSenderDistrict] = useState("");
   const [selectedSenderWard, setSelectedSenderWard] = useState("");
+  const [street, setStreet] = useState("");
   useEffect(() => {
     // if (!addressDetail) {
     //   dispatch(getAddressDetail())
@@ -235,65 +236,136 @@ const Cart = () => {
   ]);
 
   const successPaymentHandler = (paymentResult) => {
-    const dataForm = {
-      shippingAddress: {
-        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
-        city: `${selectedSenderProvince?.ProvinceName}`,
-        country: "VN",
-      },
-      paymentMethod: isOnline ? "paypal" : "COD",
-      itemsPrice: cartItems?.reduce(function (total, item) {
-        return (total += item?.item?.price * item?.item?.quantity);
-      }, 0),
-      shippingPrice: shippingFee && shippingFee.total,
-      totalPrice:
-        shippingFee &&
-        cartItems?.reduce(function (total, item) {
+    if (!selectedSenderProvince.ProvinceName) {
+      toastWarn("Chọn Tỉnh/Thành phố!");
+      return;
+    }
+    if (!selectedSenderDistrict.DistrictName) {
+      toastWarn("Chọn Huyện/Quận!");
+      return;
+    }
+    if (!selectedSenderWard.WardName) {
+      toastWarn("Chọn Xã/Phường!");
+      return;
+    }
+    if (street.length === 0) {
+      toastWarn("Nhập số nhà/đường!");
+      return;
+    } else {
+      const dataForm = {
+        shippingAddress: {
+          address: `${street}, ${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+          city: `${selectedSenderProvince?.ProvinceName}`,
+          country: "VN",
+        },
+        paymentMethod: isOnline ? "paypal" : "COD",
+        itemsPrice: cartItems?.reduce(function (total, item) {
           return (total += item?.item?.price * item?.item?.quantity);
-        }, 0 + shippingFee.total),
-      paymentResult: paymentResult,
-    };
-    dispatch(createOrder(dataForm));
+        }, 0),
+        shippingPrice: shippingFee && shippingFee.total,
+        totalPrice:
+          shippingFee &&
+          cartItems?.reduce(function (total, item) {
+            return (total += item?.item?.price * item?.item?.quantity);
+          }, 0 + shippingFee.total),
+        paymentResult: paymentResult,
+      };
+      dispatch(createOrder(dataForm));
+    }
   };
   const shipCodHandle = () => {
-    const dataForm = {
-      shippingAddress: {
-        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
-        city: `${selectedSenderProvince?.ProvinceName}`,
-        country: "VN",
-      },
-      paymentMethod: isOnline ? "paypal" : "COD",
-      itemsPrice: cartItems?.reduce(function (total, item) {
-        return (total += item?.item?.price * item?.item?.quantity);
-      }, 0),
-      shippingPrice: shippingFee && shippingFee.total,
-      totalPrice:
-        shippingFee &&
-        cartItems?.reduce(function (total, item) {
+    if (!selectedSenderProvince.ProvinceName) {
+      toastWarn("Chọn Tỉnh/Thành phố!");
+      return;
+    }
+    if (!selectedSenderDistrict.DistrictName) {
+      toastWarn("Chọn Huyện/Quận!");
+      return;
+    }
+    if (!selectedSenderWard.WardName) {
+      toastWarn("Chọn Xã/Phường!");
+      return;
+    }
+    if (street.length === 0) {
+      toastWarn("Nhập số nhà/đường!");
+      return;
+    } else {
+      const dataForm = {
+        shippingAddress: {
+          address: `${street}, ${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+          city: `${selectedSenderProvince?.ProvinceName}`,
+          country: "VN",
+        },
+        paymentMethod: isOnline ? "paypal" : "COD",
+        itemsPrice: cartItems?.reduce(function (total, item) {
           return (total += item?.item?.price * item?.item?.quantity);
-        }, 0 + shippingFee.total),
-    };
-    dispatch(createOrder(dataForm));
+        }, 0),
+        shippingPrice: shippingFee && shippingFee.total,
+        totalPrice:
+          shippingFee &&
+          cartItems?.reduce(function (total, item) {
+            return (total += item?.item?.price * item?.item?.quantity);
+          }, 0 + shippingFee.total),
+      };
+
+      dispatch(createOrder(dataForm));
+    }
   };
   const handlePaymentMomo = () => {
-    const dataForm = {
-      shippingAddress: {
-        address: `${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
-        city: `${selectedSenderProvince?.ProvinceName}`,
-        country: "VN",
-      },
-      paymentMethod: isOnline ? "paypal" : "COD",
-      itemsPrice: cartItems?.reduce(function (total, item) {
-        return (total += item?.item?.price * item?.item?.quantity);
-      }, 0),
-      shippingPrice: shippingFee && shippingFee.total,
-      totalPrice:
-        shippingFee &&
-        cartItems?.reduce(function (total, item) {
+    if (!selectedSenderProvince.ProvinceName) {
+      toastWarn("Chọn Tỉnh/Thành phố!");
+      return;
+    }
+    if (!selectedSenderDistrict.DistrictName) {
+      toastWarn("Chọn Huyện/Quận!");
+      return;
+    }
+    if (!selectedSenderWard.WardName) {
+      toastWarn("Chọn Xã/Phường!");
+      return;
+    }
+    if (street.length === 0) {
+      toastWarn("Nhập số nhà/đường!");
+      return;
+    } else {
+      const dataForm = {
+        shippingAddress: {
+          address: `${street}, ${selectedSenderProvince?.ProvinceName}, Huyện ${selectedSenderDistrict?.DistrictName}, ${selectedSenderWard?.WardName}`,
+          city: `${selectedSenderProvince?.ProvinceName}`,
+          country: "VN",
+        },
+        paymentMethod: isOnline ? "paypal" : "COD",
+        itemsPrice: cartItems?.reduce(function (total, item) {
           return (total += item?.item?.price * item?.item?.quantity);
-        }, 0 + shippingFee.total),
-    };
-    dispatch(initiateQuickPay(dataForm));
+        }, 0),
+        shippingPrice: shippingFee && shippingFee.total,
+        totalPrice:
+          shippingFee &&
+          cartItems?.reduce(function (total, item) {
+            return (total += item?.item?.price * item?.item?.quantity);
+          }, 0 + shippingFee.total),
+      };
+      dispatch(initiateQuickPay(dataForm));
+    }
+  };
+
+  const checkInput = () => {
+    if (!selectedSenderProvince.ProvinceName) {
+      toastWarn("Chọn Tỉnh/Thành phố!");
+      return false;
+    }
+    if (!selectedSenderDistrict.DistrictName) {
+      toastWarn("Chọn Huyện/Quận!");
+      return false;
+    }
+    if (!selectedSenderWard.WardName) {
+      toastWarn("Chọn Xã/Phường!");
+      return false;
+    }
+    if (street.length === 0) {
+      toastWarn("Nhập số nhà/đường");
+      return false;
+    }
   };
 
   return (
@@ -529,9 +601,10 @@ const Cart = () => {
                     <input
                       required
                       type="address"
-                      name=""
+                      name="detailaddress"
+                      onChange={(e) => setStreet(e.target.value)}
                       id=""
-                      placeholder="Địa chỉ giao hàng"
+                      placeholder="Đường/Số nhà"
                       aria-describedby="undefined-error"
                       class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
                     />

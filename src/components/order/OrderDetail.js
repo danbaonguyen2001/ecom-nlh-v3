@@ -125,11 +125,11 @@ const OrderDetail = () => {
                   {orderItems?.shippingAddress?.address}
                   {" ,"}
                 </span>
-                <span className="">
+                {/* <span className="">
                   {orderItems?.shippingAddress?.city}
                   {" ,"}
                 </span>
-                <span className="">{orderItems?.shippingAddress?.country}</span>
+                <span className="">{orderItems?.shippingAddress?.country}</span> */}
               </div>
               <div className="flex flex-wrap my-1">
                 <b className="text-gray-600 font-bold mr-1">

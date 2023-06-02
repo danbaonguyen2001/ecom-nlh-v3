@@ -11,6 +11,7 @@ import Loading from "../../screens/Loading";
 import { Token_API_GHN, GHN } from "../../apis/Api";
 import { register } from "../../actions/userActions";
 import { toast } from "react-toastify";
+import { toastWarn } from "../../utils/ultils";
 
 const Register = () => {
   const [params, setParams] = useState({
@@ -146,7 +147,14 @@ const Register = () => {
     };
 
     console.log(addressForm);
-
+    if (params.password.length < 8) {
+      toastWarn("Mật khẩu phải ít nhất 8 kí tự!");
+      return;
+    }
+    if (params.phone.length !== 10) {
+      toastWarn("Số điện thoại chưa đúng định dạng!");
+      return;
+    }
     dispatch(
       register({
         email: params.email,
@@ -178,7 +186,7 @@ const Register = () => {
   return (
     <>
       {userRegister?.loading && <Loading />}
-      {userRegister?.error && <h1>{userRegister?.error}</h1>}
+      {/* {userRegister?.error && <h1>{userRegister?.error}</h1>} */}
       <div className="  m-4 rounded-sm border-2 border-slate-400">
         <section class="bg-white">
           <div class=" px-4 py-10 bg-white sm:px-6 lg:px-8 sm:py-12 lg:py-9">

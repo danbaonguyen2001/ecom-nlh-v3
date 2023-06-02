@@ -122,7 +122,13 @@ export const register = (params) => async (dispatch) => {
           ? error.response.data.message
           : error.message,
     });
-    toastWarn("Đăng ký thất bại, kiểm tra lại thông tin đã cung cấp!");
+    toastWarn(
+      `${
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      }`
+    );
   }
 };
 
