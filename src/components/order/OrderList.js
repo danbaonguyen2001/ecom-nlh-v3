@@ -97,7 +97,35 @@ const OrderList = () => {
                       <span className="text-gray-700 font-bold">
                         Trạng thái:
                       </span>
-                      <b className="ml-2">{OrderItem?.status?.statusNow}</b>
+                      {OrderItem?.status?.statusNow === "Confirm" ? (
+                        <b className="ml-2 px-2 py-1 rounded-md text-white bg-confirm">
+                          {OrderItem?.status?.statusNow}
+                        </b>
+                      ) : (
+                        <></>
+                      )}
+                      {OrderItem?.status?.statusNow === "Shipped" ? (
+                        <b className="ml-2 px-2 py-1 rounded-md text-white bg-Shipped">
+                          {OrderItem?.status?.statusNow}
+                        </b>
+                      ) : (
+                        <></>
+                      )}
+                      {OrderItem?.status?.statusNow === "pending" ||
+                      OrderItem?.status?.statusNow === "Pending" ? (
+                        <b className="ml-2 px-2 py-1 rounded-md text-white bg-pending ">
+                          {OrderItem?.status?.statusNow}
+                        </b>
+                      ) : (
+                        <></>
+                      )}
+                      {OrderItem?.status?.statusNow === "cancel" ? (
+                        <b className="ml-2 px-2 py-1 rounded-md text-white bg-cancel">
+                          {OrderItem?.status?.statusNow}
+                        </b>
+                      ) : (
+                        <></>
+                      )}
                     </div>
 
                     <Link to={"/order/" + OrderItem?._id}>
