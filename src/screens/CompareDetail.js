@@ -39,11 +39,14 @@ const CompareDetail = () => {
             <hr className="my-2" />
             <section className="grid grid-cols-2">
               <div className="col-span-1 flex flex-col">
-                <Link>
+                <Link
+                  to={"/product/" + pd1.name.replaceAll(" ", "-")}
+                  state={{ slug: pd1?._id }}
+                >
                   <img
                     src={pd1?.image}
                     alt="imgproduct1"
-                    className="max-w-[50%] h-auto"
+                    className="max-w-[50%] h-auto scale-90 hover:scale-105 ease-in duration-500"
                   />
                 </Link>
                 <h4 className="font-semibold text-lg">{pd1?.name}</h4>
@@ -58,11 +61,14 @@ const CompareDetail = () => {
                 </span>
               </div>
               <div className="col-span-1 flex flex-col">
-                <Link>
+                <Link
+                  to={"/product/" + pd2.name.replaceAll(" ", "-")}
+                  state={{ slug: pd2?._id }}
+                >
                   <img
                     src={pd2?.image}
                     alt="imgproduct1"
-                    className="max-w-[50%] h-auto"
+                    className="max-w-[50%] h-auto scale-90 hover:scale-105 ease-in duration-500"
                   />
                 </Link>
                 <h4 className="font-semibold text-lg">{pd2?.name}</h4>

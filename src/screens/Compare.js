@@ -92,7 +92,7 @@ const Compare = () => {
               <div className="col-span-1 p-2 flex flex-col justify-center relative py-4 lg:py-0">
                 <button
                   onClick={handleCompare}
-                  className=" text-white bg-primary-7000 hover:bg-primary-800 focus:ring-4 
+                  className=" text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 
               focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 text-center 
               dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800
               mt-4 lg:mt-0"

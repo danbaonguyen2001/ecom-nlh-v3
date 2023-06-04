@@ -17,11 +17,10 @@ import { TopProduct } from "./TopProduct";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
 const ProductDetail = () => {
   const location = useLocation();
   const { slug } = location.state;
-  //console.log(slug);
+  // console.log(slug);
   const [render, setRender] = useState(false);
 
   const dispatch = useDispatch();
@@ -34,11 +33,14 @@ const ProductDetail = () => {
   );
 
   useEffect(() => {
-    if (slug) {
-      dispatch(productDetail(slug));
+    if (success) {
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-  }, [slug]);
-
+    if (successAddComment) {
+      dispatch({ type: PRODUCT_CREATE_COMMENT_RESET });
+    }
+    dispatch(productDetail(slug));
+  }, [product._id, success, successAddComment]);
   //
 
   useEffect(() => {

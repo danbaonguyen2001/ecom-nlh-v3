@@ -11,11 +11,11 @@ export default function AddReviewModal(props) {
 
   // console.log(product);
   // // const [open, setOpen] = useState(false);
+
   const dispatch = useDispatch();
   const cancelButtonRef = useRef(null);
 
   const [params, setParams] = useState({
-    productId: product?._id,
     rating: 5,
     comment: "",
     slug: slug,
@@ -25,19 +25,15 @@ export default function AddReviewModal(props) {
   };
   const reviewHandler = () => {
     if (params.comment === "") {
-      toastWarn("Vui lòng nhập nội dung đánh giá");
+      toastWarn("Vui lòng nhập đánh giá");
       return;
     } else {
       setOpen(false);
       dispatch(
-        createProductReview(
-          params.productId,
-          {
-            rating: params.rating,
-            comment: params.comment,
-          },
-          params.slug
-        )
+        createProductReview({
+          rating: params.rating,
+          comment: params.comment,
+        })
       );
       setParams({ ...params, ["comment"]: "" });
     }

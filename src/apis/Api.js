@@ -1,6 +1,6 @@
 // export const Server = "https://tlcn-2022-be.onrender.com";
 export const Server = "https://ecom-kltn-k19-be.onrender.com";
-// export const Server = "http://localhost:5000";
+// export const Server = 'http://localhost:5000'
 
 // API GHN
 export const Token_API_GHN = "1d1bf3f5-b8c8-11ed-b09a-9a2a48e971b0";
