@@ -29,3 +29,14 @@ export const toastError = (mess) => {
 export const toastWarn = (mess) => {
   toast.warn(`${mess}`, configToast);
 };
+
+export const addDays = (x) => {
+  const newdate = new Date(x);
+  // const dateCopy = new Date();
+  newdate.setDate(newdate.getDate() + 3);
+  return newdate.toLocaleDateString("vi-VN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
