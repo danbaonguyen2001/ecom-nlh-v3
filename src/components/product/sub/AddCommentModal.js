@@ -7,16 +7,12 @@ import { createProductComment } from "../../../actions/productActions";
 import { toastWarn } from "../../../utils/ultils";
 
 export default function AddCommentModal(props) {
-  const { open, setOpen, product, slug } = props;
-  const dispatch = useDispatch();
-  const cancelButtonRef = useRef(null);
-
+  const { open, setOpen, product } = props
+  const dispatch = useDispatch()
+  const cancelButtonRef = useRef(null)
   const [params, setParams] = useState({
-    productId: product?._id,
-    rating: 5,
-    comment: "",
-    slug: slug,
-  });
+    comment: '',
+  })
   const onChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
   };
