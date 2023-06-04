@@ -38,6 +38,7 @@ import {
   COMPARE_PRODUCTS_REQUEST,
   COMPARE_PRODUCTS_FAIL,
   COMPARE_PRODUCTS_SUCCESS,
+  PRODUCT_CREATE_REVIEW_RESET,
 } from "../constants/productsConstants";
 import { logout } from "./userActions";
 import { Server } from "../apis/Api";
@@ -182,7 +183,7 @@ export const listTopProducts = () => async (dispatch) => {
 };
 /** Create Product Review */
 export const createProductReview =
-  (productId, review) => async (dispatch, getState) => {
+  (productId, review, slug) => async (dispatch, getState) => {
     try {
       console.log(review);
       dispatch({
@@ -206,12 +207,15 @@ export const createProductReview =
         config
       );
 
-      dispatch({
-        type: PRODUCT_CREATE_REVIEW_SUCCESS,
-      });
       if (data?.message === "Review added") {
         toastSuccess("Thêm đánh giá thành công!");
+        dispatch({
+          type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        });
       }
+      dispatch(productDetail(slug));
+
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     } catch (error) {
       const message =
         error.response && error.response.data.message
@@ -220,7 +224,13 @@ export const createProductReview =
       if (message === "Not authorized, token failed") {
         dispatch(logout());
       }
-      toastError("Thêm đánh giá thất bại!");
+      toastError(
+        `${
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message
+        }`
+      );
       dispatch({
         type: PRODUCT_CREATE_REVIEW_FAIL,
         payload: message,
@@ -293,13 +303,18 @@ export const createProductComment = (params) => async (dispatch, getState) => {
       },
       config
     );
-    dispatch({
-      type: PRODUCT_CREATE_COMMENT_SUCCESS,
-      payload: data,
-    });
+
     if (data.success) {
       toastSuccess("Thêm bình luận thành công");
+      dispatch({
+        type: PRODUCT_CREATE_COMMENT_SUCCESS,
+        payload: data,
+      });
     }
+    dispatch(productDetail(params.slug));
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_SUCCESS,
+    });
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -308,7 +323,13 @@ export const createProductComment = (params) => async (dispatch, getState) => {
     if (message === "Login first to access this resource.") {
       dispatch(logout());
     }
-    toastError("Thêm bình luận thất bại!");
+    toastError(
+      `${
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      }`
+    );
     dispatch({
       type: PRODUCT_CREATE_COMMENT_FAIL,
       payload: message,

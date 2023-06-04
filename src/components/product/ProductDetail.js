@@ -34,14 +34,11 @@ const ProductDetail = () => {
   );
 
   useEffect(() => {
-    if (success) {
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    if (slug) {
+      dispatch(productDetail(slug));
     }
-    if (successAddComment) {
-      dispatch({ type: PRODUCT_CREATE_COMMENT_RESET });
-    }
-    dispatch(productDetail(slug));
-  }, [product._id, success, successAddComment]);
+  }, [slug]);
+
   //
 
   useEffect(() => {

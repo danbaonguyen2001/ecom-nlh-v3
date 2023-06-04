@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const NotFound = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div class=" w-full px-16 md:px-0 h-screen flex items-center justify-center">
       <div
