@@ -515,7 +515,11 @@ const Cart = () => {
                     for="defaultAddress"
                   >
                     Mặc định: &nbsp;
-                    <i>{addDefault[0].address}</i>
+                    {addDefault[0] ? (
+                      <i>{addDefault[0]?.address}</i>
+                    ) : (
+                      "Không có"
+                    )}
                   </label>
                 </div>
                 <div class="form-check form-check-inline ">
