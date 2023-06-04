@@ -24,7 +24,7 @@ const General = () => {
             </b>
           </i>
         </Link>
-        và API giao hàng từ phía
+        &nbsp; và API giao hàng từ phía
         <Link to="https://api.ghn.vn/">
           <i>
             <b className="text-primary-700 cursor-pointer hover:text-primary-400">

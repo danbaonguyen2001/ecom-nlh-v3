@@ -22,3 +22,13 @@
 .scale-img {
   @apply scale-90 hover:scale-105 ease-in duration-500;
 }
+
+.custom-scrollbars__content {
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbars__content::-webkit-scrollbar {
+  display: none;
+}
