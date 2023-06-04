@@ -21,7 +21,7 @@ function classNames(...classes) {
 const ProductDetail = () => {
   const location = useLocation();
   const { slug } = location.state;
-  // console.log(slug);
+  //console.log(slug);
   const [render, setRender] = useState(false);
 
   const dispatch = useDispatch();

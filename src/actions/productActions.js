@@ -428,25 +428,28 @@ export const compare = () => async (dispatch, getState) => {
       },
     };
 
-    const product1 = products[0].name;
-    const product2 = products[1].name;
-    const mess = `So sánh ${product1} và ${product2}, sản phẩm nào đáng mua hơn? `;
-    console.log(mess);
+    // const product1 = products[0].name;
+    // const product2 = products[1].name;
+    // const mess = `So sánh ${product1} và ${product2}, sản phẩm nào đáng mua hơn? `;
+    // console.log(mess);
 
-    const { data } = await axios.post(
-      `${Server}/api/products/compare`,
-
-      { message: mess }
-    );
-    console.log(data);
-    const newText = data.message.replace(/(\d+)/g, "\n$1");
-    // console.log(newText);
-    // const result = await axios.post(
+    // const { data } = await axios.post(
     //   `${Server}/api/products/compare`,
 
-    //   { message: `Chuyển văn bản sau thành HTML: ${data.message}` }
+    //   { message: mess }
     // );
-    // console.log(result);
+    // console.log(data);
+
+    // New
+    const id1 = products[0].id;
+    const id2 = products[1].id;
+
+    const res1 = await axios.get(`${Server}/api/products/${id1}`);
+    const res2 = await axios.get(`${Server}/api/products/${id2}`);
+    const data = await {
+      product1: res1.data,
+      product2: res2.data,
+    };
 
     dispatch({ type: COMPARE_PRODUCTS_SUCCESS, payload: data });
   } catch (error) {

@@ -11,7 +11,8 @@ import {
   deleteOutCompare,
 } from "../actions/productActions";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { toastWarn } from "../utils/ultils";
 
 const Compare = () => {
   const [open, setOpen] = useState(false);
@@ -40,8 +41,17 @@ const Compare = () => {
     dispatch(deleteOutCompare(id));
   };
 
+  const navigate = useNavigate();
   const handleCompare = () => {
-    dispatch(compare());
+    // dispatch(compare());
+    if (products.length < 2) {
+      toastWarn("Chọn thêm sản phẩm để so sánh");
+      return;
+    } else {
+      setOpen(false);
+      navigate("/compareDetail");
+      dispatch(compare());
+    }
   };
   return (
     <>
