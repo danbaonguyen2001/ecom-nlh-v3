@@ -181,52 +181,53 @@ export const listTopProducts = () => async (dispatch) => {
   }
 };
 /** Create Product Review */
-export const createProductReview =
-  (productId, review) => async (dispatch, getState) => {
-    try {
-      console.log(review);
-      dispatch({
-        type: PRODUCT_CREATE_REVIEW_REQUEST,
-      });
-      const { userLogin: userInfo } = getState();
+export const createProductReview = (review) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_REQUEST,
+    });
+    const {
+      productDetail: { product },
+    } = getState();
+    const { userLogin: userInfo } = getState();
 
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userInfo.userInfo.data.access_token}`,
-        },
-      };
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.userInfo.data.access_token}`,
+      },
+    };
 
-      const { data } = await axios.post(
-        `${Server}/api/products/${productId}/reviews`,
-        {
-          rating: review.rating,
-          comment: review.comment,
-        },
-        config
-      );
+    const { data } = await axios.post(
+      `${Server}/api/products/${product?._id}/reviews`,
+      {
+        rating: review.rating,
+        comment: review.comment,
+      },
+      config
+    );
 
-      dispatch({
-        type: PRODUCT_CREATE_REVIEW_SUCCESS,
-      });
-      if (data?.message === "Review added") {
-        toastSuccess("Thêm đánh giá thành công!");
-      }
-    } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
-      if (message === "Not authorized, token failed") {
-        dispatch(logout());
-      }
-      toastError("Thêm đánh giá thất bại!");
-      dispatch({
-        type: PRODUCT_CREATE_REVIEW_FAIL,
-        payload: message,
-      });
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_SUCCESS,
+    });
+    if (data?.message === "Review added") {
+      toastSuccess("Thêm đánh giá thành công!");
     }
-  };
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, token failed") {
+      dispatch(logout());
+    }
+    toastError("Thêm đánh giá thất bại!");
+    dispatch({
+      type: PRODUCT_CREATE_REVIEW_FAIL,
+      payload: message,
+    });
+  }
+};
 /** Get Product Review */
 export const getProductReviews = (id) => async (dispatch) => {
   try {
@@ -279,6 +280,9 @@ export const createProductComment = (params) => async (dispatch, getState) => {
       type: PRODUCT_CREATE_COMMENT_REQUEST,
     });
     const { userLogin: userInfo } = getState();
+    const {
+      productDetail: { product },
+    } = getState();
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -289,7 +293,7 @@ export const createProductComment = (params) => async (dispatch, getState) => {
       `${Server}/api/comments`,
       {
         comment: params.comment,
-        productId: params.productId,
+        productId: product._id,
       },
       config
     );
@@ -407,25 +411,28 @@ export const compare = () => async (dispatch, getState) => {
       },
     };
 
-    const product1 = products[0].name;
-    const product2 = products[1].name;
-    const mess = `So sánh ${product1} và ${product2}, sản phẩm nào đáng mua hơn? `;
-    console.log(mess);
+    // const product1 = products[0].name;
+    // const product2 = products[1].name;
+    // const mess = `So sánh ${product1} và ${product2}, sản phẩm nào đáng mua hơn? `;
+    // console.log(mess);
 
-    const { data } = await axios.post(
-      `${Server}/api/products/compare`,
-
-      { message: mess }
-    );
-    console.log(data);
-    const newText = data.message.replace(/(\d+)/g, "\n$1");
-    // console.log(newText);
-    // const result = await axios.post(
+    // const { data } = await axios.post(
     //   `${Server}/api/products/compare`,
 
-    //   { message: `Chuyển văn bản sau thành HTML: ${data.message}` }
+    //   { message: mess }
     // );
-    // console.log(result);
+    // console.log(data);
+
+    // New
+    const id1 = products[0].id;
+    const id2 = products[1].id;
+
+    const res1 = await axios.get(`${Server}/api/products/${id1}`);
+    const res2 = await axios.get(`${Server}/api/products/${id2}`);
+    const data = await {
+      product1: res1.data,
+      product2: res2.data,
+    };
 
     dispatch({ type: COMPARE_PRODUCTS_SUCCESS, payload: data });
   } catch (error) {

@@ -157,7 +157,7 @@ export const compareProducts = (
       return {
         ...state,
         loading: false,
-        messages: action.payload,
+        data: action.payload,
       };
     case COMPARE_PRODUCTS_FAIL:
       return {

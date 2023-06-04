@@ -38,6 +38,7 @@ import { Link } from "react-router-dom";
 import { AiTwotoneHome } from "react-icons/ai";
 import { BsFillCartXFill } from "react-icons/bs";
 import { toastError, toastSuccess, toastWarn } from "../utils/ultils";
+import { getAddressDetail } from "../actions/userActions";
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -175,6 +176,7 @@ const Cart = () => {
       dispatch(VNDToUSD());
     }
   }, [selectedSenderWard, dispatch]);
+
   useEffect(() => {
     if (successMomo) {
       if (payUrl) {
@@ -349,24 +351,21 @@ const Cart = () => {
     }
   };
 
-  const checkInput = () => {
-    if (!selectedSenderProvince.ProvinceName) {
-      toastWarn("Chọn Tỉnh/Thành phố!");
-      return false;
-    }
-    if (!selectedSenderDistrict.DistrictName) {
-      toastWarn("Chọn Huyện/Quận!");
-      return false;
-    }
-    if (!selectedSenderWard.WardName) {
-      toastWarn("Chọn Xã/Phường!");
-      return false;
-    }
-    if (street.length === 0) {
-      toastWarn("Nhập số nhà/đường");
-      return false;
-    }
-  };
+  //Handle Click Choose Address
+  const addDefault = userInfo?.data?.user?.addresses.filter(
+    (add, i) => add.idDefault === true
+  );
+  const [isDefautAddress, setIsDefautAddress] = useState(
+    addDefault[0].address ? true : false
+  );
+  // console.log(addDefault);
+  // console.log(isDefautAddress);
+  console.log(addDefault[0].detailAddress);
+  // useEffect(() => {
+  //   if (addDefault[0].address && isDefautAddress) {
+  //     dispatch(getAddressDetail(addDefault[0].detailAddress));
+  //   }
+  // }, [isDefautAddress]);
 
   return (
     <>
@@ -495,12 +494,60 @@ const Cart = () => {
               {/* Address */}
               <h3 class=" text-left text-base font-bold">Địa chỉ giao hàng</h3>
 
-              <div className="w-full lg:w-full  mb-2 ">
-                <div className="w-full flex flex-wrap justify-between">
-                  <div class="w-full md:w-[45%]  py-4 flex justify-center">
-                    <div class=" w-full">
-                      <select
-                        class="form-select appearance-none block w-full p-2 text-base
+              <div class="flex justify-center flex-col mt-2">
+                <div class="form-check form-check-inline mb-2">
+                  <input
+                    class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border
+                  border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                  transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 
+                  cursor-pointer"
+                    type="radio"
+                    name="2"
+                    id=""
+                    value=""
+                    required
+                    checked={isDefautAddress}
+                    // defaultChecked
+                    onClick={() => setIsDefautAddress(true)}
+                  />
+                  <label
+                    class="form-check-label inline-block text-gray-800"
+                    for="defaultAddress"
+                  >
+                    Mặc định: &nbsp;
+                    <i>{addDefault[0].address}</i>
+                  </label>
+                </div>
+                <div class="form-check form-check-inline ">
+                  <input
+                    class="form-check-input form-check-input appearance-none rounded-full h-4 w-4 border
+                  border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                  transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 
+                  cursor-pointer"
+                    type="radio"
+                    name="2"
+                    id=""
+                    value=""
+                    required
+                    checked={!isDefautAddress}
+                    onClick={() => setIsDefautAddress(false)}
+                  />
+                  <label
+                    class="form-check-label inline-block text-gray-800"
+                    for="defaultAddress"
+                  >
+                    Chọn địa chỉ mới
+                  </label>
+                </div>
+              </div>
+
+              {!isDefautAddress && (
+                <div className="w-full lg:w-full  mb-2 ">
+                  <div className="w-full flex flex-wrap justify-between">
+                    <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                      <div class=" w-full">
+                        <select
+                          class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
                               bg-white bg-clip-padding bg-no-repeat
@@ -510,33 +557,33 @@ const Cart = () => {
                               ease-in-out
                               m-0
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setSelectedSenderProvince(
-                            JSON.parse(event.target.value)
-                          )
-                        }
-                      >
-                        <option selected>Tỉnh</option>
-                        {province &&
-                          province.map((province) => (
-                            <option
-                              key={province.ProvinceID}
-                              value={JSON.stringify(province)}
-                            >
-                              {province.ProvinceName}
-                            </option>
-                          ))}
-                        {/* <option value='1'>An Giang</option>
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setSelectedSenderProvince(
+                              JSON.parse(event.target.value)
+                            )
+                          }
+                        >
+                          <option selected>Tỉnh</option>
+                          {province &&
+                            province.map((province) => (
+                              <option
+                                key={province.ProvinceID}
+                                value={JSON.stringify(province)}
+                              >
+                                {province.ProvinceName}
+                              </option>
+                            ))}
+                          {/* <option value='1'>An Giang</option>
                       <option value='2'>HCM</option>
                       <option value='3'>Đồng Tháp</option> */}
-                      </select>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="w-full md:w-[45%]  py-4 flex justify-center">
-                    <div class=" w-full">
-                      <select
-                        class="form-select appearance-none block w-full p-2 text-base
+                    <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                      <div class=" w-full">
+                        <select
+                          class="form-select appearance-none block w-full p-2 text-base
                                 font-normal
                                 text-gray-700
                                 bg-white bg-clip-padding bg-no-repeat
@@ -546,30 +593,30 @@ const Cart = () => {
                                 ease-in-out
                                 m-0
                                 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setSelectedSenderDistrict(
-                            JSON.parse(event.target.value)
-                          )
-                        }
-                      >
-                        <option selected>Huyện</option>
-                        {district &&
-                          district.map((district) => (
-                            <option
-                              key={district.DistrictID}
-                              value={JSON.stringify(district)}
-                            >
-                              {district.DistrictName}
-                            </option>
-                          ))}
-                      </select>
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setSelectedSenderDistrict(
+                              JSON.parse(event.target.value)
+                            )
+                          }
+                        >
+                          <option selected>Huyện</option>
+                          {district &&
+                            district.map((district) => (
+                              <option
+                                key={district.DistrictID}
+                                value={JSON.stringify(district)}
+                              >
+                                {district.DistrictName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="w-full md:w-[45%]  py-4 flex justify-center">
-                    <div class=" w-full">
-                      <select
-                        class="form-select appearance-none block w-full p-2 text-base
+                    <div class="w-full md:w-[45%]  py-4 flex justify-center">
+                      <div class=" w-full">
+                        <select
+                          class="form-select appearance-none block w-full p-2 text-base
                               font-normal
                               text-gray-700
                               bg-white bg-clip-padding bg-no-repeat
@@ -579,38 +626,41 @@ const Cart = () => {
                               ease-in-out
                               m-0
                               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                        aria-label="Default select example"
-                        onChange={(event) =>
-                          setSelectedSenderWard(JSON.parse(event.target.value))
-                        }
-                      >
-                        <option selected>Xã</option>
-                        {ward &&
-                          ward.map((ward) => (
-                            <option
-                              key={ward.WardCode}
-                              value={JSON.stringify(ward)}
-                            >
-                              {ward.WardName}
-                            </option>
-                          ))}
-                      </select>
+                          aria-label="Default select example"
+                          onChange={(event) =>
+                            setSelectedSenderWard(
+                              JSON.parse(event.target.value)
+                            )
+                          }
+                        >
+                          <option selected>Xã</option>
+                          {ward &&
+                            ward.map((ward) => (
+                              <option
+                                key={ward.WardCode}
+                                value={JSON.stringify(ward)}
+                              >
+                                {ward.WardName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="w-full  py-4 flex justify-center">
+                      <input
+                        required
+                        type="address"
+                        name="detailaddress"
+                        onChange={(e) => setStreet(e.target.value)}
+                        id=""
+                        placeholder="Đường/Số nhà"
+                        aria-describedby="undefined-error"
+                        class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
+                      />
                     </div>
                   </div>
-                  <div class="w-full  py-4 flex justify-center">
-                    <input
-                      required
-                      type="address"
-                      name="detailaddress"
-                      onChange={(e) => setStreet(e.target.value)}
-                      id=""
-                      placeholder="Đường/Số nhà"
-                      aria-describedby="undefined-error"
-                      class="w-full  p-2 m-auto  text-black placeholder-gray-500 transition-all duration-200 border border-gray-200 rounded-md bg-gray-50 focus:outline-none focus:border-blue-600 focus:bg-white caret-blue-600"
-                    />
-                  </div>
                 </div>
-              </div>
+              )}
               <hr class="my-4" />
               {/* Voucher */}
               <div className="w-full flex justify-between flex-wrap ">
@@ -809,6 +859,7 @@ const Cart = () => {
                   </div>
                 )}
               </div>
+
               <hr class="my-4" />
 
               <div className="flex items-center justify-center">

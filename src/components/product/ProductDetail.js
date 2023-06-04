@@ -17,7 +17,6 @@ import { TopProduct } from "./TopProduct";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
 const ProductDetail = () => {
   const location = useLocation();
   const { slug } = location.state;

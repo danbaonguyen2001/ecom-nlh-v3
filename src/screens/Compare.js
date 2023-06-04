@@ -11,7 +11,8 @@ import {
   deleteOutCompare,
 } from "../actions/productActions";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { toastWarn } from "../utils/ultils";
 
 const Compare = () => {
   const [open, setOpen] = useState(false);
@@ -40,8 +41,17 @@ const Compare = () => {
     dispatch(deleteOutCompare(id));
   };
 
+  const navigate = useNavigate();
   const handleCompare = () => {
-    dispatch(compare());
+    // dispatch(compare());
+    if (products.length < 2) {
+      toastWarn("Chọn thêm sản phẩm để so sánh");
+      return;
+    } else {
+      setOpen(false);
+      navigate("/compareDetail");
+      dispatch(compare());
+    }
   };
   return (
     <>
@@ -82,7 +92,7 @@ const Compare = () => {
               <div className="col-span-1 p-2 flex flex-col justify-center relative py-4 lg:py-0">
                 <button
                   onClick={handleCompare}
-                  className=" text-white bg-primary-7000 hover:bg-primary-800 focus:ring-4 
+                  className=" text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 
               focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 text-center 
               dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800
               mt-4 lg:mt-0"
