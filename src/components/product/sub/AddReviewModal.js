@@ -10,9 +10,7 @@ export default function AddReviewModal(props) {
   // // const [open, setOpen] = useState(false);
   const dispatch = useDispatch()
   const cancelButtonRef = useRef(null)
-
   const [params, setParams] = useState({
-    productId: product?._id,
     rating: 5,
     comment: '',
   })
@@ -22,7 +20,7 @@ export default function AddReviewModal(props) {
   const reviewHandler = () => {
     setOpen(false)
     dispatch(
-      createProductReview(params.productId, {
+      createProductReview({
         rating: params.rating,
         comment: params.comment,
       })

@@ -9,10 +9,7 @@ export default function AddCommentModal(props) {
   const { open, setOpen, product } = props
   const dispatch = useDispatch()
   const cancelButtonRef = useRef(null)
-
   const [params, setParams] = useState({
-    productId: product?._id,
-    rating: 5,
     comment: '',
   })
   const onChange = (e) => {
