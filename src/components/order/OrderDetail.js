@@ -9,6 +9,7 @@ import Item from "./sub/Item";
 import CancelOrderModal from "./sub/CancelOrderModal";
 import { CANCEL_ORDER_RESET } from "../../constants/orderConstants";
 import { getHistoryOrders } from "../../actions/orderActions";
+import { addDays } from "../../utils/ultils";
 
 const OrderDetail = () => {
   const { slug } = useParams();
@@ -41,6 +42,9 @@ const OrderDetail = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // const x = addDays(orderItems?.updatedAt);
+  // console.log(x);
   return (
     <>
       {loading && <Loading />}
@@ -117,6 +121,16 @@ const OrderDetail = () => {
                 <b className="text-gray-600 font-bold mr-1">Ngày cập nhật:</b>
                 <span> {toDate(orderItems?.updatedAt)} </span>
               </div>
+              {orderItems?.status?.statusNow === "Confirm" ? (
+                <div className="flex my-1">
+                  <b className="text-gray-600 font-bold mr-1">
+                    Ngày giao hàng dự kiến:
+                  </b>
+                  <span> {addDays(orderItems?.updatedAt)} </span>
+                </div>
+              ) : (
+                ""
+              )}
               <div className="flex flex-wrap my-1 ">
                 <b className="text-gray-600 font-bold mr-1">
                   Địa chỉ nhận hàng:

@@ -1,18 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { forgotPassword } from '../../actions/userActions'
-
-const ForgotPass = () => {
-  const [email, setEmail] = useState('')
+import { useNavigate, Link } from 'react-router-dom'
+import { getCarts } from '../../actions/cartActions'
+import { verifyEmail } from '../../actions/userActions'
+import Loading from '../../screens/Loading'
+import { USER_VERIFY_EMAIL_RESET } from '../../constants/userConstants'
+const VerifyEmail = () => {
+  const queryParams = new URLSearchParams(window.location.search)
+  const Token = queryParams.get('Token')
+  const history = useNavigate()
   const dispatch = useDispatch()
-  const submitHandler = (e) => {
-    e.preventDefault()
-    dispatch(forgotPassword(email))
-  }
+  const { loading, error, userInfo, logout } = useSelector(
+    (state) => state.userLogin
+  )
+  const { loading: verifyLoading, error: verifyError } = useSelector(
+    (state) => state.userRegister
+  )
+  useEffect(() => {
+    if (Token) {
+      dispatch(verifyEmail(Token))
+    }
+  }, [Token])
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(getCarts())
+      history('/')
+    }
+    if (verifyError) {
+      dispatch({ type: USER_VERIFY_EMAIL_RESET })
+      history('/register')
+    }
+  }, [userInfo, verifyError])
   return (
     // <><!-- Container -->
     <div class='container mx-auto '>
+      {verifyLoading && <Loading />}
       <div class='flex justify-center px-6 my-4 '>
         {/* <!-- Row --> */}
         <div class='w-full xl:w-3/4 lg:w-11/12 flex rounded-sm border-2 border-slate-400'>
@@ -28,10 +50,7 @@ const ForgotPass = () => {
             <div class='px-8 mb-4 text-center'>
               <h3 class='pt-4 mb-2 text-2xl font-semibold'>Quên mật khẩu</h3>
             </div>
-            <form
-              class='px-8 pt-6 pb-8 mb-4 bg-white rounded'
-              onSubmit={submitHandler}
-            >
+            <form class='px-8 pt-6 pb-8 mb-4 bg-white rounded'>
               <div class='mb-4'>
                 <label
                   class='block mb-2 text-sm font-bold text-gray-700'
@@ -44,38 +63,36 @@ const ForgotPass = () => {
                   id='email'
                   type='email'
                   placeholder='Enter Email Address...'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              {/* <div class="mb-6 text-center">
+              <div class='mb-6 text-center'>
                 <button
-                  class="w-full px-4 py-2 font-bold text-white bg-primary-600 rounded-full hover:bg-primary-800 focus:outline-none focus:shadow-outline"
-                  type="button"
+                  class='w-full px-4 py-2 font-bold text-white bg-primary-600 rounded-full hover:bg-primary-800 focus:outline-none focus:shadow-outline'
+                  type='button'
                 >
                   Nhận mã
                 </button>
               </div>
-              <div class="mb-4">
+              <div class='mb-4'>
                 <label
-                  class="block mb-2 text-sm font-bold text-gray-700"
-                  for="email"
+                  class='block mb-2 text-sm font-bold text-gray-700'
+                  for='email'
                 >
                   Mã xác thực
                 </label>
                 <input
-                  class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                  id="email"
-                  type="email"
-                  placeholder="Enter Email Address..."
+                  class='w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline'
+                  id='email'
+                  type='email'
+                  placeholder='Enter Email Address...'
                 />
-              </div> */}
+              </div>
               <div class='mb-6 text-center'>
                 <button
                   class='w-full px-4 py-2 font-bold text-white bg-primary-600 rounded-full hover:bg-primary-800 focus:outline-none focus:shadow-outline'
-                  type='submit'
+                  type='button'
                 >
-                  Quên mật khẩu.
+                  Xác thực
                 </button>
               </div>
               <hr class='mb-6 border-t' />
@@ -103,4 +120,4 @@ const ForgotPass = () => {
   )
 }
 
-export default ForgotPass
+export default VerifyEmail
