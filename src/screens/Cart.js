@@ -135,47 +135,77 @@ const Cart = () => {
     error: errorFee,
     shippingFee,
   } = useSelector((state) => state.shippingFee);
-  const { addressDetail, userInfo } = useSelector((state) => state.userLogin);
+  const {
+    addressDetail,
+    userInfo,
+    loading: loadingUser,
+  } = useSelector((state) => state.userLogin);
   console.log(userInfo);
   const [selectedSenderProvince, setSelectedSenderProvince] = useState("");
   const [selectedSenderDistrict, setSelectedSenderDistrict] = useState("");
   const [selectedSenderWard, setSelectedSenderWard] = useState("");
   const [street, setStreet] = useState("");
+
+  //Handle Click Choose Address
+  const addDefault = userInfo?.data?.user?.addresses.filter(
+    (add, i) => add.idDefault === true
+  );
+  const [isDefautAddress, setIsDefautAddress] = useState(
+    addDefault[0].address ? true : false
+  );
+  const handleClickDefautAddress = () => {
+    setSelectedSenderDistrict("");
+    setSelectedSenderWard("");
+    setIsDefautAddress(true);
+  };
+
+  console.log(addDefault[0].detailAddress);
   useEffect(() => {
     // if (!addressDetail) {
     //   dispatch(getAddressDetail())
     // }
-    if (!province) {
+    if (isDefautAddress && addDefault[0].address) {
+      dispatch(getAddressDetail(addDefault[0].detailAddress));
+    } else if (!province) {
       dispatch(getProvinceList());
     }
-  }, [dispatch, province]);
+  }, [dispatch, province, isDefautAddress]);
   useEffect(() => {
-    if (addressDetail) {
-      dispatch(getDistrictList(addressDetail.province.provinceID));
-      dispatch(getWardList(addressDetail.district.districtID));
+    if (addressDetail && !isDefautAddress) {
+      dispatch(getDistrictList(addressDetail?.province?.provinceID));
+      dispatch(getWardList(addressDetail?.district?.districtID));
     }
   }, [addressDetail, dispatch]);
   useEffect(() => {
-    if (selectedSenderProvince) {
+    if (selectedSenderProvince && !isDefautAddress) {
       dispatch(getDistrictList(selectedSenderProvince.ProvinceID));
     }
   }, [selectedSenderProvince, dispatch]);
   useEffect(() => {
-    if (selectedSenderDistrict) {
+    if (selectedSenderDistrict && !isDefautAddress) {
       dispatch(getWardList(selectedSenderDistrict.DistrictID));
     }
   }, [selectedSenderDistrict, dispatch]);
   useEffect(() => {
-    if (selectedSenderWard) {
+    if (selectedSenderWard && !isDefautAddress) {
       const dataForm = {
         province: selectedSenderProvince,
-        district: selectedSenderDistrict,
-        ward: selectedSenderWard,
+        district: selectedSenderDistrict.DistrictID,
+        ward: selectedSenderWard.WardCode,
+      };
+      dispatch(getShippingFe(dataForm));
+      dispatch(VNDToUSD());
+      console.log(dataForm);
+    } else if (isDefautAddress && addressDetail) {
+      const dataForm = {
+        province: addressDetail?.detailAddress.province.provinceID,
+        district: addressDetail?.detailAddress.district.districtID,
+        ward: addressDetail?.detailAddress.ward.wardCode,
       };
       dispatch(getShippingFe(dataForm));
       dispatch(VNDToUSD());
     }
-  }, [selectedSenderWard, dispatch]);
+  }, [selectedSenderWard, isDefautAddress, addressDetail, dispatch]);
 
   useEffect(() => {
     if (successMomo) {
@@ -351,25 +381,9 @@ const Cart = () => {
     }
   };
 
-  //Handle Click Choose Address
-  const addDefault = userInfo?.data?.user?.addresses.filter(
-    (add, i) => add.idDefault === true
-  );
-  const [isDefautAddress, setIsDefautAddress] = useState(
-    addDefault[0].address ? true : false
-  );
-  // console.log(addDefault);
-  // console.log(isDefautAddress);
-  console.log(addDefault[0].detailAddress);
-  // useEffect(() => {
-  //   if (addDefault[0].address && isDefautAddress) {
-  //     dispatch(getAddressDetail(addDefault[0].detailAddress));
-  //   }
-  // }, [isDefautAddress]);
-
   return (
     <>
-      {loading && <Loading />}
+      {(loading || loadingUser || loadingFee) && <Loading />}
       {loadingOder && <Loading />}
       <div class="  rounded-lg  mx-2 bg-white shadow-lg ">
         <h1 class="mb-10 text-center text-2xl font-bold">Giỏ hàng</h1>
@@ -508,7 +522,7 @@ const Cart = () => {
                     required
                     checked={isDefautAddress}
                     // defaultChecked
-                    onClick={() => setIsDefautAddress(true)}
+                    onClick={() => handleClickDefautAddress()}
                   />
                   <label
                     class="form-check-label inline-block text-gray-800"
@@ -518,7 +532,7 @@ const Cart = () => {
                     {addDefault[0] ? (
                       <i>{addDefault[0]?.address}</i>
                     ) : (
-                      "Không có"
+                      <Link to={"/user-infor"}>Thêm địa chỉ</Link>
                     )}
                   </label>
                 </div>
