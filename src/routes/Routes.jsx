@@ -21,7 +21,7 @@ import Help from "../screens/Help";
 import General from "../screens/General.";
 import ReTypePass from "../components/auth/ReTypePass";
 import CompareDetail from "../screens/CompareDetail";
-
+import VerifyEmail from "../components/auth/VerifyEmail";
 const Components = () => {
   return (
     <ErrorBoundary>
@@ -30,13 +30,14 @@ const Components = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgotpass" element={<ForgotPass />} />
         <Route path="/:CategoryName" element={<ProductList />} />
         <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/help" element={<Help />} />
         <Route path="/general" element={<General />} />
         <Route path="/changepass" element={<ChangePass />} />
-        <Route path="/retypepass/:slug" element={<ReTypePass />} />
+        <Route path="/retypepass" element={<ReTypePass />} />
         <Route path="compareDetail" element={<CompareDetail />} />
 
         {/* Private- Routes */}
