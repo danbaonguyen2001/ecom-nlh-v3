@@ -3,10 +3,20 @@ import {
   USER_ADD_ADDRESS_FAIL,
   USER_ADD_ADDRESS_REQUEST,
   USER_ADD_ADDRESS_SUCCESS,
+  USER_CHANGE_PASSWORD_FAIL,
+  USER_CHANGE_PASSWORD_REQUEST,
+  USER_CHANGE_PASSWORD_SUCCESS,
   USER_DELETE_ADDRESS_FAIL,
+  USER_REGISTER_RESET,
+  USER_RESET_PASSWORD_FAIL,
+  USER_RESET_PASSWORD_REQUEST,
+  USER_RESET_PASSWORD_RESET,
+  USER_RESET_PASSWORD_SUCCESS,
   USER_UPDATE_AVATAR_FAIL,
   USER_UPDATE_AVATAR_REQUEST,
   USER_UPDATE_AVATAR_SUCCESS,
+  USER_VERIFY_EMAIL_REQUEST,
+  USER_VERIFY_EMAIL_RESET,
 } from '../constants/userConstants'
 import { USER_DELETE_ADDRESS_SUCCESS } from '../constants/userConstants'
 import { USER_DELETE_ADDRESS_REQUEST } from '../constants/userConstants'
@@ -181,7 +191,23 @@ export const userLoginReducer = (
         loading: false,
         error: action.payload,
       }
-
+    //change password
+    case USER_CHANGE_PASSWORD_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      }
+    case USER_CHANGE_PASSWORD_SUCCESS:
+      return {
+        loading: false,
+        userInfo: action.payload,
+      }
+    case USER_CHANGE_PASSWORD_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
     // Logout
     case USER_LOGOUT:
       return { logout: true }
@@ -198,7 +224,26 @@ export const userRegisterReducer = (state = { loading: false }, action) => {
       return { loading: false, registered: true }
     case USER_REGISTER_FAIL:
       return { loading: false, error: action.payload }
-
+    case USER_VERIFY_EMAIL_REQUEST:
+      return { loading: true }
+    case USER_VERIFY_EMAIL_RESET:
+      return {}
+    case USER_REGISTER_RESET:
+      return {}
+    case USER_RESET_PASSWORD_REQUEST:
+      return { loading: true }
+    case USER_RESET_PASSWORD_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      }
+    case USER_RESET_PASSWORD_RESET:
+      return {}
+    case USER_RESET_PASSWORD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      }
     default:
       return state
   }
