@@ -19,7 +19,7 @@ const Register = () => {
     phone: "",
     email: "",
     password: "",
-    address: {},
+    address: "",
     gender: "male",
     detailAddress: {
       ward: {
@@ -46,12 +46,14 @@ const Register = () => {
   const GHN = useSelector((state) => state.GHN);
   const dispatch = useDispatch();
   const userRegister = useSelector((state) => state.userRegister);
+
   const [selectedProv, setSelectedProv] = useState("");
   const [provList, setProvList] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [disList, setDisList] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
   const [wardList, setWardList] = useState([]);
+  const [detailAddress, setDetailAddress] = useState("");
 
   //Province
   useEffect(() => {
@@ -60,9 +62,8 @@ const Register = () => {
         `https://online-gateway.ghn.vn/shiip/public-api/master-data/province`,
         config
       );
-      setProvList(await data?.data);
-      setSelectedProv(await data?.data[0]?.ProvinceID);
-      // const prov = provList[0];
+      setProvList(await data.data);
+      // setSelectedProv(await data.data[0]);
     };
     callProv();
   }, []);
@@ -87,7 +88,7 @@ const Register = () => {
         }
       );
       setDisList(await data?.data);
-      setSelectedDistrict(await data?.data[0]?.DistrictID);
+      // setSelectedDistrict(await data?.data[0]?.DistrictID);
     };
     callDis();
   }, [selectedProv]);
@@ -104,7 +105,7 @@ const Register = () => {
         config
       );
       setWardList(await data?.data);
-      setSelectedWard(await data?.data[0]?.WardCode);
+      // setSelectedWard(await data?.data[0]?.WardCode);
     };
     callWard();
   }, [selectedDistrict]);
@@ -123,30 +124,28 @@ const Register = () => {
     if (params.email.includes("@admin"))
       return alert("Email không được chứa @admin!");
     // // Xu ly
-    const prov = provList.find((prov) => prov.ProvinceID === selectedProv);
-    const dis = disList.find((dis) => dis.DistrictID === selectedDistrict);
-    const ward = wardList.find((ward) => ward.WardCode === selectedWard);
-
+    const prov = provList.filter((prov) => prov.ProvinceID == selectedProv);
+    const dis = disList.filter((dis) => dis.DistrictID == selectedDistrict);
+    const ward = wardList.filter((ward) => ward.WardCode == selectedWard);
     const addressForm = {
-      address: `${params.address}, ${ward.WardName}, ${dis.DistrictName}, ${prov.ProvinceName}`,
+      address: `${params.address}, ${ward[0].WardName}, ${dis[0].DistrictName}, ${prov[0].ProvinceName}`,
       detailAddress: {
         province: {
-          provinceID: prov.ProvinceID,
-          provinceName: prov.ProvinceName,
+          provinceID: prov[0].ProvinceID,
+          provinceName: prov[0].ProvinceName,
         },
         district: {
-          districtID: dis.DistrictID,
-          districtName: dis.DistrictName,
+          districtID: dis[0].DistrictID,
+          districtName: dis[0].DistrictName,
         },
         ward: {
-          wardCode: ward.WardCode,
-          wardName: ward.WardName,
+          wardCode: ward[0].WardCode,
+          wardName: ward[0].WardName,
         },
       },
       idDefault: true,
     };
 
-    console.log(addressForm);
     if (params.password.length < 8) {
       toastWarn("Mật khẩu phải ít nhất 8 kí tự!");
       return;
